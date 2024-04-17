@@ -54,7 +54,7 @@
             true,
             imscUtils.parseColor,
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "color",
@@ -64,7 +64,7 @@
             true,
             imscUtils.parseColor,
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "direction",
@@ -76,7 +76,7 @@
                 return str;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "display",
@@ -88,7 +88,7 @@
                 return str;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "displayAlign",
@@ -100,7 +100,7 @@
                 return str;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "extent",
@@ -123,7 +123,7 @@
                     var h = imscUtils.parseLength(s[1]);
                     if (!h || !w)
                         return null;
-                    return {'h': h, 'w': w};
+                    return { 'h': h, 'w': w };
                 }
 
             },
@@ -145,7 +145,7 @@
                         doc.dimensions.h,
                         null,
                         doc.pxLength.h
-                        );
+                    );
 
 
                     if (h === null) {
@@ -168,7 +168,7 @@
                         doc.dimensions.w,
                         null,
                         doc.pxLength.w
-                        );
+                    );
 
                     if (w === null) {
 
@@ -178,7 +178,7 @@
 
                 }
 
-                return {'h': h, 'w': w};
+                return { 'h': h, 'w': w };
             }
         ),
         new StylingAttributeDefinition(
@@ -220,7 +220,7 @@
                 return rslt;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "shear",
@@ -265,7 +265,7 @@
                     parent !== null ? parent.styleAttrs[imscStyles.byName.fontSize.qname] : doc.cellLength.h,
                     doc.cellLength.h,
                     doc.pxLength.h
-                    );
+                );
 
                 return fs;
             }
@@ -283,7 +283,7 @@
                 return str;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "fontWeight",
@@ -297,7 +297,7 @@
                 return str;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "lineHeight",
@@ -331,7 +331,7 @@
                         element.styleAttrs[imscStyles.byName.fontSize.qname],
                         doc.cellLength.h,
                         doc.pxLength.h
-                        );
+                    );
 
                     if (lh === null) {
 
@@ -355,7 +355,7 @@
             true,
             parseFloat,
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "origin",
@@ -378,7 +378,7 @@
                     var h = imscUtils.parseLength(s[1]);
                     if (!h || !w)
                         return null;
-                    return {'h': h, 'w': w};
+                    return { 'h': h, 'w': w };
                 }
 
             },
@@ -389,7 +389,7 @@
 
                 if (attr === "auto") {
 
-                    h = new imscUtils.ComputedLength(0,0);
+                    h = new imscUtils.ComputedLength(0, 0);
 
                 } else {
 
@@ -400,7 +400,7 @@
                         doc.dimensions.h,
                         null,
                         doc.pxLength.h
-                        );
+                    );
 
                     if (h === null) {
 
@@ -412,7 +412,7 @@
 
                 if (attr === "auto") {
 
-                    w = new imscUtils.ComputedLength(0,0);
+                    w = new imscUtils.ComputedLength(0, 0);
 
                 } else {
 
@@ -423,7 +423,7 @@
                         doc.dimensions.w,
                         null,
                         doc.pxLength.w
-                        );
+                    );
 
                     if (w === null) {
 
@@ -433,7 +433,7 @@
 
                 }
 
-                return {'h': h, 'w': w};
+                return { 'h': h, 'w': w };
             }
         ),
         new StylingAttributeDefinition(
@@ -447,7 +447,7 @@
                 return str;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "padding",
@@ -539,11 +539,11 @@
 
                 var out = [];
 
-                for (var i = 0 ; i < padding.length; i++) {
+                for (var i = 0; i < padding.length; i++) {
 
                     if (padding[i].value === 0) {
 
-                        out[i] = new imscUtils.ComputedLength(0,0);
+                        out[i] = new imscUtils.ComputedLength(0, 0);
 
                     } else {
 
@@ -553,8 +553,8 @@
                             element.styleAttrs[imscStyles.byName.fontSize.qname],
                             i === 0 || i === 2 ? element.styleAttrs[imscStyles.byName.extent.qname].h : element.styleAttrs[imscStyles.byName.extent.qname].w,
                             i === 0 || i === 2 ? doc.cellLength.h : doc.cellLength.w,
-                            i === 0 || i === 2 ? doc.pxLength.h: doc.pxLength.w
-                            );
+                            i === 0 || i === 2 ? doc.pxLength.h : doc.pxLength.w
+                        );
 
                         if (out[i] === null) return null;
 
@@ -580,18 +580,18 @@
             function (doc, parent, element, attr) {
                 var h;
                 var w;
-                
+
                 h = imscUtils.toComputedLength(
                     attr.v.offset.value,
                     attr.v.offset.unit,
                     null,
                     new imscUtils.ComputedLength(
                         - element.styleAttrs[imscStyles.byName.extent.qname].h.rw,
-                        doc.dimensions.h.rh - element.styleAttrs[imscStyles.byName.extent.qname].h.rh 
+                        doc.dimensions.h.rh - element.styleAttrs[imscStyles.byName.extent.qname].h.rh
                     ),
                     null,
                     doc.pxLength.h
-                    );
+                );
 
                 if (h === null) return null;
 
@@ -602,7 +602,7 @@
                         - h.rw - element.styleAttrs[imscStyles.byName.extent.qname].h.rw,
                         doc.dimensions.h.rh - h.rh - element.styleAttrs[imscStyles.byName.extent.qname].h.rh
                     );
-            
+
                 }
 
                 w = imscUtils.toComputedLength(
@@ -615,12 +615,12 @@
                     ),
                     null,
                     doc.pxLength.w
-                    );
+                );
 
                 if (h === null) return null;
 
                 if (attr.h.edge === "right") {
-                    
+
                     w = new imscUtils.ComputedLength(
                         doc.dimensions.w.rw - w.rw - element.styleAttrs[imscStyles.byName.extent.qname].w.rw,
                         - w.rh - element.styleAttrs[imscStyles.byName.extent.qname].w.rh
@@ -628,7 +628,7 @@
 
                 }
 
-                return {'h': h, 'w': w};
+                return { 'h': h, 'w': w };
             }
         ),
         new StylingAttributeDefinition(
@@ -642,7 +642,7 @@
                 return str;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "rubyAlign",
@@ -651,15 +651,15 @@
             true,
             true,
             function (str) {
-                
-                if (! (str === "center" || str === "spaceAround")) {
+
+                if (!(str === "center" || str === "spaceAround")) {
                     return null;
                 }
-                
+
                 return str;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "rubyPosition",
@@ -671,7 +671,7 @@
                 return str;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "rubyReserve",
@@ -733,8 +733,8 @@
                 if (attr[1] === null) {
 
                     fs = new imscUtils.ComputedLength(
-                            element.styleAttrs[imscStyles.byName.fontSize.qname].rw * 0.5,
-                            element.styleAttrs[imscStyles.byName.fontSize.qname].rh * 0.5
+                        element.styleAttrs[imscStyles.byName.fontSize.qname].rw * 0.5,
+                        element.styleAttrs[imscStyles.byName.fontSize.qname].rh * 0.5
                     );
 
                 } else {
@@ -745,8 +745,8 @@
                         element.styleAttrs[imscStyles.byName.fontSize.qname],
                         doc.cellLength.h,
                         doc.pxLength.h
-                        );
-                
+                    );
+
                 }
 
                 if (fs === null) return null;
@@ -765,7 +765,7 @@
                 return str;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "textAlign",
@@ -810,7 +810,7 @@
                 return null;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "textDecoration",
@@ -822,7 +822,7 @@
                 return str.split(" ");
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "textEmphasis",
@@ -833,7 +833,7 @@
             function (str) {
                 var e = str.split(" ");
 
-                var rslt = {style: null, symbol: null, color: null, position: null};
+                var rslt = { style: null, symbol: null, color: null, position: null };
 
                 for (var i = 0; i < e.length; i++) {
 
@@ -887,7 +887,7 @@
                 return rslt;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "textOutline",
@@ -962,7 +962,7 @@
                     element.styleAttrs[imscStyles.byName.fontSize.qname],
                     doc.cellLength.h,
                     doc.pxLength.h
-                    );
+                );
 
                 if (rslt.thickness === null)
                     return null;
@@ -1001,7 +1001,7 @@
                         element.styleAttrs[imscStyles.byName.fontSize.qname],
                         null,
                         doc.pxLength.w
-                        );
+                    );
 
                     if (shadow.x_off === null)
                         return null;
@@ -1013,7 +1013,7 @@
                         element.styleAttrs[imscStyles.byName.fontSize.qname],
                         null,
                         doc.pxLength.h
-                        );
+                    );
 
                     if (shadow.y_off === null)
                         return null;
@@ -1031,7 +1031,7 @@
                             element.styleAttrs[imscStyles.byName.fontSize.qname],
                             null,
                             doc.pxLength.h
-                            );
+                        );
 
                         if (shadow.b_radius === null)
                             return null;
@@ -1066,7 +1066,7 @@
                 return str;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "visibility",
@@ -1078,7 +1078,7 @@
                 return str;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "wrapOption",
@@ -1090,7 +1090,7 @@
                 return str;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "writingMode",
@@ -1102,7 +1102,7 @@
                 return str;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_tts,
             "zIndex",
@@ -1131,7 +1131,7 @@
                 return rslt;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_ebutts,
             "linePadding",
@@ -1157,7 +1157,7 @@
                 return str;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_smpte,
             "backgroundImage",
@@ -1169,7 +1169,7 @@
                 return str;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_itts,
             "forcedDisplay",
@@ -1181,7 +1181,7 @@
                 return str === 'true' ? true : false;
             },
             null
-            ),
+        ),
         new StylingAttributeDefinition(
             imscNames.ns_itts,
             "fillLineGap",
@@ -1193,7 +1193,7 @@
                 return str === 'true' ? true : false;
             },
             null
-            )
+        )
     ];
 
     /* TODO: allow null parse function */
@@ -1212,5 +1212,5 @@
 
 
 })(typeof exports === 'undefined' ? this.imscStyles = {} : exports,
-    typeof imscNames === 'undefined' ? require("./names") : imscNames,
-    typeof imscUtils === 'undefined' ? require("./utils") : imscUtils);
+    typeof imscNames === 'undefined' ? require("../names") : imscNames,
+    typeof imscUtils === 'undefined' ? require("../utils/utils") : imscUtils);

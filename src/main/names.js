@@ -39,7 +39,7 @@
     imscNames.ns_ittp = "http://www.w3.org/ns/ttml/profile/imsc1#parameter";
     imscNames.ns_smpte = "http://www.smpte-ra.org/schemas/2052-1/2010/smpte-tt";
     imscNames.ns_ebutts = "urn:ebu:tt:style";
-    
+
 })(typeof exports === 'undefined' ? this.imscNames = {} : exports);
 
 

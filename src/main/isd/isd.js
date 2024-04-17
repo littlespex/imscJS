@@ -66,8 +66,7 @@
         /* gather any regions that might have showBackground="always" and show a background */
         var initialShowBackground = tt.head.styling.initials[imscStyles.byName.showBackground.qname];
         var initialbackgroundColor = tt.head.styling.initials[imscStyles.byName.backgroundColor.qname];
-        for (var layout_child in tt.head.layout.regions)
-        {
+        for (var layout_child in tt.head.layout.regions) {
             if (tt.head.layout.regions.hasOwnProperty(layout_child)) {
                 var region = tt.head.layout.regions[layout_child];
                 var showBackground = region.styleAttrs[imscStyles.byName.showBackground.qname] || initialShowBackground;
@@ -76,7 +75,7 @@
                     (showBackground === 'always' || showBackground === undefined) &&
                     backgroundColor !== undefined &&
                     !(offset < region.begin || offset >= region.end)
-                    );
+                );
             }
         }
 
@@ -88,9 +87,9 @@
 
         function filter(offset, element) {
             function offsetFilter(element) {
-                return !(offset < element.begin || offset >= element.end);    
-            }    
-        
+                return !(offset < element.begin || offset >= element.end);
+            }
+
             if (element.contents) {
                 var clone = {};
                 for (var prop in element) {
@@ -105,7 +104,7 @@
                     if (filteredElement.regionID) {
                         activeRegions[filteredElement.regionID] = true;
                     }
-        
+
                     if (filteredElement !== null) {
                         clone.contents.push(filteredElement);
                     }
@@ -127,7 +126,7 @@
             activeRegions[""] = true;
         }
 
-        /* process regions */      
+        /* process regions */
         for (var regionID in activeRegions) {
             if (activeRegions[regionID]) {
                 /* post-order traversal of the body tree per [construct intermediate document] */
@@ -187,8 +186,8 @@
                 (!('contents' in elem)) ||
                 ('contents' in elem && elem.contents.length === 0) ||
                 associated_region_id !== ''
-                )
             )
+        )
             return null;
 
         /* create an ISD element, including applying specified styles */
@@ -217,7 +216,7 @@
 
         for (var qname in isd_element.styleAttrs) {
 
-            if (! isd_element.styleAttrs.hasOwnProperty(qname)) continue;
+            if (!isd_element.styleAttrs.hasOwnProperty(qname)) continue;
 
             spec_attr[qname] = true;
 
@@ -305,9 +304,9 @@
                     !(sa.qname in isd_element.styleAttrs) &&
                     isd_element.kind === 'span' &&
                     isd_element.styleAttrs[imscStyles.byName.ruby.qname] === "textContainer") {
-                    
+
                     /* special inheritance rule for ruby text container font size */
-                    
+
                     var ruby_fs = parent.styleAttrs[imscStyles.byName.fontSize.qname];
 
                     isd_element.styleAttrs[sa.qname] = new imscUtils.ComputedLength(
@@ -318,22 +317,22 @@
                     !(sa.qname in isd_element.styleAttrs) &&
                     isd_element.kind === 'span' &&
                     isd_element.styleAttrs[imscStyles.byName.ruby.qname] === "text") {
-                    
+
                     /* special inheritance rule for ruby text font size */
-                    
+
                     var parent_fs = parent.styleAttrs[imscStyles.byName.fontSize.qname];
-                    
+
                     if (parent.styleAttrs[imscStyles.byName.ruby.qname] === "textContainer") {
-                        
+
                         isd_element.styleAttrs[sa.qname] = parent_fs;
-                        
+
                     } else {
-                        
+
                         isd_element.styleAttrs[sa.qname] = new imscUtils.ComputedLength(
                             0.5 * parent_fs.rw,
                             0.5 * parent_fs.rh);
                     }
-                    
+
                 } else if (sa.inherit &&
                     (sa.qname in parent.styleAttrs) &&
                     !(sa.qname in isd_element.styleAttrs)) {
@@ -349,7 +348,7 @@
         /* initial value styling */
 
         for (var k = 0; k < imscStyles.all.length; k++) {
-            
+
             var ivs = imscStyles.all[k];
 
             /* skip if value is already specified */
@@ -367,9 +366,9 @@
             if (ivs.qname === imscStyles.byName.origin.qname &&
                 imscStyles.byName.position.qname in isd_element.styleAttrs)
                 continue;
-            
+
             /* determine initial value */
-            
+
             var iv = doc.head.styling.initials[ivs.qname] || ivs.initial;
 
             if (iv === null) {
@@ -406,7 +405,7 @@
         /* TODO: get rid of spec_attr */
 
         for (var z = 0; z < imscStyles.all.length; z++) {
-            
+
             var cs = imscStyles.all[z];
 
             if (!(cs.qname in spec_attr)) continue;
@@ -420,12 +419,12 @@
                     isd_element,
                     isd_element.styleAttrs[cs.qname],
                     context
-                    );
+                );
 
                 if (cstyle !== null) {
 
                     isd_element.styleAttrs[cs.qname] = cstyle;
-                    
+
                 } else {
                     /* if the style cannot be computed, replace it by its initial value */
 
@@ -510,19 +509,19 @@
 
                 var rsp = isd_element.styleAttrs[imscStyles.byName.ruby.qname];
 
-                na = ( rsp === 'container' || rsp === 'textContainer' || rsp === 'baseContainer' ) && 
+                na = (rsp === 'container' || rsp === 'textContainer' || rsp === 'baseContainer') &&
                     _rcs_na_styles.indexOf(qnameb) !== -1;
 
-                if (! na) {
+                if (!na) {
 
                     na = rsp !== 'container' &&
                         qnameb === imscStyles.byName.rubyAlign.qname;
 
                 }
 
-                if (! na) {
+                if (!na) {
 
-                    na =  (! (rsp === 'textContainer' || rsp === 'text')) &&
+                    na = (!(rsp === 'textContainer' || rsp === 'text')) &&
                         qnameb === imscStyles.byName.rubyPosition.qname;
 
                 }
@@ -530,12 +529,12 @@
             }
 
             /* normal applicability */
-            
-            if (! na) {
+
+            if (!na) {
 
                 var da = imscStyles.byQName[qnameb];
 
-                if ("applies" in da){
+                if ("applies" in da) {
 
                     na = da.applies.indexOf(isd_element.kind) === -1;
 
@@ -556,7 +555,7 @@
 
         if (isd_element.kind === 'p' ||
             (isd_element.kind === 'span' && (ruby === "textContainer" || ruby === "text"))
-            ) {
+        ) {
 
             var elist = [];
 
@@ -662,7 +661,7 @@
 
     function constructSpanList(element, elist) {
 
-        if (! ("contents" in element)) {
+        if (!("contents" in element)) {
             return;
         }
 
@@ -674,13 +673,13 @@
             if (child.kind === 'span' && (ruby === "textContainer" || ruby === "text")) {
 
                 /* skip ruby text and text containers, which are handled on their own */
-            
+
                 continue;
 
             } else if ('contents' in child) {
-    
+
                 constructSpanList(child, elist);
-    
+
             } else if ((child.kind === 'span' && child.text.length !== 0) || child.kind === 'br') {
 
                 /* skip empty spans */
@@ -701,7 +700,7 @@
 
         } else if ('text' in element) {
 
-            return  element.text.length === 0;
+            return element.text.length === 0;
 
         } else if ('contents' in element) {
 
@@ -747,24 +746,24 @@
 
         for (var sname in ttelem.styleAttrs) {
 
-            if (! ttelem.styleAttrs.hasOwnProperty(sname)) continue;
+            if (!ttelem.styleAttrs.hasOwnProperty(sname)) continue;
 
             this.styleAttrs[sname] =
                 ttelem.styleAttrs[sname];
         }
-        
+
         /* copy src and type if image */
-        
+
         if ('src' in ttelem) {
-            
+
             this.src = ttelem.src;
-            
+
         }
-        
-         if ('type' in ttelem) {
-            
+
+        if ('type' in ttelem) {
+
             this.type = ttelem.type;
-            
+
         }
 
         /* TODO: clean this! 
@@ -823,7 +822,7 @@
 
 
 })(typeof exports === 'undefined' ? this.imscISD = {} : exports,
-    typeof imscNames === 'undefined' ? require("./names") : imscNames,
-    typeof imscStyles === 'undefined' ? require("./styles") : imscStyles,
-    typeof imscUtils === 'undefined' ? require("./utils") : imscUtils
-    );
+    typeof imscNames === 'undefined' ? require("../names") : imscNames,
+    typeof imscStyles === 'undefined' ? require("../styles/styles") : imscStyles,
+    typeof imscUtils === 'undefined' ? require("../utils/utils") : imscUtils
+);

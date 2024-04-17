@@ -74,7 +74,7 @@
      */
 
     imscDoc.fromXML = function (xmlstring, errorHandler, metadataHandler) {
-        var p = sax.parser(true, {xmlns: true});
+        var p = sax.parser(true, { xmlns: true });
         var estack = [];
         var xmllangstack = [];
         var xmlspacestack = [];
@@ -83,7 +83,7 @@
 
         p.onclosetag = function (node) {
 
-            
+
             if (estack[0] instanceof Region) {
 
                 /* merge referenced styles */
@@ -100,7 +100,7 @@
 
                 for (var sid in estack[0].styles) {
 
-                    if (! estack[0].styles.hasOwnProperty(sid)) continue;
+                    if (!estack[0].styles.hasOwnProperty(sid)) continue;
 
                     mergeChainedStyles(estack[0], estack[0].styles[sid], errorHandler);
 
@@ -119,7 +119,7 @@
                     for (c = 1; c < estack[0].contents.length; c++) {
 
                         if (estack[0].contents[c] instanceof AnonymousSpan &&
-                                cs[cs.length - 1] instanceof AnonymousSpan) {
+                            cs[cs.length - 1] instanceof AnonymousSpan) {
 
                             cs[cs.length - 1].text += estack[0].contents[c].text;
 
@@ -138,8 +138,8 @@
                 // remove redundant nested anonymous spans (9.3.3(1)(c))
 
                 if (estack[0] instanceof Span &&
-                        estack[0].contents.length === 1 &&
-                        estack[0].contents[0] instanceof AnonymousSpan) {
+                    estack[0].contents.length === 1 &&
+                    estack[0].contents[0] instanceof AnonymousSpan) {
 
                     estack[0].text = estack[0].contents[0].text;
                     delete estack[0].contents;
@@ -149,15 +149,15 @@
             } else if (estack[0] instanceof ForeignElement) {
 
                 if (estack[0].node.uri === imscNames.ns_tt &&
-                        estack[0].node.local === 'metadata') {
+                    estack[0].node.local === 'metadata') {
 
                     /* leave the metadata element */
 
                     metadata_depth--;
 
                 } else if (metadata_depth > 0 &&
-                        metadataHandler &&
-                        'onCloseTag' in metadataHandler) {
+                    metadataHandler &&
+                    'onCloseTag' in metadataHandler) {
 
                     /* end of child of metadata element */
 
@@ -213,9 +213,9 @@
                 estack[0].contents.push(s);
 
             } else if (estack[0] instanceof ForeignElement &&
-                    metadata_depth > 0 &&
-                    metadataHandler &&
-                    'onText' in metadataHandler) {
+                metadata_depth > 0 &&
+                metadataHandler &&
+                'onText' in metadataHandler) {
 
                 /* text node within a child of metadata element */
 
@@ -353,7 +353,7 @@
 
                     }
 
-                }  else if (node.local === 'initial') {
+                } else if (node.local === 'initial') {
 
                     var ini;
 
@@ -362,15 +362,15 @@
                         ini = new Initial();
 
                         ini.initFromNode(node, errorHandler);
-                        
+
                         for (var qn in ini.styleAttrs) {
 
-                            if (! ini.styleAttrs.hasOwnProperty(qn)) continue;
-                            
+                            if (!ini.styleAttrs.hasOwnProperty(qn)) continue;
+
                             doc.head.styling.initials[qn] = ini.styleAttrs[qn];
-                            
+
                         }
-                        
+
                         estack.unshift(ini);
 
                     } else {
@@ -444,14 +444,14 @@
                     var d = new Div();
 
                     d.initFromNode(doc, estack[0], node, xmllangstack[0], errorHandler);
-                    
+
                     /* transform smpte:backgroundImage to TTML2 image element */
-                    
+
                     var bi = d.styleAttrs[imscStyles.byName.backgroundImage.qname];
-                    
+
                     if (bi) {
                         d.contents.push(new Image(bi));
-                        delete d.styleAttrs[imscStyles.byName.backgroundImage.qname];                  
+                        delete d.styleAttrs[imscStyles.byName.backgroundImage.qname];
                     }
 
                     estack[0].contents.push(d);
@@ -467,9 +467,9 @@
                     }
 
                     var img = new Image();
-                    
+
                     img.initFromNode(doc, estack[0], node, xmllangstack[0], errorHandler);
-                    
+
                     estack[0].contents.push(img);
 
                     estack.unshift(img);
@@ -525,11 +525,11 @@
                 } else if (node.local === 'set') {
 
                     if (!(estack[0] instanceof Span ||
-                            estack[0] instanceof P ||
-                            estack[0] instanceof Div ||
-                            estack[0] instanceof Body ||
-                            estack[0] instanceof Region ||
-                            estack[0] instanceof Br)) {
+                        estack[0] instanceof P ||
+                        estack[0] instanceof Div ||
+                        estack[0] instanceof Body ||
+                        estack[0] instanceof Region ||
+                        estack[0] instanceof Br)) {
 
                         reportFatal(errorHandler, "Parent of <set> element is not a content element or a region at " + this.line + "," + this.column + ")");
 
@@ -563,17 +563,17 @@
             if (estack[0] instanceof ForeignElement) {
 
                 if (node.uri === imscNames.ns_tt &&
-                        node.local === 'metadata') {
+                    node.local === 'metadata') {
 
                     /* enter the metadata element */
 
                     metadata_depth++;
 
                 } else if (
-                        metadata_depth > 0 &&
-                        metadataHandler &&
-                        'onOpenTag' in metadataHandler
-                        ) {
+                    metadata_depth > 0 &&
+                    metadataHandler &&
+                    'onOpenTag' in metadataHandler
+                ) {
 
                     /* start of child of metadata element */
 
@@ -581,11 +581,11 @@
 
                     for (var a in node.attributes) {
                         attrs[node.attributes[a].uri + " " + node.attributes[a].local] =
-                                {
-                                    uri: node.attributes[a].uri,
-                                    local: node.attributes[a].local,
-                                    value: node.attributes[a].value
-                                };
+                        {
+                            uri: node.attributes[a].uri,
+                            local: node.attributes[a].local,
+                            value: node.attributes[a].value
+                        };
                     }
 
                     metadataHandler.onOpenTag(node.uri, node.local, attrs);
@@ -603,7 +603,7 @@
         // all referential styling has been flatten, so delete styles
 
         delete doc.head.styling.styles;
-       
+
         // create default region if no regions specified
 
         var hasRegions = false;
@@ -633,7 +633,7 @@
 
         for (var region_i in doc.head.layout.regions) {
 
-            if (! doc.head.layout.regions.hasOwnProperty(region_i)) continue;
+            if (!doc.head.layout.regions.hasOwnProperty(region_i)) continue;
 
             resolveTiming(doc, doc.head.layout.regions[region_i], null, null);
 
@@ -655,8 +655,8 @@
     };
 
     function cleanRubyContainers(element) {
-        
-        if (! ('contents' in element)) return;
+
+        if (!('contents' in element)) return;
 
         var rubyval = 'styleAttrs' in element ? element.styleAttrs[imscStyles.byName.ruby.qname] : null;
 
@@ -761,7 +761,7 @@
             }
 
         } else if ("contents" in element) {
- 
+
             for (var content_i = 0; content_i < element.contents.length; content_i++) {
 
                 resolveTiming(doc, element.contents[content_i], s, element);
@@ -825,11 +825,11 @@
         /* compute cell resolution */
 
         var cr = extractCellResolution(node, errorHandler);
-        
+
         this.cellLength = {
-                'h': new imscUtils.ComputedLength(0, 1/cr.h),
-                'w': new imscUtils.ComputedLength(1/cr.w, 0)
-            };
+            'h': new imscUtils.ComputedLength(0, 1 / cr.h),
+            'w': new imscUtils.ComputedLength(1 / cr.w, 0)
+        };
 
         /* extract frame rate and tick rate */
 
@@ -875,14 +875,14 @@
                 'w': new imscUtils.ComputedLength(1 / e.w.value, 0)
             };
         }
-        
+
         /** set root container dimensions to (1, 1) arbitrarily
           * the root container is mapped to actual dimensions at rendering
         **/
-        
+
         this.dimensions = {
-                'h': new imscUtils.ComputedLength(0, 1),
-                'w': new imscUtils.ComputedLength(1, 0)
+            'h': new imscUtils.ComputedLength(0, 1),
+            'w': new imscUtils.ComputedLength(1, 0)
 
         };
 
@@ -977,7 +977,7 @@
         this.styleAttrs = elementGetStyles(node, errorHandler);
         this.styleRefs = elementGetStyleRefs(node);
     };
-    
+
     /*
      * Represents a TTML initial element
      */
@@ -987,22 +987,22 @@
     }
 
     Initial.prototype.initFromNode = function (node, errorHandler) {
-        
+
         this.styleAttrs = {};
-        
+
         for (var i in node.attributes) {
 
             if (node.attributes[i].uri === imscNames.ns_itts ||
                 node.attributes[i].uri === imscNames.ns_ebutts ||
                 node.attributes[i].uri === imscNames.ns_tts) {
-                
+
                 var qname = node.attributes[i].uri + " " + node.attributes[i].local;
-                
+
                 this.styleAttrs[qname] = node.attributes[i].value;
 
             }
         }
-        
+
     };
 
     /*
@@ -1013,7 +1013,7 @@
     function Layout() {
         this.regions = {};
     }
-    
+
     /*
      * Represents a TTML image element
      */
@@ -1026,17 +1026,17 @@
 
     Image.prototype.initFromNode = function (doc, parent, node, xmllang, errorHandler) {
         this.src = 'src' in node.attributes ? node.attributes.src.value : null;
-        
-        if (! this.src) {
+
+        if (!this.src) {
             reportError(errorHandler, "Invalid image@src attribute");
         }
-        
+
         this.type = 'type' in node.attributes ? node.attributes.type.value : null;
-        
-        if (! this.type) {
+
+        if (!this.type) {
             reportError(errorHandler, "Invalid image@type attribute");
         }
-        
+
         StyledElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
         TimedElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
         AnimatedElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
@@ -1281,7 +1281,7 @@
 
         for (var qname in styles) {
 
-            if (! styles.hasOwnProperty(qname)) continue;
+            if (!styles.hasOwnProperty(qname)) continue;
 
             if (this.qname) {
 
@@ -1384,7 +1384,7 @@
         for (var i in node.attributes) {
 
             if (node.attributes[i].uri === ns &&
-                    node.attributes[i].local === name) {
+                node.attributes[i].local === name) {
 
                 return node.attributes[i].value;
             }
@@ -1398,9 +1398,9 @@
         var ar = findAttribute(node, imscNames.ns_ittp, "aspectRatio");
 
         if (ar === null) {
-            
+
             ar = findAttribute(node, imscNames.ns_ttp, "displayAspectRatio");
-            
+
         }
 
         var rslt = null;
@@ -1470,7 +1470,7 @@
 
         }
 
-        return {'w': w, 'h': h};
+        return { 'w': w, 'h': h };
 
     }
 
@@ -1563,7 +1563,7 @@
 
         }
 
-        return {effectiveFrameRate: efps, tickRate: tr};
+        return { effectiveFrameRate: efps, tickRate: tr };
 
     }
 
@@ -1594,7 +1594,7 @@
             return null;
         }
 
-        return {'h': h, 'w': w};
+        return { 'h': h, 'w': w };
 
     }
 
@@ -1643,8 +1643,8 @@
         } else if ((m = CLOCK_TIME_FRACTION_RE.exec(str)) !== null) {
 
             r = parseInt(m[1]) * 3600 +
-                    parseInt(m[2]) * 60 +
-                    parseFloat(m[3]);
+                parseInt(m[2]) * 60 +
+                parseFloat(m[3]);
 
         } else if ((m = CLOCK_TIME_FRAMES_RE.exec(str)) !== null) {
 
@@ -1653,9 +1653,9 @@
             if (effectiveFrameRate !== null) {
 
                 r = parseInt(m[1]) * 3600 +
-                        parseInt(m[2]) * 60 +
-                        parseInt(m[3]) +
-                        (m[4] === null ? 0 : parseInt(m[4]) / effectiveFrameRate);
+                    parseInt(m[2]) * 60 +
+                    parseInt(m[3]) +
+                    (m[4] === null ? 0 : parseInt(m[4]) / effectiveFrameRate);
             }
 
         }
@@ -1713,9 +1713,11 @@
 
         }
 
-        return {explicit_begin: explicit_begin,
+        return {
+            explicit_begin: explicit_begin,
             explicit_end: explicit_end,
-            explicit_dur: explicit_dur};
+            explicit_dur: explicit_dur
+        };
 
     }
 
@@ -1761,7 +1763,7 @@
 
         for (var sname in from_styles) {
 
-            if (! from_styles.hasOwnProperty(sname)) continue;
+            if (!from_styles.hasOwnProperty(sname)) continue;
 
             if (sname in into_styles)
                 continue;
@@ -1842,18 +1844,18 @@
 
             } else {
 
-                return {found: true, index: cur};
+                return { found: true, index: cur };
 
             }
 
         }
 
-        return {found: false, index: min};
+        return { found: false, index: min };
     }
 
 
 })(typeof exports === 'undefined' ? this.imscDoc = {} : exports,
-        typeof sax === 'undefined' ? require("sax") : sax,
-        typeof imscNames === 'undefined' ? require("./names") : imscNames,
-        typeof imscStyles === 'undefined' ? require("./styles") : imscStyles,
-        typeof imscUtils === 'undefined' ? require("./utils") : imscUtils);
+    typeof sax === 'undefined' ? require("sax") : sax,
+    typeof imscNames === 'undefined' ? require("../names") : imscNames,
+    typeof imscStyles === 'undefined' ? require("../styles/styles") : imscStyles,
+    typeof imscUtils === 'undefined' ? require("../utils/utils") : imscUtils);

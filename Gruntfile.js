@@ -73,7 +73,7 @@ module.exports = function (grunt) {
 
         jshint: {
             'default': {
-                src: "src/main/js",
+                src: "src/main",
                 options: {
                     "-W032": true
                 }

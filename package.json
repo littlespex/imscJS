@@ -7,7 +7,7 @@
     "bugs": "https://github.com/sandflow/imscJS/issues",
     "repository": "github:sandflow/imscJS",
     "files": [
-        "src/main/js",
+        "src/main",
         "README.txt",
         "dist"
     ],
@@ -24,10 +24,11 @@
         "imsc"
     ],
     "author": "Pierre-Anthony Lemieux <pal@sandflow.com>",
-    "main": "src/main/js/main.js",
+    "main": "src/main/main.js",
     "unpkg": "dist/imsc.min.js",
     "scripts": {
-        "prepublishOnly": "grunt build:release"
+        "prepublishOnly": "grunt build:release",
+        "build": "grunt build"
     },
     "dependencies": {
         "sax": "1.2.1"
