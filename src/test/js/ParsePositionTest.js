@@ -1,13 +1,12 @@
-if (typeof imscUtils === 'undefined')
-    imscUtils = require("../../main/js/utils.js");
+import { parsePosition } from "../../main/js/imscUtils.js";
 
 QUnit.test("ParsePosition",
     function (assert) {
 
         function position(h_edge, h_offval, h_offunit, v_edge, v_offval, v_offunit) {
             return {
-                h: {edge: h_edge, offset: {value: h_offval, unit: h_offunit}},
-                v: {edge: v_edge, offset: {value: v_offval, unit: v_offunit}}
+                h: { edge: h_edge, offset: { value: h_offval, unit: h_offunit } },
+                v: { edge: v_edge, offset: { value: v_offval, unit: v_offunit } }
             };
         }
 
@@ -77,8 +76,8 @@ QUnit.test("ParsePosition",
             ["top 22% center", position("left", 50, "%", "top", 22, "%")],
             ["top 23% left", position("left", 0, "%", "top", 23, "%")],
             ["top 24% right", position("right", 0, "%", "top", 24, "%")],
-            
-             /* four components */
+
+            /* four components */
 
             ["bottom 25% left 75%", position("left", 75, "%", "bottom", 25, "%")],
             ["bottom 25% right 75%", position("right", 75, "%", "bottom", 25, "%")],
@@ -92,10 +91,10 @@ QUnit.test("ParsePosition",
 
         for (var i in tests) {
             assert.deepEqual(
-                imscUtils.parsePosition(tests[i][0]),
+                parsePosition(tests[i][0]),
                 tests[i][1],
                 tests[i][0]
-                );
+            );
         }
     }
 );

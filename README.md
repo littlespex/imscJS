@@ -150,13 +150,13 @@ NOTABLE DIRECTORIES AND FILES
 
 * [package.json](package.json): NPM package definition
 
-* [Gruntfile.js](Gruntfile.js): Grunt build script
+* [Gruntfile.cjs](Gruntfile.cjs): Grunt build script
 
 * [properties.json](properties.json): General project properties
 
 * [LICENSE](LICENSE): License under which imscJS is made available
 
-* [src/main/js](src/main/js): JavaScript modules
+* [src/main](src/main): JavaScript modules
 
 * [src/test](src/test): Test files
 

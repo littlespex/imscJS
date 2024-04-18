@@ -24,24 +24,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @module imscNames
- */
-
-;
-(function (imscNames) { // wrapper for non-node envs
-
-    imscNames.ns_tt = "http://www.w3.org/ns/ttml";
-    imscNames.ns_tts = "http://www.w3.org/ns/ttml#styling";
-    imscNames.ns_ttp = "http://www.w3.org/ns/ttml#parameter";
-    imscNames.ns_xml = "http://www.w3.org/XML/1998/namespace";
-    imscNames.ns_itts = "http://www.w3.org/ns/ttml/profile/imsc1#styling";
-    imscNames.ns_ittp = "http://www.w3.org/ns/ttml/profile/imsc1#parameter";
-    imscNames.ns_smpte = "http://www.smpte-ra.org/schemas/2052-1/2010/smpte-tt";
-    imscNames.ns_ebutts = "urn:ebu:tt:style";
-
-})(typeof exports === 'undefined' ? this.imscNames = {} : exports);
-
-
-
-
+export const imscNames = {
+    ns_tt: "http://www.w3.org/ns/ttml",
+    ns_tts: "http://www.w3.org/ns/ttml#styling",
+    ns_ttp: "http://www.w3.org/ns/ttml#parameter",
+    ns_xml: "http://www.w3.org/XML/1998/namespace",
+    ns_itts: "http://www.w3.org/ns/ttml/profile/imsc1#styling",
+    ns_ittp: "http://www.w3.org/ns/ttml/profile/imsc1#parameter",
+    ns_smpte: "http://www.smpte-ra.org/schemas/2052-1/2010/smpte-tt",
+    ns_ebutts: "urn:ebu:tt:style",
+};

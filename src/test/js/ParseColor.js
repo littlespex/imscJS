@@ -1,5 +1,4 @@
-if (typeof imscUtils === 'undefined')
-    imscUtils = require("../../main/js/utils.js");
+import { parseColor } from "../../main/js/imscUtils.js";
 
 QUnit.test("ParseColor",
     function (assert) {
@@ -38,10 +37,10 @@ QUnit.test("ParseColor",
 
         for (var i in tests) {
             assert.deepEqual(
-                imscUtils.parseColor(tests[i][0]),
+                parseColor(tests[i][0]),
                 tests[i][1],
                 tests[i][0]
-                );
+            );
         }
     }
 );

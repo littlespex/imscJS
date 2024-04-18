@@ -6,9 +6,9 @@
     "homepage": "https://github.com/sandflow/imscJS",
     "bugs": "https://github.com/sandflow/imscJS/issues",
     "repository": "github:sandflow/imscJS",
+    "type": "module",
     "files": [
         "src/main",
-        "README.txt",
         "dist"
     ],
     "keywords": [
@@ -28,13 +28,16 @@
     "unpkg": "dist/imsc.min.js",
     "scripts": {
         "prepublishOnly": "grunt build:release",
-        "build": "grunt build"
+        "build": "grunt build",
+        "dev": "npx http-server build/public_html"
     },
     "dependencies": {
         "sax": "1.2.1"
     },
     "devDependencies": {
-        "browserify": "^16.2.3",
+        "@rollup/plugin-commonjs": "^25.0.7",
+        "@rollup/plugin-node-resolve": "^15.2.3",
+        "@rollup/plugin-terser": "^0.4.4",
         "filesaver.js-npm": "latest",
         "google-closure-compiler": "^20180910.1.0",
         "grunt": "latest",
@@ -47,6 +50,8 @@
         "jszip": "latest",
         "node-qunit": "^1.0.0",
         "qunit-assert-close": "latest",
-        "qunitjs": "latest"
+        "qunitjs": "latest",
+        "rollup": "^4.14.3",
+        "rollup-plugin-polyfill-node": "^0.13.0"
     }
 }

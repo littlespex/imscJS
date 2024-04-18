@@ -49,44 +49,20 @@ module.exports = function (grunt) {
             }
         },
 
-        browserify: [
-            {
-                src: "<%= pkg.main %>",
-                dest: "<%= properties.umdBuildDir %>/<%= properties.umdDebugName %>",
-                options: {
-                    exclude: ["sax"],
-                    browserifyOptions: {
-                        standalone: 'imsc'
-                    }
-                }
-            },
-            {
-                src: "<%= pkg.main %>",
-                dest: "<%= properties.umdBuildDir %>/<%= properties.umdAllDebugName %>",
-                options: {
-                    browserifyOptions: {
-                        standalone: 'imsc'
-                    }
-                }
-            }
-        ],
-
         jshint: {
             'default': {
                 src: "src/main",
                 options: {
-                    "-W032": true
+                    "-W032": true,
+                    esversion: 6
                 }
             }
         },
 
-        exec: {
-            minify:
-            {
-                cmd: [
-                    "npx google-closure-compiler --js=<%= properties.umdBuildDir %>/<%= properties.umdAllDebugName %> --js_output_file=<%= properties.umdBuildDir %>/<%= properties.umdAllMinName %>",
-                    "npx google-closure-compiler --js=<%= properties.umdBuildDir %>/<%= properties.umdDebugName %> --js_output_file=<%= properties.umdBuildDir %>/<%= properties.umdMinName %>"
-                ].join("&&")
+        exec:
+        {
+            rollup: {
+                cmd: "rollup -c rollup.config.js",
             }
         }
     }
@@ -97,17 +73,15 @@ module.exports = function (grunt) {
 
     grunt.loadNpmTasks('grunt-npmcopy');
 
-    grunt.loadNpmTasks('grunt-browserify');
-
     grunt.loadNpmTasks('grunt-contrib-jshint');
 
     grunt.loadNpmTasks('grunt-sync');
 
     grunt.loadNpmTasks('grunt-exec');
 
-    grunt.registerTask('build:release', ['jshint', 'browserify', 'exec:minify', 'sync:all', 'sync:release', 'npmcopy']);
+    grunt.registerTask('build:release', ['jshint', 'exec:rollup', 'sync:all', 'sync:release', 'npmcopy']);
 
-    grunt.registerTask('build:debug', ['jshint', 'browserify', 'exec:minify', 'sync:all', 'sync:debug', 'npmcopy']);
+    grunt.registerTask('build:debug', ['jshint', 'exec:rollup', 'sync:all', 'sync:debug', 'npmcopy']);
 
     grunt.registerTask('build', ['build:debug']);
 
