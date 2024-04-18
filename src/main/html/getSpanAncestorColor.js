@@ -24,7 +24,30 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+export function getSpanAncestorColor(element, ancestorList, isAncestor) {
 
+  if (element.style.backgroundColor) {
+
+    if (isAncestor && !ancestorList.includes(element)) {
+
+      ancestorList.push(element);
+
+    }
+    return element.style.backgroundColor;
+
+  } else {
+
+    if (element.parentElement.nodeName === "SPAN" ||
+      element.parentElement.nodeName === "RUBY" ||
+      element.parentElement.nodeName === "RBC" ||
+      element.parentElement.nodeName === "RTC" ||
+      element.parentElement.nodeName === "RT") {
+
+      return getSpanAncestorColor(element.parentElement, ancestorList, true);
+
+    }
+
+  }
+
+  return undefined;
+}

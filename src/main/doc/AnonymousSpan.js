@@ -24,7 +24,23 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { ContentElement } from './ContentElement.js';
+import { TimedElement } from './TimedElement.js';
 
+/*
+ * Represents a TTML anonymous span element
+ */
+
+export class AnonymousSpan extends ContentElement {
+  constructor() {
+    super('span');
+  }
+
+  initFromText(doc, parent, text, xmllang, xmlspace, errorHandler) {
+    TimedElement.prototype.initFromNode.call(this, doc, parent, null, errorHandler);
+
+    this.text = text;
+    this.space = xmlspace;
+    this.lang = xmllang;
+  }
+}

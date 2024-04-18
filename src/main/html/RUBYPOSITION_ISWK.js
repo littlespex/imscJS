@@ -24,7 +24,4 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
-
+export const RUBYPOSITION_ISWK = "webkitRubyPosition" in window.getComputedStyle(document.documentElement);

@@ -24,7 +24,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { elementGetTimeContainer } from './elementGetTimeContainer.js';
+import { processTiming } from './processTiming.js';
 
+export class TimedElement {
+  constructor(explicit_begin, explicit_end, explicit_dur) {
+    this.explicit_begin = explicit_begin;
+    this.explicit_end = explicit_end;
+    this.explicit_dur = explicit_dur;
+  }
+
+  initFromNode(doc, parent, node, errorHandler) {
+    var t = processTiming(doc, parent, node, errorHandler);
+    this.explicit_begin = t.explicit_begin;
+    this.explicit_end = t.explicit_end;
+    this.explicit_dur = t.explicit_dur;
+
+    this.timeContainer = elementGetTimeContainer(node, errorHandler);
+  }
+}

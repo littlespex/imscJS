@@ -24,7 +24,33 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { imscNames } from '../imscNames.js';
 
+/*
+ * Represents a TTML initial element
+ */
+
+export class Initial {
+  constructor() {
+    this.styleAttrs = null;
+  }
+
+  initFromNode(node, errorHandler) {
+
+    this.styleAttrs = {};
+
+    for (var i in node.attributes) {
+
+      if (node.attributes[i].uri === imscNames.ns_itts ||
+        node.attributes[i].uri === imscNames.ns_ebutts ||
+        node.attributes[i].uri === imscNames.ns_tts) {
+
+        var qname = node.attributes[i].uri + " " + node.attributes[i].local;
+
+        this.styleAttrs[qname] = node.attributes[i].value;
+
+      }
+    }
+
+  }
+}

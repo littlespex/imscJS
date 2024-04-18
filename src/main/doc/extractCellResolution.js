@@ -24,7 +24,41 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { reportWarning } from '../error/reportWarning.js';
+import { imscNames } from '../imscNames.js';
+import { findAttribute } from './findAttribute.js';
 
+/*
+ * Returns the cellResolution attribute from a node
+ */
+export function extractCellResolution(node, errorHandler) {
+
+  var cr = findAttribute(node, imscNames.ns_ttp, "cellResolution");
+
+  // initial value
+  var h = 15;
+  var w = 32;
+
+  if (cr !== null) {
+
+    var CELL_RESOLUTION_RE = /(\d+) (\d+)/;
+
+    var m = CELL_RESOLUTION_RE.exec(cr);
+
+    if (m !== null) {
+
+      w = parseInt(m[1]);
+
+      h = parseInt(m[2]);
+
+    } else {
+
+      reportWarning(errorHandler, "Malformed cellResolution value (using initial value instead)");
+
+    }
+
+  }
+
+  return { 'w': w, 'h': h };
+
+}

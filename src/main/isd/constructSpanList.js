@@ -24,7 +24,35 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { byName } from '../styles/byName.js';
 
+export function constructSpanList(element, elist) {
+
+  if (!("contents" in element)) {
+    return;
+  }
+
+  for (var i = 0; i < element.contents.length; i++) {
+
+    var child = element.contents[i];
+    var ruby = child.styleAttrs[byName.ruby.qname];
+
+    if (child.kind === 'span' && (ruby === "textContainer" || ruby === "text")) {
+
+      /* skip ruby text and text containers, which are handled on their own */
+      continue;
+
+    } else if ('contents' in child) {
+
+      constructSpanList(child, elist);
+
+    } else if ((child.kind === 'span' && child.text.length !== 0) || child.kind === 'br') {
+
+      /* skip empty spans */
+      elist.push(child);
+
+    }
+
+  }
+
+}

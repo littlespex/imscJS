@@ -24,7 +24,38 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { reportError } from '../error/reportError.js';
 
+
+export function spanMerge(first, second, context) {
+
+  if (first.tagName === "SPAN" &&
+    second.tagName === "SPAN" &&
+    first._isd_element === second._isd_element) {
+    if (!first._isd_element) {
+      /* we should never get here since every span should have a source ISD element */
+      reportError(context.errorHandler, "Internal error: HTML span is not linked to a source element; cannot merge spans.");
+      return false;
+    }
+
+    first.textContent += second.textContent;
+
+    for (var i = 0; i < second.style.length; i++) {
+
+      var styleName = second.style[i];
+      if (styleName.indexOf("border") >= 0 ||
+        styleName.indexOf("padding") >= 0 ||
+        styleName.indexOf("margin") >= 0) {
+
+        first.style[styleName] = second.style[styleName];
+
+      }
+    }
+
+    second.parentElement.removeChild(second);
+
+    return true;
+  }
+
+  return false;
+}

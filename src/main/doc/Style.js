@@ -24,7 +24,24 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { elementGetStyleRefs } from './elementGetStyleRefs.js';
+import { elementGetStyles } from './elementGetStyles.js';
+import { elementGetXMLID } from './elementGetXMLID.js';
 
+/*
+ * Represents a TTML Style element
+ */
+
+export class Style {
+  constructor() {
+    this.id = null;
+    this.styleAttrs = null;
+    this.styleRefs = null;
+  }
+
+  initFromNode(node, errorHandler) {
+    this.id = elementGetXMLID(node);
+    this.styleAttrs = elementGetStyles(node, errorHandler);
+    this.styleRefs = elementGetStyleRefs(node);
+  }
+}

@@ -24,7 +24,23 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { reportError } from '../error/reportError.js';
+import { mergeStylesIfNotPresent } from './mergeStylesIfNotPresent.js';
 
+
+export function mergeReferencedStyles(styling, stylerefs, styleattrs, errorHandler) {
+
+  for (var i = stylerefs.length - 1; i >= 0; i--) {
+
+    var sref = stylerefs[i];
+
+    if (!(sref in styling.styles)) {
+      reportError(errorHandler, "Non-existant style id referenced");
+      continue;
+    }
+
+    mergeStylesIfNotPresent(styling.styles[sref].styleAttrs, styleattrs);
+
+  }
+
+}

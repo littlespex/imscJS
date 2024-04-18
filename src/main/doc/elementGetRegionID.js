@@ -24,7 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
-
+export function elementGetRegionID(node) {
+  return node && 'region' in node.attributes ? node.attributes.region.value : '';
+}

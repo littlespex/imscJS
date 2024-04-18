@@ -24,7 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
-
+export function elementGetXMLID(node) {
+  return node && 'xml:id' in node.attributes ? node.attributes['xml:id'].value || null : null;
+}

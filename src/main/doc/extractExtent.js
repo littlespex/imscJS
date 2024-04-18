@@ -24,7 +24,38 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { reportWarning } from '../error/reportWarning.js';
+import { imscNames } from '../imscNames.js';
+import { parseLength } from '../utils/parseLength.js';
+import { findAttribute } from './findAttribute.js';
 
+export function extractExtent(node, errorHandler) {
+
+  var attr = findAttribute(node, imscNames.ns_tts, "extent");
+
+  if (attr === null)
+    return null;
+
+  var s = attr.split(" ");
+
+  if (s.length !== 2) {
+
+    reportWarning(errorHandler, "Malformed extent (ignoring)");
+
+    return null;
+  }
+
+  var w = parseLength(s[0]);
+
+  var h = parseLength(s[1]);
+
+  if (!h || !w) {
+
+    reportWarning(errorHandler, "Malformed extent values (ignoring)");
+
+    return null;
+  }
+
+  return { 'h': h, 'w': w };
+
+}

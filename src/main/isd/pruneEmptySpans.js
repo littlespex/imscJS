@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -24,7 +24,29 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+export function pruneEmptySpans(element) {
 
+  if (element.kind === 'br') {
+
+    return false;
+
+  } else if ('text' in element) {
+
+    return element.text.length === 0;
+
+  } else if ('contents' in element) {
+
+    var i = element.contents.length;
+
+    while (i--) {
+
+      if (pruneEmptySpans(element.contents[i])) {
+        element.contents.splice(i, 1);
+      }
+
+    }
+
+    return element.contents.length === 0;
+
+  }
+}

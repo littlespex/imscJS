@@ -24,7 +24,58 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { getSpanAncestorColor } from './getSpanAncestorColor.js';
+import { spanMerge } from './spanMerge.js';
 
+
+export function mergeSpans(lineList, context) {
+
+  for (var i = 0; i < lineList.length; i++) {
+
+    var line = lineList[i];
+
+    for (var j = 1; j < line.elements.length;) {
+
+      var previous = line.elements[j - 1];
+      var span = line.elements[j];
+
+      if (spanMerge(previous.node, span.node, context)) {
+
+        //removed from DOM by spanMerge(), remove from the list too.
+        line.elements.splice(j, 1);
+        continue;
+
+      } else {
+
+        j++;
+
+      }
+
+    }
+  }
+
+  // Copy backgroundColor to each span so that fillLineGap will apply padding to elements with the right background
+  var thisNode, ancestorBackgroundColor;
+  var clearTheseBackgrounds = [];
+
+  for (var l = 0; l < lineList.length; l++) {
+
+    for (var el = 0; el < lineList[l].elements.length; el++) {
+
+      thisNode = lineList[l].elements[el].node;
+      ancestorBackgroundColor = getSpanAncestorColor(thisNode, clearTheseBackgrounds, false);
+
+      if (ancestorBackgroundColor) {
+
+        thisNode.style.backgroundColor = ancestorBackgroundColor;
+
+      }
+    }
+  }
+
+  for (var bi = 0; bi < clearTheseBackgrounds.length; bi++) {
+
+    clearTheseBackgrounds[bi].style.backgroundColor = "";
+
+  }
+}

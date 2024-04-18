@@ -23,8 +23,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
-
+export class HTMLStylingMapDefinition {
+  constructor(qName, mapFunc) {
+    this.qname = qName;
+    this.map = mapFunc;
+  }
+}

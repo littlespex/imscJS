@@ -24,7 +24,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
-
+/*
+ * Represents a TTML Styling element
+ */
+export class Styling {
+  constructor() {
+    this.styles = {};
+    this.initials = {};
+  }
+}

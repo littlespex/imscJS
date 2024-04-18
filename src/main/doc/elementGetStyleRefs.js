@@ -24,7 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+export function elementGetStyleRefs(node) {
 
+  return node && 'style' in node.attributes ? node.attributes.style.value.split(" ") : [];
+
+}

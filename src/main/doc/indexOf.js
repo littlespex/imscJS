@@ -24,7 +24,44 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+/* TODO: validate style format at parsing */
 
+/*
+ * Binary search utility function
+ *
+ * @typedef {Object} BinarySearchResult
+ * @property {boolean} found Was an exact match found?
+ * @property {number} index Position of the exact match or insert position
+ *
+ * @returns {BinarySearchResult}
+ */
+export function indexOf(arr, searchval) {
+
+  var min = 0;
+  var max = arr.length - 1;
+  var cur;
+
+  while (min <= max) {
+
+    cur = Math.floor((min + max) / 2);
+
+    var curval = arr[cur];
+
+    if (curval < searchval) {
+
+      min = cur + 1;
+
+    } else if (curval > searchval) {
+
+      max = cur - 1;
+
+    } else {
+
+      return { found: true, index: cur };
+
+    }
+
+  }
+
+  return { found: false, index: min };
+}

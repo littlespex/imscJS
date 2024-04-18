@@ -24,7 +24,39 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { reportError } from '../error/reportError.js';
+import { TimedElement } from './TimedElement.js';
+import { elementGetStyles } from './elementGetStyles.js';
 
+/*
+ * Represents a TTML Set element
+ */
+
+export class Set extends TimedElement {
+  initFromNode(doc, parent, node, errorHandler) {
+
+    super.initFromNode(doc, parent, node, errorHandler);
+
+    var styles = elementGetStyles(node, errorHandler);
+
+    this.qname = null;
+    this.value = null;
+
+    for (var qname in styles) {
+
+      if (!styles.hasOwnProperty(qname)) continue;
+
+      if (this.qname) {
+
+        reportError(errorHandler, "More than one style specified on set");
+        break;
+
+      }
+
+      this.qname = qname;
+      this.value = styles[qname];
+
+    }
+
+  }
+}

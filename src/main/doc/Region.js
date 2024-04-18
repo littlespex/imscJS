@@ -24,7 +24,43 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { AnimatedElement } from './AnimatedElement.js';
+import { IdentifiedElement } from './IdentifiedElement.js';
+import { StyledElement } from './StyledElement.js';
+import { TimedElement } from './TimedElement.js';
+import { elementGetStyleRefs } from './elementGetStyleRefs.js';
+import { elementGetStyles } from './elementGetStyles.js';
 
+/*
+ * Represents a TTML Region element
+ */
+
+export class Region {
+  createDefaultRegion(xmllang) {
+    var r = new Region();
+
+    IdentifiedElement.call(r, '');
+    StyledElement.call(r, {});
+    AnimatedElement.call(r, []);
+    TimedElement.call(r, 0, Number.POSITIVE_INFINITY, null);
+
+    this.lang = xmllang;
+
+    return r;
+  }
+
+  initFromNode(doc, node, xmllang, errorHandler) {
+    IdentifiedElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
+    TimedElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
+    AnimatedElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
+
+    /* add specified styles */
+    this.styleAttrs = elementGetStyles(node, errorHandler);
+
+    /* remember referential styles for merging after nested styling is processed*/
+    this.styleRefs = elementGetStyleRefs(node);
+
+    /* xml:lang */
+    this.lang = xmllang;
+  }
+}

@@ -24,7 +24,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { elementGetRegionID } from './elementGetRegionID.js';
 
+export class LayoutElement {
+  constructor(id) {
+    this.regionID = id;
+  }
+
+  initFromNode(doc, parent, node, errorHandler) {
+    this.regionID = elementGetRegionID(node);
+  }
+}

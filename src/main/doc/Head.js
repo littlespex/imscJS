@@ -24,7 +24,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { Layout } from './Layout.js';
+import { Styling } from './Styling.js';
 
+/*
+ * Represents a TTML Head element
+ */
+
+export class Head {
+  constructor() {
+    this.styling = new Styling();
+    this.layout = new Layout();
+  }
+}

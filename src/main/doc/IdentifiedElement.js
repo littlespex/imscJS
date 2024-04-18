@@ -24,7 +24,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { elementGetXMLID } from './elementGetXMLID.js';
 
+export class IdentifiedElement {
+  constructor(id) {
+    this.id = id;
+  }
+
+  initFromNode(doc, parent, node, errorHandler) {
+    this.id = elementGetXMLID(node);
+  }
+}

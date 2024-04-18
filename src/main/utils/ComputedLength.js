@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -24,7 +24,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+export class ComputedLength {
+  constructor(rw, rh) {
+    this.rw = rw;
+    this.rh = rh;
+  }
 
+  toUsedLength(width, height) {
+    return width * this.rw + height * this.rh;
+  }
+
+  isZero() {
+    return this.rw === 0 && this.rh === 0;
+  }
+}

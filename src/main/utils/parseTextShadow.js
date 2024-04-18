@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -24,7 +24,76 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { parseColor } from "./parseColor.js";
+import { parseLength } from "./parseLength.js";
 
+
+export function parseTextShadow(str) {
+
+  var shadows = str.match(/([^\(,\)]|\([^\)]+\))+/g);
+
+  var r = [];
+
+  for (var i = 0; i < shadows.length; i++) {
+
+    var shadow = shadows[i].split(" ");
+
+    if (shadow.length === 1 && shadow[0] === "none") {
+
+      return "none";
+
+    } else if (shadow.length > 1 && shadow.length < 5) {
+
+      var out_shadow = [null, null, null, null];
+
+      /* x offset */
+      var l = parseLength(shadow.shift());
+
+      if (l === null)
+        return null;
+
+      out_shadow[0] = l;
+
+      /* y offset */
+      l = parseLength(shadow.shift());
+
+      if (l === null)
+        return null;
+
+      out_shadow[1] = l;
+
+      /* is there a third component */
+      if (shadow.length === 0) {
+        r.push(out_shadow);
+        continue;
+      }
+
+      l = parseLength(shadow[0]);
+
+      if (l !== null) {
+
+        out_shadow[2] = l;
+
+        shadow.shift();
+
+      }
+
+      if (shadow.length === 0) {
+        r.push(out_shadow);
+        continue;
+      }
+
+      var c = parseColor(shadow[0]);
+
+      if (c === null)
+        return null;
+
+      out_shadow[3] = c;
+
+      r.push(out_shadow);
+    }
+
+  }
+
+  return r;
+}

@@ -24,7 +24,46 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { TEXTEMPHASISPOSITION_PROP } from './TEXTEMPHASISPOSITION_PROP.js';
 
+
+export function applyTextEmphasisOutside(lineList, context) {
+  /* supports "outside" only */
+
+  for (var i = 0; i < lineList.length; i++) {
+
+    for (var j = 0; j < lineList[i].te.length; j++) {
+
+      /* skip if position already set */
+      if (lineList[i].te[j].style[TEXTEMPHASISPOSITION_PROP] &&
+        lineList[i].te[j].style[TEXTEMPHASISPOSITION_PROP] !== "none")
+        continue;
+
+      var pos;
+
+      if (context.bpd === "tb") {
+
+        pos = (i === 0) ? "left over" : "left under";
+
+
+      } else {
+
+        if (context.bpd === "rl") {
+
+          pos = (i === 0) ? "right under" : "left under";
+
+        } else {
+
+          pos = (i === 0) ? "left under" : "right under";
+
+        }
+
+      }
+
+      lineList[i].te[j].style[TEXTEMPHASISPOSITION_PROP] = pos;
+
+    }
+
+  }
+
+}

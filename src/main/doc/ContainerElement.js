@@ -24,7 +24,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+export class ContainerElement {
+  constructor(contents) {
+    this.contents = contents;
+  }
 
+  initFromNode(doc, parent, node, errorHandler) {
+    this.contents = [];
+  }
+}

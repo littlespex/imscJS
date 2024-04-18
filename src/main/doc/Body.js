@@ -24,7 +24,29 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { AnimatedElement } from './AnimatedElement.js';
+import { ContainerElement } from './ContainerElement.js';
+import { ContentElement } from './ContentElement.js';
+import { LayoutElement } from './LayoutElement.js';
+import { StyledElement } from './StyledElement.js';
+import { TimedElement } from './TimedElement.js';
 
+/*
+ * Represents a TTML body element
+ */
+
+export class Body extends ContentElement {
+  constructor() {
+    super('body');
+  }
+
+  initFromNode(doc, node, xmllang, errorHandler) {
+    StyledElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
+    TimedElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
+    AnimatedElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
+    LayoutElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
+    ContainerElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
+
+    this.lang = xmllang;
+  }
+}

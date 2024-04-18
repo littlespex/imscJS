@@ -24,7 +24,30 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { AnimatedElement } from './AnimatedElement.js';
+import { ContainerElement } from './ContainerElement.js';
+import { ContentElement } from './ContentElement.js';
+import { LayoutElement } from './LayoutElement.js';
+import { StyledElement } from './StyledElement.js';
+import { TimedElement } from './TimedElement.js';
 
+/*
+ * Represents a TTML span element
+ */
+
+export class Span extends ContentElement {
+  constructor() {
+    super('span');
+  }
+
+  initFromNode(doc, parent, node, xmllang, xmlspace, errorHandler) {
+    StyledElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
+    TimedElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
+    AnimatedElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
+    LayoutElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
+    ContainerElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
+
+    this.space = xmlspace;
+    this.lang = xmllang;
+  }
+}

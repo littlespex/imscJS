@@ -24,7 +24,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+export function findAttribute(node, ns, name) {
+  for (var i in node.attributes) {
 
+    if (node.attributes[i].uri === ns &&
+      node.attributes[i].local === name) {
+
+      return node.attributes[i].value;
+    }
+  }
+
+  return null;
+}

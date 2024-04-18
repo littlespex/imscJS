@@ -24,7 +24,48 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { reportError } from '../error/reportError.js';
+import { reportWarning } from '../error/reportWarning.js';
+import { byName } from '../styles/byName.js';
+import { byQName } from '../styles/byQName.js';
 
+
+export function elementGetStyles(node, errorHandler) {
+
+  var s = {};
+
+  if (node !== null) {
+
+    for (var i in node.attributes) {
+
+      var qname = node.attributes[i].uri + " " + node.attributes[i].local;
+
+      var sa = byQName[qname];
+
+      if (sa !== undefined) {
+
+        var val = sa.parse(node.attributes[i].value);
+
+        if (val !== null) {
+
+          s[qname] = val;
+
+          /* TODO: consider refactoring errorHandler into parse and compute routines */
+          if (sa === byName.zIndex) {
+            reportWarning(errorHandler, "zIndex attribute present but not used by IMSC1 since regions do not overlap");
+          }
+
+        } else {
+
+          reportError(errorHandler, "Cannot parse styling attribute " + qname + " --> " + node.attributes[i].value);
+
+        }
+
+      }
+
+    }
+
+  }
+
+  return s;
+}

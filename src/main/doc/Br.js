@@ -24,7 +24,23 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { ContentElement } from './ContentElement.js';
+import { LayoutElement } from './LayoutElement.js';
+import { TimedElement } from './TimedElement.js';
 
+/*
+ * Represents a TTML br element
+ */
+
+export class Br extends ContentElement {
+  constructor() {
+    super('br');
+  }
+
+  initFromNode(doc, parent, node, xmllang, errorHandler) {
+    LayoutElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
+    TimedElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
+
+    this.lang = xmllang;
+  }
+}

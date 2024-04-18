@@ -24,7 +24,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
-
+export class StylingAttributeDefinition {
+  constructor(ns, name, initialValue, appliesTo, isInherit, isAnimatable, parseFunc, computeFunc) {
+    this.name = name;
+    this.ns = ns;
+    this.qname = ns + " " + name;
+    this.inherit = isInherit;
+    this.animatable = isAnimatable;
+    this.initial = initialValue;
+    this.applies = appliesTo;
+    this.parse = parseFunc;
+    this.compute = computeFunc;
+  }
+}

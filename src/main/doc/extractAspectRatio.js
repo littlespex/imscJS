@@ -24,7 +24,50 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { reportError } from '../error/reportError.js';
+import { imscNames } from '../imscNames.js';
+import { findAttribute } from './findAttribute.js';
 
+export function extractAspectRatio(node, errorHandler) {
+
+  var ar = findAttribute(node, imscNames.ns_ittp, "aspectRatio");
+
+  if (ar === null) {
+
+    ar = findAttribute(node, imscNames.ns_ttp, "displayAspectRatio");
+
+  }
+
+  var rslt = null;
+
+  if (ar !== null) {
+
+    var ASPECT_RATIO_RE = /(\d+)\s+(\d+)/;
+
+    var m = ASPECT_RATIO_RE.exec(ar);
+
+    if (m !== null) {
+
+      var w = parseInt(m[1]);
+
+      var h = parseInt(m[2]);
+
+      if (w !== 0 && h !== 0) {
+
+        rslt = w / h;
+
+      } else {
+
+        reportError(errorHandler, "Illegal aspectRatio values (ignoring)");
+      }
+
+    } else {
+
+      reportError(errorHandler, "Malformed aspectRatio attribute (ignoring)");
+    }
+
+  }
+
+  return rslt;
+
+}

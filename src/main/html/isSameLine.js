@@ -24,7 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+export function isSameLine(before1, after1, before2, after2) {
 
+  return ((after1 < after2) && (before1 > before2)) || ((after2 <= after1) && (before2 >= before1));
+
+}

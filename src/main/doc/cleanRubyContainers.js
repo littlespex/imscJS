@@ -24,7 +24,30 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { byName } from '../styles/byName.js';
 
+
+export function cleanRubyContainers(element) {
+
+  if (!('contents' in element)) return;
+
+  var rubyval = 'styleAttrs' in element ? element.styleAttrs[byName.ruby.qname] : null;
+
+  var isrubycontainer = (element.kind === 'span' && (rubyval === "container" || rubyval === "textContainer" || rubyval === "baseContainer"));
+
+  for (var i = element.contents.length - 1; i >= 0; i--) {
+
+    if (isrubycontainer && !('styleAttrs' in element.contents[i] && byName.ruby.qname in element.contents[i].styleAttrs)) {
+
+      /* prune undefined <span> in ruby containers */
+      delete element.contents[i];
+
+    } else {
+
+      cleanRubyContainers(element.contents[i]);
+
+    }
+
+  }
+
+}

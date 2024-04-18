@@ -24,7 +24,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
-
+export class ISD {
+  constructor(tt) {
+    this.contents = [];
+    this.aspectRatio = tt.aspectRatio;
+    this.lang = tt.lang;
+  }
+}

@@ -24,7 +24,50 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { RUBYPOSITION_ISWK } from './RUBYPOSITION_ISWK.js';
+import { RUBYPOSITION_PROP } from './RUBYPOSITION_PROP.js';
 
+
+export function applyRubyPosition(lineList, context) {
+
+  for (var i = 0; i < lineList.length; i++) {
+
+    for (var j = 0; j < lineList[i].rbc.length; j++) {
+
+      /* skip if ruby-position already set */
+      if (lineList[i].rbc[j].style[RUBYPOSITION_PROP])
+        continue;
+
+      var pos;
+
+      if (RUBYPOSITION_ISWK) {
+
+        /* WebKit exception */
+        pos = (i === 0) ? "before" : "after";
+
+      } else if (context.bpd === "tb") {
+
+        pos = (i === 0) ? "over" : "under";
+
+
+      } else {
+
+        if (context.bpd === "rl") {
+
+          pos = (i === 0) ? "over" : "under";
+
+        } else {
+
+          pos = (i === 0) ? "under" : "over";
+
+        }
+
+      }
+
+      lineList[i].rbc[j].style[RUBYPOSITION_PROP] = pos;
+
+    }
+
+  }
+
+}

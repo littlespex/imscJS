@@ -24,7 +24,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+export function mergeStylesIfNotPresent(from_styles, into_styles) {
 
+  for (var sname in from_styles) {
+
+    if (!from_styles.hasOwnProperty(sname)) continue;
+
+    if (sname in into_styles)
+      continue;
+
+    into_styles[sname] = from_styles[sname];
+
+  }
+
+}

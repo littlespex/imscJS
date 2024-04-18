@@ -24,7 +24,58 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+export class ISDContentElement {
+  constructor(ttelem) {
+    /* assume the element is a region if it does not have a kind */
 
+    this.kind = ttelem.kind || 'region';
+
+    /* copy lang */
+    this.lang = ttelem.lang;
+
+    /* copy id */
+    if (ttelem.id) {
+      this.id = ttelem.id;
+    }
+
+    /* deep copy of style attributes */
+    this.styleAttrs = {};
+
+    for (var sname in ttelem.styleAttrs) {
+
+      if (!ttelem.styleAttrs.hasOwnProperty(sname)) continue;
+
+      this.styleAttrs[sname] =
+        ttelem.styleAttrs[sname];
+    }
+
+    /* copy src and type if image */
+    if ('src' in ttelem) {
+
+      this.src = ttelem.src;
+
+    }
+
+    if ('type' in ttelem) {
+
+      this.type = ttelem.type;
+
+    }
+
+    /* TODO: clean this!
+        * TODO: ISDElement and document element should be better tied together */
+    if ('text' in ttelem) {
+
+      this.text = ttelem.text;
+
+    } else if (this.kind === 'region' || 'contents' in ttelem) {
+
+      this.contents = [];
+    }
+
+    if ('space' in ttelem) {
+
+      this.space = ttelem.space;
+    }
+  }
+}

@@ -24,7 +24,66 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+export function collapseLWSP(elist) {
 
+  function isPrevCharLWSP(prev_element) {
+    return prev_element.kind === 'br' || /[\r\n\t ]$/.test(prev_element.text);
+  }
+
+  function isNextCharLWSP(next_element) {
+    return next_element.kind === 'br' || (next_element.space === "preserve" && /^[\r\n]/.test(next_element.text));
+  }
+
+  /* collapse spaces and remove leading LWSPs */
+  var element;
+
+  for (var i = 0; i < elist.length;) {
+
+    element = elist[i];
+
+    if (element.kind === "br" || element.space === "preserve") {
+      i++;
+      continue;
+    }
+
+    var trimmed_text = element.text.replace(/[\t\r\n ]+/g, ' ');
+
+    if (/^[ ]/.test(trimmed_text)) {
+
+      if (i === 0 || isPrevCharLWSP(elist[i - 1])) {
+        trimmed_text = trimmed_text.substring(1);
+      }
+
+    }
+
+    element.text = trimmed_text;
+
+    if (trimmed_text.length === 0) {
+      elist.splice(i, 1);
+    } else {
+      i++;
+    }
+
+  }
+
+  /* remove trailing LWSPs */
+  for (i = 0; i < elist.length; i++) {
+
+    element = elist[i];
+
+    if (element.kind === "br" || element.space === "preserve") {
+      i++;
+      continue;
+    }
+
+    if (/[ ]$/.test(element.text)) {
+
+      if (i === (elist.length - 1) || isNextCharLWSP(elist[i + 1])) {
+        element.text = element.text.slice(0, -1);
+      }
+
+    }
+
+  }
+
+}

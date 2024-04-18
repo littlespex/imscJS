@@ -24,7 +24,42 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+export function rect2edges(rect, context) {
 
+  var edges = { before: null, after: null, start: null, end: null };
+
+  if (context.bpd === "tb") {
+
+    edges.before = rect.top;
+    edges.after = rect.bottom;
+
+    if (context.ipd === "lr") {
+
+      edges.start = rect.left;
+      edges.end = rect.right;
+
+    } else {
+
+      edges.start = rect.right;
+      edges.end = rect.left;
+    }
+
+  } else if (context.bpd === "lr") {
+
+    edges.before = rect.left;
+    edges.after = rect.right;
+    edges.start = rect.top;
+    edges.end = rect.bottom;
+
+  } else if (context.bpd === "rl") {
+
+    edges.before = rect.right;
+    edges.after = rect.left;
+    edges.start = rect.top;
+    edges.end = rect.bottom;
+
+  }
+
+  return edges;
+
+}

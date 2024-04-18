@@ -24,7 +24,26 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { reportError } from '../error/reportError.js';
 
+export function elementGetTimeContainer(node, errorHandler) {
+
+  var tc = node && 'timeContainer' in node.attributes ? node.attributes.timeContainer.value : null;
+
+  if ((!tc) || tc === "par") {
+
+    return "par";
+
+  } else if (tc === "seq") {
+
+    return "seq";
+
+  } else {
+
+    reportError(errorHandler, "Illegal value of timeContainer (assuming 'par')");
+
+    return "par";
+
+  }
+
+}

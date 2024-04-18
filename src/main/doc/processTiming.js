@@ -24,7 +24,60 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { reportWarning } from '../error/reportWarning.js';
+import { parseTimeExpression } from './parseTimeExpression.js';
 
+export function processTiming(doc, parent, node, errorHandler) {
+  /* determine explicit begin */
+
+  var explicit_begin = null;
+
+  if (node && 'begin' in node.attributes) {
+
+    explicit_begin = parseTimeExpression(doc.tickRate, doc.effectiveFrameRate, node.attributes.begin.value);
+
+    if (explicit_begin === null) {
+
+      reportWarning(errorHandler, "Malformed begin value " + node.attributes.begin.value + " (using 0)");
+
+    }
+
+  }
+
+  /* determine explicit duration */
+  var explicit_dur = null;
+
+  if (node && 'dur' in node.attributes) {
+
+    explicit_dur = parseTimeExpression(doc.tickRate, doc.effectiveFrameRate, node.attributes.dur.value);
+
+    if (explicit_dur === null) {
+
+      reportWarning(errorHandler, "Malformed dur value " + node.attributes.dur.value + " (ignoring)");
+
+    }
+
+  }
+
+  /* determine explicit end */
+  var explicit_end = null;
+
+  if (node && 'end' in node.attributes) {
+
+    explicit_end = parseTimeExpression(doc.tickRate, doc.effectiveFrameRate, node.attributes.end.value);
+
+    if (explicit_end === null) {
+
+      reportWarning(errorHandler, "Malformed end value (ignoring)");
+
+    }
+
+  }
+
+  return {
+    explicit_begin: explicit_begin,
+    explicit_end: explicit_end,
+    explicit_dur: explicit_dur
+  };
+
+}

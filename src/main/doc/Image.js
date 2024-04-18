@@ -24,7 +24,42 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { reportError } from '../error/reportError.js';
+import { AnimatedElement } from './AnimatedElement.js';
+import { ContentElement } from './ContentElement.js';
+import { LayoutElement } from './LayoutElement.js';
+import { StyledElement } from './StyledElement.js';
+import { TimedElement } from './TimedElement.js';
 
+/*
+ * Represents a TTML image element
+ */
+
+export class Image extends ContentElement {
+  constructor(src, type) {
+    super('image');
+    this.src = src;
+    this.type = type;
+  }
+
+  initFromNode(doc, parent, node, xmllang, errorHandler) {
+    this.src = 'src' in node.attributes ? node.attributes.src.value : null;
+
+    if (!this.src) {
+      reportError(errorHandler, "Invalid image@src attribute");
+    }
+
+    this.type = 'type' in node.attributes ? node.attributes.type.value : null;
+
+    if (!this.type) {
+      reportError(errorHandler, "Invalid image@type attribute");
+    }
+
+    StyledElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
+    TimedElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
+    AnimatedElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
+    LayoutElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
+
+    this.lang = xmllang;
+  }
+}

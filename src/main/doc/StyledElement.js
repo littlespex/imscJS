@@ -24,7 +24,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export { fromXML } from './doc/fromXML.js';
-export { renderHTML } from "./html/renderHTML.js";
-export { generateISD } from './isd/generateISD.js';
+import { elementGetStyleRefs } from './elementGetStyleRefs.js';
+import { elementGetStyles } from './elementGetStyles.js';
+import { mergeReferencedStyles } from './mergeReferencedStyles.js';
 
+export class StyledElement {
+  constructor(styleAttrs) {
+    this.styleAttrs = styleAttrs;
+  }
+
+  initFromNode(doc, parent, node, errorHandler) {
+
+    this.styleAttrs = elementGetStyles(node, errorHandler);
+
+    if (doc.head !== null && doc.head.styling !== null) {
+      mergeReferencedStyles(doc.head.styling, elementGetStyleRefs(node), this.styleAttrs, errorHandler);
+    }
+
+  }
+}
