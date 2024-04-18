@@ -39,10 +39,12 @@ export class Region {
   createDefaultRegion(xmllang) {
     var r = new Region();
 
-    IdentifiedElement.call(r, '');
-    StyledElement.call(r, {});
-    AnimatedElement.call(r, []);
-    TimedElement.call(r, 0, Number.POSITIVE_INFINITY, null);
+    r.id = '';
+    r.styleAttrs = {};
+    r.sets = [];
+    r.explicit_begin = 0;
+    r.explicit_end = Number.POSITIVE_INFINITY;
+    r.explicit_dur = null;
 
     this.lang = xmllang;
 
@@ -53,6 +55,7 @@ export class Region {
     IdentifiedElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
     TimedElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
     AnimatedElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
+    StyledElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
 
     /* add specified styles */
     this.styleAttrs = elementGetStyles(node, errorHandler);
