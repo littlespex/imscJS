@@ -6,7 +6,7 @@ import nodePolyfill from 'rollup-plugin-polyfill-node';
 export default [
   // debug
   {
-    input: 'src/main/main.js',
+    input: 'dist/main/main.js',
     external: ['sax'],
     plugins: [
       commonjs({
@@ -40,7 +40,7 @@ export default [
 
   // all
   {
-    input: 'src/main/main.js',
+    input: 'dist/main/main.js',
     plugins: [
       commonjs({
         sourceMap: true,

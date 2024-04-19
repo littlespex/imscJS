@@ -8,7 +8,6 @@
     "repository": "github:sandflow/imscJS",
     "type": "module",
     "files": [
-        "src/main",
         "dist"
     ],
     "keywords": [
@@ -31,7 +30,8 @@
         "build": "grunt build",
         "dev": "npx http-server build/public_html",
         "lint": "grunt lint",
-        "fix": "eslint --fix src"
+        "fix": "eslint --fix src",
+        "transpile": "tsc dist/imsc.min.js  --target es5 --allowJs --outfile dist/imsc.es5.min.js"
     },
     "dependencies": {
         "sax": "1.2.1"
@@ -54,6 +54,8 @@
         "qunit-assert-close": "latest",
         "qunitjs": "latest",
         "rollup": "^4.14.3",
-        "rollup-plugin-polyfill-node": "^0.13.0"
+        "rollup-plugin-polyfill-node": "^0.13.0",
+        "tslib": "^2.6.2",
+        "typescript": "^5.4.5"
     }
 }

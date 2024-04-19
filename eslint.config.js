@@ -3,7 +3,11 @@ import globals from 'globals';
 
 export default [
 	{
-		ignores: ['src/test/webapp/**/*'],
+		ignores: [
+			'src/test/webapp/**/*',
+			'dist',
+			'build',
+		],
 	},
 	js.configs.recommended,
 	{

@@ -51,6 +51,10 @@ module.exports = function (grunt) {
 
         exec:
         {
+            compile: {
+                cmd: 'tsc',
+            },
+
             lint: {
                 cmd: 'eslint src',
             },
@@ -73,9 +77,9 @@ module.exports = function (grunt) {
 
     grunt.registerTask('lint', ['exec:lint']);
 
-    grunt.registerTask('build:release', ['exec:lint', 'exec:bundle', 'sync:all', 'sync:release', 'npmcopy']);
+    grunt.registerTask('build:release', ['exec:lint', 'exec:compile', 'exec:bundle', 'sync:all', 'sync:release', 'npmcopy']);
 
-    grunt.registerTask('build:debug', ['exec:lint', 'exec:bundle', 'sync:all', 'sync:debug', 'npmcopy']);
+    grunt.registerTask('build:debug', ['exec:lint', 'exec:compile', 'exec:bundle', 'sync:all', 'sync:debug', 'npmcopy']);
 
     grunt.registerTask('build', ['build:debug']);
 
