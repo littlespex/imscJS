@@ -35,7 +35,7 @@ export function mergeReferencedStyles(styling, stylerefs, styleattrs, errorHandl
     const sref = stylerefs[i];
 
     if (!(sref in styling.styles)) {
-      reportError(errorHandler, "Non-existant style id referenced");
+      reportError(errorHandler, 'Non-existant style id referenced');
       continue;
     }
 

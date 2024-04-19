@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import { parseLength } from "./parseLength.js";
+import { parseLength } from './parseLength.js';
 
 /* Documents the error handler interface */
 /**
@@ -47,15 +47,15 @@ import { parseLength } from "./parseLength.js";
 export function parsePosition(str) {
   /* see https://www.w3.org/TR/ttml2/#style-value-position */
 
-  const s = str.split(" ");
+  const s = str.split(' ');
 
   const isKeyword = function (str) {
 
-    return str === "center" ||
-      str === "left" ||
-      str === "top" ||
-      str === "bottom" ||
-      str === "right";
+    return str === 'center' ||
+      str === 'left' ||
+      str === 'top' ||
+      str === 'bottom' ||
+      str === 'right';
 
   };
 
@@ -82,8 +82,8 @@ export function parsePosition(str) {
 
   /* position default */
   const pos = {
-    h: { edge: "left", offset: { value: 50, unit: "%" } },
-    v: { edge: "top", offset: { value: 50, unit: "%" } }
+    h: { edge: 'left', offset: { value: 50, unit: '%' } },
+    v: { edge: 'top', offset: { value: 50, unit: '%' } }
   };
 
   /* update position */
@@ -95,7 +95,7 @@ export function parsePosition(str) {
     if (isKeyword(comp)) {
 
       /* we have a keyword */
-      let offset = { value: 0, unit: "%" };
+      let offset = { value: 0, unit: '%' };
 
       /* peek at the next component */
       if (s.length !== 2 && i < s.length && (!isKeyword(s[i]))) {
@@ -106,13 +106,13 @@ export function parsePosition(str) {
       }
 
       /* skip if center */
-      if (comp === "right") {
+      if (comp === 'right') {
 
         pos.h.edge = comp;
 
         pos.h.offset = offset;
 
-      } else if (comp === "bottom") {
+      } else if (comp === 'bottom') {
 
         pos.v.edge = comp;
 
@@ -120,12 +120,12 @@ export function parsePosition(str) {
         pos.v.offset = offset;
 
 
-      } else if (comp === "left") {
+      } else if (comp === 'left') {
 
         pos.h.offset = offset;
 
 
-      } else if (comp === "top") {
+      } else if (comp === 'top') {
 
         pos.v.offset = offset;
 

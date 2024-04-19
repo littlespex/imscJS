@@ -38,7 +38,7 @@ export function processTiming(doc, parent, node, errorHandler) {
 
     if (explicit_begin === null) {
 
-      reportWarning(errorHandler, "Malformed begin value " + node.attributes.begin.value + " (using 0)");
+      reportWarning(errorHandler, 'Malformed begin value ' + node.attributes.begin.value + ' (using 0)');
 
     }
 
@@ -53,7 +53,7 @@ export function processTiming(doc, parent, node, errorHandler) {
 
     if (explicit_dur === null) {
 
-      reportWarning(errorHandler, "Malformed dur value " + node.attributes.dur.value + " (ignoring)");
+      reportWarning(errorHandler, 'Malformed dur value ' + node.attributes.dur.value + ' (ignoring)');
 
     }
 
@@ -68,7 +68,7 @@ export function processTiming(doc, parent, node, errorHandler) {
 
     if (explicit_end === null) {
 
-      reportWarning(errorHandler, "Malformed end value (ignoring)");
+      reportWarning(errorHandler, 'Malformed end value (ignoring)');
 
     }
 

@@ -24,8 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import { parseColor } from "./parseColor.js";
-import { parseLength } from "./parseLength.js";
+import { parseColor } from './parseColor.js';
+import { parseLength } from './parseLength.js';
 
 
 export function parseTextShadow(str) {
@@ -36,11 +36,11 @@ export function parseTextShadow(str) {
 
   for (let i = 0; i < shadows.length; i++) {
 
-    const shadow = shadows[i].split(" ");
+    const shadow = shadows[i].split(' ');
 
-    if (shadow.length === 1 && shadow[0] === "none") {
+    if (shadow.length === 1 && shadow[0] === 'none') {
 
-      return "none";
+      return 'none';
 
     } else if (shadow.length > 1 && shadow.length < 5) {
 

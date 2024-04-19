@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import { ComputedLength } from "./ComputedLength.js";
+import { ComputedLength } from './ComputedLength.js';
 
 /**
  * Computes a specified length to a root container relative length
@@ -40,42 +40,42 @@ import { ComputedLength } from "./ComputedLength.js";
  */
 export function toComputedLength(lengthVal, lengthUnit, emLength, percentLength, cellLength, pxLength) {
 
-  if (lengthUnit === "%" && percentLength) {
+  if (lengthUnit === '%' && percentLength) {
 
     return new ComputedLength(
       percentLength.rw * lengthVal / 100,
       percentLength.rh * lengthVal / 100
     );
 
-  } else if (lengthUnit === "em" && emLength) {
+  } else if (lengthUnit === 'em' && emLength) {
 
     return new ComputedLength(
       emLength.rw * lengthVal,
       emLength.rh * lengthVal
     );
 
-  } else if (lengthUnit === "c" && cellLength) {
+  } else if (lengthUnit === 'c' && cellLength) {
 
     return new ComputedLength(
       lengthVal * cellLength.rw,
       lengthVal * cellLength.rh
     );
 
-  } else if (lengthUnit === "px" && pxLength) {
+  } else if (lengthUnit === 'px' && pxLength) {
 
     return new ComputedLength(
       lengthVal * pxLength.rw,
       lengthVal * pxLength.rh
     );
 
-  } else if (lengthUnit === "rh") {
+  } else if (lengthUnit === 'rh') {
 
     return new ComputedLength(
       0,
       lengthVal / 100
     );
 
-  } else if (lengthUnit === "rw") {
+  } else if (lengthUnit === 'rw') {
 
     return new ComputedLength(
       lengthVal / 100,

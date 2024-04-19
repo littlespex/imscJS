@@ -32,7 +32,7 @@ export function extractFrameAndTickRate(node, errorHandler) {
   // subFrameRate is ignored per IMSC1 specification
 
   // extract frame rate
-  const fps_attr = findAttribute(node, imscNames.ns_ttp, "frameRate");
+  const fps_attr = findAttribute(node, imscNames.ns_ttp, 'frameRate');
 
   // initial value
   let fps = 30;
@@ -52,13 +52,13 @@ export function extractFrameAndTickRate(node, errorHandler) {
 
     } else {
 
-      reportWarning(errorHandler, "Malformed frame rate attribute (using initial value instead)");
+      reportWarning(errorHandler, 'Malformed frame rate attribute (using initial value instead)');
     }
 
   }
 
   // extract frame rate multiplier
-  const frm_attr = findAttribute(node, imscNames.ns_ttp, "frameRateMultiplier");
+  const frm_attr = findAttribute(node, imscNames.ns_ttp, 'frameRateMultiplier');
 
   // initial value
   let frm = 1;
@@ -75,7 +75,7 @@ export function extractFrameAndTickRate(node, errorHandler) {
 
     } else {
 
-      reportWarning(errorHandler, "Malformed frame rate multiplier attribute (using initial value instead)");
+      reportWarning(errorHandler, 'Malformed frame rate multiplier attribute (using initial value instead)');
     }
 
   }
@@ -85,7 +85,7 @@ export function extractFrameAndTickRate(node, errorHandler) {
   // extract tick rate
   let tr = 1;
 
-  const trattr = findAttribute(node, imscNames.ns_ttp, "tickRate");
+  const trattr = findAttribute(node, imscNames.ns_ttp, 'tickRate');
 
   if (trattr === null) {
 
@@ -104,7 +104,7 @@ export function extractFrameAndTickRate(node, errorHandler) {
 
     } else {
 
-      reportWarning(errorHandler, "Malformed tick rate attribute (using initial value instead)");
+      reportWarning(errorHandler, 'Malformed tick rate attribute (using initial value instead)');
     }
 
   }

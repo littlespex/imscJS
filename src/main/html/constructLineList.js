@@ -30,7 +30,7 @@ import { rect2edges } from './rect2edges.js';
 
 export function constructLineList(context, element, llist, bgcolor) {
 
-  if (element.localName === "rt" || element.localName === "rtc") {
+  if (element.localName === 'rt' || element.localName === 'rtc') {
 
     /* skip ruby annotations */
     return;
@@ -59,7 +59,7 @@ export function constructLineList(context, element, llist, bgcolor) {
           elements: [],
           rbc: [],
           te: [],
-          text: "",
+          text: '',
           br: false
         });
 
@@ -130,7 +130,7 @@ export function constructLineList(context, element, llist, bgcolor) {
 
         } else if (child.localName === 'span' &&
           child.style[TEXTEMPHASISSTYLE_PROP] &&
-          child.style[TEXTEMPHASISSTYLE_PROP] !== "none") {
+          child.style[TEXTEMPHASISSTYLE_PROP] !== 'none') {
 
           /* remember non-empty span elements with textEmphasis */
           if (llist.length > 0) {

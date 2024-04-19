@@ -31,7 +31,7 @@ export function collapseLWSP(elist) {
   }
 
   function isNextCharLWSP(next_element) {
-    return next_element.kind === 'br' || (next_element.space === "preserve" && /^[\r\n]/.test(next_element.text));
+    return next_element.kind === 'br' || (next_element.space === 'preserve' && /^[\r\n]/.test(next_element.text));
   }
 
   /* collapse spaces and remove leading LWSPs */
@@ -41,7 +41,7 @@ export function collapseLWSP(elist) {
 
     element = elist[i];
 
-    if (element.kind === "br" || element.space === "preserve") {
+    if (element.kind === 'br' || element.space === 'preserve') {
       i++;
       continue;
     }
@@ -71,7 +71,7 @@ export function collapseLWSP(elist) {
 
     element = elist[i];
 
-    if (element.kind === "br" || element.space === "preserve") {
+    if (element.kind === 'br' || element.space === 'preserve') {
       i++;
       continue;
     }

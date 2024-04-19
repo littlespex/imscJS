@@ -29,12 +29,12 @@ import { reportError } from '../error/reportError.js';
 
 export function spanMerge(first, second, context) {
 
-  if (first.tagName === "SPAN" &&
-    second.tagName === "SPAN" &&
+  if (first.tagName === 'SPAN' &&
+    second.tagName === 'SPAN' &&
     first._isd_element === second._isd_element) {
     if (!first._isd_element) {
       /* we should never get here since every span should have a source ISD element */
-      reportError(context.errorHandler, "Internal error: HTML span is not linked to a source element; cannot merge spans.");
+      reportError(context.errorHandler, 'Internal error: HTML span is not linked to a source element; cannot merge spans.');
       return false;
     }
 
@@ -43,9 +43,9 @@ export function spanMerge(first, second, context) {
     for (let i = 0; i < second.style.length; i++) {
 
       const styleName = second.style[i];
-      if (styleName.indexOf("border") >= 0 ||
-        styleName.indexOf("padding") >= 0 ||
-        styleName.indexOf("margin") >= 0) {
+      if (styleName.indexOf('border') >= 0 ||
+        styleName.indexOf('padding') >= 0 ||
+        styleName.indexOf('margin') >= 0) {
 
         first.style[styleName] = second.style[styleName];
 

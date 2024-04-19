@@ -75,7 +75,7 @@ export function mergeSpans(lineList, context) {
 
   for (let bi = 0; bi < clearTheseBackgrounds.length; bi++) {
 
-    clearTheseBackgrounds[bi].style.backgroundColor = "";
+    clearTheseBackgrounds[bi].style.backgroundColor = '';
 
   }
 }

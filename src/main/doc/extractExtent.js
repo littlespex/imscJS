@@ -31,16 +31,16 @@ import { findAttribute } from './findAttribute.js';
 
 export function extractExtent(node, errorHandler) {
 
-  const attr = findAttribute(node, imscNames.ns_tts, "extent");
+  const attr = findAttribute(node, imscNames.ns_tts, 'extent');
 
   if (attr === null)
     return null;
 
-  const s = attr.split(" ");
+  const s = attr.split(' ');
 
   if (s.length !== 2) {
 
-    reportWarning(errorHandler, "Malformed extent (ignoring)");
+    reportWarning(errorHandler, 'Malformed extent (ignoring)');
 
     return null;
   }
@@ -51,7 +51,7 @@ export function extractExtent(node, errorHandler) {
 
   if (!h || !w) {
 
-    reportWarning(errorHandler, "Malformed extent values (ignoring)");
+    reportWarning(errorHandler, 'Malformed extent values (ignoring)');
 
     return null;
   }

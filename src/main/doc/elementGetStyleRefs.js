@@ -26,6 +26,6 @@
 
 export function elementGetStyleRefs(node) {
 
-  return node && 'style' in node.attributes ? node.attributes.style.value.split(" ") : [];
+  return node && 'style' in node.attributes ? node.attributes.style.value.split(' ') : [];
 
 }

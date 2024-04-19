@@ -33,7 +33,7 @@ import { hasOwnProperty } from '../utils/hasOwnProperty.js';
 import { ISDContentElement } from './ISDContentElement.js';
 import { collapseLWSP } from './collapseLWSP.js';
 import { constructSpanList } from './constructSpanList.js';
-import { pruneEmptySpans } from "./pruneEmptySpans.js";
+import { pruneEmptySpans } from './pruneEmptySpans.js';
 
 /* set of styles not applicable to ruby container spans */
 const _rcs_na_styles = [
@@ -78,7 +78,7 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
   const isd_element = new ISDContentElement(elem);
 
   /* apply set (animation) styling */
-  if ("sets" in elem) {
+  if ('sets' in elem) {
     for (let i = 0; i < elem.sets.length; i++) {
 
       if (offset < elem.sets[i].begin || offset >= elem.sets[i].end)
@@ -111,13 +111,13 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
 
       const wm = isd_element.styleAttrs[qname];
 
-      if (wm === "lrtb" || wm === "lr") {
+      if (wm === 'lrtb' || wm === 'lr') {
 
-        isd_element.styleAttrs[byName.direction.qname] = "ltr";
+        isd_element.styleAttrs[byName.direction.qname] = 'ltr';
 
-      } else if (wm === "rltb" || wm === "rl") {
+      } else if (wm === 'rltb' || wm === 'rl') {
 
-        isd_element.styleAttrs[byName.direction.qname] = "rtl";
+        isd_element.styleAttrs[byName.direction.qname] = 'rtl';
 
       }
 
@@ -143,35 +143,35 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
 
           outs = ps;
 
-        } else if (es.indexOf("none") === -1) {
+        } else if (es.indexOf('none') === -1) {
 
-          if ((es.indexOf("noUnderline") === -1 &&
-            ps.indexOf("underline") !== -1) ||
-            es.indexOf("underline") !== -1) {
+          if ((es.indexOf('noUnderline') === -1 &&
+            ps.indexOf('underline') !== -1) ||
+            es.indexOf('underline') !== -1) {
 
-            outs.push("underline");
-
-          }
-
-          if ((es.indexOf("noLineThrough") === -1 &&
-            ps.indexOf("lineThrough") !== -1) ||
-            es.indexOf("lineThrough") !== -1) {
-
-            outs.push("lineThrough");
+            outs.push('underline');
 
           }
 
-          if ((es.indexOf("noOverline") === -1 &&
-            ps.indexOf("overline") !== -1) ||
-            es.indexOf("overline") !== -1) {
+          if ((es.indexOf('noLineThrough') === -1 &&
+            ps.indexOf('lineThrough') !== -1) ||
+            es.indexOf('lineThrough') !== -1) {
 
-            outs.push("overline");
+            outs.push('lineThrough');
+
+          }
+
+          if ((es.indexOf('noOverline') === -1 &&
+            ps.indexOf('overline') !== -1) ||
+            es.indexOf('overline') !== -1) {
+
+            outs.push('overline');
 
           }
 
         } else {
 
-          outs.push("none");
+          outs.push('none');
 
         }
 
@@ -180,7 +180,7 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
       } else if (sa.qname === byName.fontSize.qname &&
         !(sa.qname in isd_element.styleAttrs) &&
         isd_element.kind === 'span' &&
-        isd_element.styleAttrs[byName.ruby.qname] === "textContainer") {
+        isd_element.styleAttrs[byName.ruby.qname] === 'textContainer') {
 
         /* special inheritance rule for ruby text container font size */
         const ruby_fs = parent.styleAttrs[byName.fontSize.qname];
@@ -192,12 +192,12 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
       } else if (sa.qname === byName.fontSize.qname &&
         !(sa.qname in isd_element.styleAttrs) &&
         isd_element.kind === 'span' &&
-        isd_element.styleAttrs[byName.ruby.qname] === "text") {
+        isd_element.styleAttrs[byName.ruby.qname] === 'text') {
 
         /* special inheritance rule for ruby text font size */
         const parent_fs = parent.styleAttrs[byName.fontSize.qname];
 
-        if (parent.styleAttrs[byName.ruby.qname] === "textContainer") {
+        if (parent.styleAttrs[byName.ruby.qname] === 'textContainer') {
 
           isd_element.styleAttrs[sa.qname] = parent_fs;
 
@@ -309,7 +309,7 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
   }
 
   /* prune if tts:display is none */
-  if (isd_element.styleAttrs[byName.display.qname] === "none")
+  if (isd_element.styleAttrs[byName.display.qname] === 'none')
     return null;
 
   /* process contents of the element */
@@ -389,7 +389,7 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
 
       const da = byQName[qnameb];
 
-      if ("applies" in da) {
+      if ('applies' in da) {
 
         na = da.applies.indexOf(isd_element.kind) === -1;
 
@@ -408,7 +408,7 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
   const ruby = isd_element.styleAttrs[byName.ruby.qname];
 
   if (isd_element.kind === 'p' ||
-    (isd_element.kind === 'span' && (ruby === "textContainer" || ruby === "text"))) {
+    (isd_element.kind === 'span' && (ruby === 'textContainer' || ruby === 'text'))) {
 
     const elist = [];
 

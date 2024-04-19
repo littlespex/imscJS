@@ -38,7 +38,7 @@ export function elementGetStyles(node, errorHandler) {
 
     for (const i in node.attributes) {
 
-      const qname = node.attributes[i].uri + " " + node.attributes[i].local;
+      const qname = node.attributes[i].uri + ' ' + node.attributes[i].local;
 
       const sa = byQName[qname];
 
@@ -52,12 +52,12 @@ export function elementGetStyles(node, errorHandler) {
 
           /* TODO: consider refactoring errorHandler into parse and compute routines */
           if (sa === byName.zIndex) {
-            reportWarning(errorHandler, "zIndex attribute present but not used by IMSC1 since regions do not overlap");
+            reportWarning(errorHandler, 'zIndex attribute present but not used by IMSC1 since regions do not overlap');
           }
 
         } else {
 
-          reportError(errorHandler, "Cannot parse styling attribute " + qname + " --> " + node.attributes[i].value);
+          reportError(errorHandler, 'Cannot parse styling attribute ' + qname + ' --> ' + node.attributes[i].value);
 
         }
 

@@ -26,4 +26,4 @@
 import { RUBYPOSITION_ISWK } from './RUBYPOSITION_ISWK.js';
 
 
-export const RUBYPOSITION_PROP = RUBYPOSITION_ISWK ? "webkitRubyPosition" : "rubyPosition";
+export const RUBYPOSITION_PROP = RUBYPOSITION_ISWK ? 'webkitRubyPosition' : 'rubyPosition';

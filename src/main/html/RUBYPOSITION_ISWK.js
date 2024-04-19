@@ -24,4 +24,4 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export const RUBYPOSITION_ISWK = "webkitRubyPosition" in window.getComputedStyle(document.documentElement);
+export const RUBYPOSITION_ISWK = 'webkitRubyPosition' in window.getComputedStyle(document.documentElement);

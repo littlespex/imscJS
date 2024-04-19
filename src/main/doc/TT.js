@@ -64,11 +64,11 @@ export class TT {
     this.aspectRatio = extractAspectRatio(node, errorHandler);
 
     /* check timebase */
-    const attr = findAttribute(node, imscNames.ns_ttp, "timeBase");
+    const attr = findAttribute(node, imscNames.ns_ttp, 'timeBase');
 
-    if (attr !== null && attr !== "media") {
+    if (attr !== null && attr !== 'media') {
 
-      reportFatal(errorHandler, "Unsupported time base");
+      reportFatal(errorHandler, 'Unsupported time base');
 
     }
 
@@ -84,8 +84,8 @@ export class TT {
 
     } else {
 
-      if (e.h.unit !== "px" || e.w.unit !== "px") {
-        reportFatal(errorHandler, "Extent on TT must be in px or absent");
+      if (e.h.unit !== 'px' || e.w.unit !== 'px') {
+        reportFatal(errorHandler, 'Extent on TT must be in px or absent');
       }
 
       this.pxLength = {

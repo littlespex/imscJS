@@ -28,7 +28,7 @@ export class StylingAttributeDefinition {
   constructor(ns, name, initialValue, appliesTo, isInherit, isAnimatable, parseFunc, computeFunc) {
     this.name = name;
     this.ns = ns;
-    this.qname = ns + " " + name;
+    this.qname = ns + ' ' + name;
     this.inherit = isInherit;
     this.animatable = isAnimatable;
     this.initial = initialValue;

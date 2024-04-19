@@ -28,7 +28,7 @@ import { byName } from '../styles/byName.js';
 
 export function constructSpanList(element, elist) {
 
-  if (!("contents" in element)) {
+  if (!('contents' in element)) {
     return;
   }
 
@@ -37,7 +37,7 @@ export function constructSpanList(element, elist) {
     const child = element.contents[i];
     const ruby = child.styleAttrs[byName.ruby.qname];
 
-    if (child.kind === 'span' && (ruby === "textContainer" || ruby === "text")) {
+    if (child.kind === 'span' && (ruby === 'textContainer' || ruby === 'text')) {
 
       /* skip ruby text and text containers, which are handled on their own */
       continue;

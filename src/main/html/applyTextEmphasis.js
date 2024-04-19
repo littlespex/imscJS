@@ -31,39 +31,39 @@ import { TEXTEMPHASISSTYLE_PROP } from './TEXTEMPHASISSTYLE_PROP.js';
 export function applyTextEmphasis(context, dom_element, isd_element, attr) {
   /* ignore color (not used in IMSC 1.1) */
 
-  if (attr.style === "none") {
+  if (attr.style === 'none') {
 
     /* text-emphasis is not inherited and the default is none, so nothing to do */
     return;
 
-  } else if (attr.style === "auto") {
+  } else if (attr.style === 'auto') {
 
-    dom_element.style[TEXTEMPHASISSTYLE_PROP] = "filled";
+    dom_element.style[TEXTEMPHASISSTYLE_PROP] = 'filled';
 
   } else {
 
-    dom_element.style[TEXTEMPHASISSTYLE_PROP] = attr.style + " " + attr.symbol;
+    dom_element.style[TEXTEMPHASISSTYLE_PROP] = attr.style + ' ' + attr.symbol;
   }
 
   /* ignore "outside" position (set in postprocessing) */
-  if (attr.position === "before" || attr.position === "after") {
+  if (attr.position === 'before' || attr.position === 'after') {
 
     let pos;
 
-    if (context.bpd === "tb") {
+    if (context.bpd === 'tb') {
 
-      pos = (attr.position === "before") ? "left over" : "left under";
+      pos = (attr.position === 'before') ? 'left over' : 'left under';
 
 
     } else {
 
-      if (context.bpd === "rl") {
+      if (context.bpd === 'rl') {
 
-        pos = (attr.position === "before") ? "right under" : "left under";
+        pos = (attr.position === 'before') ? 'right under' : 'left under';
 
       } else {
 
-        pos = (attr.position === "before") ? "left under" : "right under";
+        pos = (attr.position === 'before') ? 'left under' : 'right under';
 
       }
 

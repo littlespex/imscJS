@@ -43,22 +43,22 @@ export function applyRubyPosition(lineList, context) {
       if (RUBYPOSITION_ISWK) {
 
         /* WebKit exception */
-        pos = (i === 0) ? "before" : "after";
+        pos = (i === 0) ? 'before' : 'after';
 
-      } else if (context.bpd === "tb") {
+      } else if (context.bpd === 'tb') {
 
-        pos = (i === 0) ? "over" : "under";
+        pos = (i === 0) ? 'over' : 'under';
 
 
       } else {
 
-        if (context.bpd === "rl") {
+        if (context.bpd === 'rl') {
 
-          pos = (i === 0) ? "over" : "under";
+          pos = (i === 0) ? 'over' : 'under';
 
         } else {
 
-          pos = (i === 0) ? "under" : "over";
+          pos = (i === 0) ? 'under' : 'over';
 
         }
 

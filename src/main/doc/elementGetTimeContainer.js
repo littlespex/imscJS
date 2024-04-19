@@ -30,19 +30,19 @@ export function elementGetTimeContainer(node, errorHandler) {
 
   const tc = node && 'timeContainer' in node.attributes ? node.attributes.timeContainer.value : null;
 
-  if ((!tc) || tc === "par") {
+  if ((!tc) || tc === 'par') {
 
-    return "par";
+    return 'par';
 
-  } else if (tc === "seq") {
+  } else if (tc === 'seq') {
 
-    return "seq";
+    return 'seq';
 
   } else {
 
     reportError(errorHandler, "Illegal value of timeContainer (assuming 'par')");
 
-    return "par";
+    return 'par';
 
   }
 

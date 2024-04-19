@@ -45,20 +45,20 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
 
   if (isd_element.kind === 'region') {
 
-    e = document.createElement("div");
-    e.style.position = "absolute";
+    e = document.createElement('div');
+    e.style.position = 'absolute';
 
   } else if (isd_element.kind === 'body') {
 
-    e = document.createElement("div");
+    e = document.createElement('div');
 
   } else if (isd_element.kind === 'div') {
 
-    e = document.createElement("div");
+    e = document.createElement('div');
 
   } else if (isd_element.kind === 'image') {
 
-    e = document.createElement("img");
+    e = document.createElement('img');
 
     if (context.imgResolver !== null && isd_element.src !== null) {
 
@@ -74,56 +74,56 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
 
   } else if (isd_element.kind === 'p') {
 
-    e = document.createElement("p");
+    e = document.createElement('p');
 
   } else if (isd_element.kind === 'span') {
 
-    if (isd_element.styleAttrs[byName.ruby.qname] === "container") {
+    if (isd_element.styleAttrs[byName.ruby.qname] === 'container') {
 
-      e = document.createElement("ruby");
+      e = document.createElement('ruby');
 
       context.ruby = true;
 
-    } else if (isd_element.styleAttrs[byName.ruby.qname] === "base") {
+    } else if (isd_element.styleAttrs[byName.ruby.qname] === 'base') {
 
-      e = document.createElement("span"); // rb element is deprecated in HTML
+      e = document.createElement('span'); // rb element is deprecated in HTML
 
-    } else if (isd_element.styleAttrs[byName.ruby.qname] === "text") {
+    } else if (isd_element.styleAttrs[byName.ruby.qname] === 'text') {
 
-      e = document.createElement("rt");
-
-
-    } else if (isd_element.styleAttrs[byName.ruby.qname] === "baseContainer") {
-
-      e = document.createElement("rbc");
+      e = document.createElement('rt');
 
 
-    } else if (isd_element.styleAttrs[byName.ruby.qname] === "textContainer") {
+    } else if (isd_element.styleAttrs[byName.ruby.qname] === 'baseContainer') {
 
-      e = document.createElement("rtc");
+      e = document.createElement('rbc');
 
 
-    } else if (isd_element.styleAttrs[byName.ruby.qname] === "delimiter") {
+    } else if (isd_element.styleAttrs[byName.ruby.qname] === 'textContainer') {
+
+      e = document.createElement('rtc');
+
+
+    } else if (isd_element.styleAttrs[byName.ruby.qname] === 'delimiter') {
 
       /* ignore rp */
       return;
 
     } else {
 
-      e = document.createElement("span");
+      e = document.createElement('span');
 
     }
 
     //e.textContent = isd_element.text;
   } else if (isd_element.kind === 'br') {
 
-    e = document.createElement("br");
+    e = document.createElement('br');
 
   }
 
   if (!e) {
 
-    reportError(context.errorHandler, "Error processing ISD element kind: " + isd_element.kind);
+    reportError(context.errorHandler, 'Error processing ISD element kind: ' + isd_element.kind);
 
     return;
 
@@ -143,40 +143,40 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
 
   /* override UA default margin */
   /* TODO: should apply to <p> only */
-  e.style.margin = "0";
+  e.style.margin = '0';
 
   /* determine ipd and bpd */
-  if (isd_element.kind === "region") {
+  if (isd_element.kind === 'region') {
 
     const wdir = isd_element.styleAttrs[byName.writingMode.qname];
 
-    if (wdir === "lrtb" || wdir === "lr") {
+    if (wdir === 'lrtb' || wdir === 'lr') {
 
-      context.ipd = "lr";
-      context.bpd = "tb";
+      context.ipd = 'lr';
+      context.bpd = 'tb';
 
-    } else if (wdir === "rltb" || wdir === "rl") {
+    } else if (wdir === 'rltb' || wdir === 'rl') {
 
-      context.ipd = "rl";
-      context.bpd = "tb";
+      context.ipd = 'rl';
+      context.bpd = 'tb';
 
-    } else if (wdir === "tblr") {
+    } else if (wdir === 'tblr') {
 
-      context.ipd = "tb";
-      context.bpd = "lr";
+      context.ipd = 'tb';
+      context.bpd = 'lr';
 
-    } else if (wdir === "tbrl" || wdir === "tb") {
+    } else if (wdir === 'tbrl' || wdir === 'tb') {
 
-      context.ipd = "tb";
-      context.bpd = "rl";
+      context.ipd = 'tb';
+      context.bpd = 'rl';
 
     }
 
-  } else if (isd_element.kind === "p" && context.bpd === "tb") {
+  } else if (isd_element.kind === 'p' && context.bpd === 'tb') {
 
     const pdir = isd_element.styleAttrs[byName.direction.qname];
 
-    context.ipd = pdir === "ltr" ? "lr" : "rl";
+    context.ipd = pdir === 'ltr' ? 'lr' : 'rl';
 
   }
 
@@ -208,9 +208,9 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
     if (plength > 0) {
 
       /* apply padding to the <p> so that line padding does not cause line wraps */
-      const padmeasure = Math.ceil(plength) + "px";
+      const padmeasure = Math.ceil(plength) + 'px';
 
-      if (context.bpd === "tb") {
+      if (context.bpd === 'tb') {
 
         proc_e.style.paddingLeft = padmeasure;
         proc_e.style.paddingRight = padmeasure;
@@ -229,12 +229,12 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
   // do we have multiRowAlign?
   const mra = isd_element.styleAttrs[byName.multiRowAlign.qname];
 
-  if (mra && mra !== "auto") {
+  if (mra && mra !== 'auto') {
 
     /* create inline block to handle multirowAlign */
-    const s = document.createElement("span");
+    const s = document.createElement('span');
 
-    s.style.display = "inline-block";
+    s.style.display = 'inline-block';
 
     s.style.textAlign = mra;
 
@@ -249,7 +249,7 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
   /* do we have rubyReserve? */
   const rr = isd_element.styleAttrs[byName.rubyReserve.qname];
 
-  if (rr && rr[0] !== "none") {
+  if (rr && rr[0] !== 'none') {
     context.rubyReserve = rr;
   }
 
@@ -260,18 +260,18 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
   }
 
 
-  if (isd_element.kind === "span" && isd_element.text) {
+  if (isd_element.kind === 'span' && isd_element.text) {
 
     const te = isd_element.styleAttrs[byName.textEmphasis.qname];
 
-    if (te && te.style !== "none") {
+    if (te && te.style !== 'none') {
 
       context.textEmphasis = true;
 
     }
 
     if (byName.textCombine.qname in isd_element.styleAttrs &&
-      isd_element.styleAttrs[byName.textCombine.qname] === "all") {
+      isd_element.styleAttrs[byName.textCombine.qname] === 'all') {
 
       /* ignore tate-chu-yoku since line break cannot happen within */
       e.textContent = isd_element.text;
@@ -297,7 +297,7 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
         if (cc < 55296 || cc > 56319 || j === isd_element.text.length - 1) {
 
           /* wrap the character(s) in a span unless it is a high surrogate */
-          const span = document.createElement("span");
+          const span = document.createElement('span');
 
           span.textContent = cbuf;
 
@@ -322,7 +322,7 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
   }
 
   /* process the children of the ISD element */
-  if ("contents" in isd_element) {
+  if ('contents' in isd_element) {
 
     for (let k = 0; k < isd_element.contents.length; k++) {
 
@@ -338,7 +338,7 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
 
   /* paragraph processing */
   /* TODO: linePadding only supported for horizontal scripts */
-  if (isd_element.kind === "p") {
+  if (isd_element.kind === 'p') {
 
     constructLineList(context, proc_e, linelist, null);
 
@@ -406,10 +406,10 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
 
 
   /* region processing */
-  if (isd_element.kind === "region") {
+  if (isd_element.kind === 'region') {
 
     /* perform roll up if needed */
-    if ((context.bpd === "tb") &&
+    if ((context.bpd === 'tb') &&
       context.enableRollUp &&
       isd_element.contents.length > 0 &&
       isd_element.styleAttrs[byName.displayAlign.qname] === 'after') {
@@ -435,10 +435,10 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
 
         const h = rb.plist[rb.plist.length - 1].after - rb.plist[rb.plist.length - 1].before;
 
-        body_elem.style.bottom = "-" + h + "px";
-        body_elem.style.transition = "transform 0.4s";
-        body_elem.style.position = "relative";
-        body_elem.style.transform = "translateY(-" + h + "px)";
+        body_elem.style.bottom = '-' + h + 'px';
+        body_elem.style.transition = 'transform 0.4s';
+        body_elem.style.position = 'relative';
+        body_elem.style.transform = 'translateY(-' + h + 'px)';
 
       }
 

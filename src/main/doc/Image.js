@@ -46,13 +46,13 @@ export class Image extends ContentElement {
     this.src = 'src' in node.attributes ? node.attributes.src.value : null;
 
     if (!this.src) {
-      reportError(errorHandler, "Invalid image@src attribute");
+      reportError(errorHandler, 'Invalid image@src attribute');
     }
 
     this.type = 'type' in node.attributes ? node.attributes.type.value : null;
 
     if (!this.type) {
-      reportError(errorHandler, "Invalid image@type attribute");
+      reportError(errorHandler, 'Invalid image@type attribute');
     }
 
     StyledElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);

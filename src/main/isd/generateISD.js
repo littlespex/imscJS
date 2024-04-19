@@ -113,8 +113,8 @@ export function generateISD(tt, offset, errorHandler) {
   }
 
   /* rewritten TTML will always have a default - this covers it. because the region is defaulted to "" */
-  if (activeRegions[""] !== undefined) {
-    activeRegions[""] = true;
+  if (activeRegions[''] !== undefined) {
+    activeRegions[''] = true;
   }
 
   /* process regions */

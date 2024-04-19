@@ -59,17 +59,17 @@ export function applyFillLineGap(lineList, par_before, par_after, context) {
         for (l = 0; l < lineList[i - 1].elements.length; l++) {
 
           thisNode = lineList[i - 1].elements[l];
-          padding = s * (frontier - thisNode.after) + "px";
+          padding = s * (frontier - thisNode.after) + 'px';
 
-          if (context.bpd === "lr") {
+          if (context.bpd === 'lr') {
 
             thisNode.node.style.paddingRight = padding;
 
-          } else if (context.bpd === "rl") {
+          } else if (context.bpd === 'rl') {
 
             thisNode.node.style.paddingLeft = padding;
 
-          } else if (context.bpd === "tb") {
+          } else if (context.bpd === 'tb') {
 
             thisNode.node.style.paddingBottom = padding;
 
@@ -87,17 +87,17 @@ export function applyFillLineGap(lineList, par_before, par_after, context) {
       for (l = 0; l < lineList[i].elements.length; l++) {
 
         thisNode = lineList[i].elements[l];
-        padding = s * (thisNode.before - frontier) + "px";
+        padding = s * (thisNode.before - frontier) + 'px';
 
-        if (context.bpd === "lr") {
+        if (context.bpd === 'lr') {
 
           thisNode.node.style.paddingLeft = padding;
 
-        } else if (context.bpd === "rl") {
+        } else if (context.bpd === 'rl') {
 
           thisNode.node.style.paddingRight = padding;
 
-        } else if (context.bpd === "tb") {
+        } else if (context.bpd === 'tb') {
 
           thisNode.node.style.paddingTop = padding;
 

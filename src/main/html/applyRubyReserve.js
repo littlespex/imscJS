@@ -32,28 +32,28 @@ export function applyRubyReserve(lineList, context) {
 
   for (let i = 0; i < lineList.length; i++) {
 
-    const ruby = document.createElement("ruby");
+    const ruby = document.createElement('ruby');
 
-    const rb = document.createElement("span"); // rb element is deprecated in HTML
-    rb.textContent = "\u200B";
+    const rb = document.createElement('span'); // rb element is deprecated in HTML
+    rb.textContent = '\u200B';
 
     ruby.appendChild(rb);
 
     let rt1;
     let rt2;
 
-    const fs = context.rubyReserve[1].toUsedLength(context.w, context.h) + "px";
+    const fs = context.rubyReserve[1].toUsedLength(context.w, context.h) + 'px';
 
-    if (context.rubyReserve[0] === "both" || (context.rubyReserve[0] === "outside" && lineList.length == 1)) {
+    if (context.rubyReserve[0] === 'both' || (context.rubyReserve[0] === 'outside' && lineList.length == 1)) {
 
-      rt1 = document.createElement("rtc");
-      rt1.style[RUBYPOSITION_PROP] = RUBYPOSITION_ISWK ? "after" : "under";
-      rt1.textContent = "\u200B";
+      rt1 = document.createElement('rtc');
+      rt1.style[RUBYPOSITION_PROP] = RUBYPOSITION_ISWK ? 'after' : 'under';
+      rt1.textContent = '\u200B';
       rt1.style.fontSize = fs;
 
-      rt2 = document.createElement("rtc");
-      rt2.style[RUBYPOSITION_PROP] = RUBYPOSITION_ISWK ? "before" : "over";
-      rt2.textContent = "\u200B";
+      rt2 = document.createElement('rtc');
+      rt2.style[RUBYPOSITION_PROP] = RUBYPOSITION_ISWK ? 'before' : 'over';
+      rt2.textContent = '\u200B';
       rt2.style.fontSize = fs;
 
       ruby.appendChild(rt1);
@@ -61,19 +61,19 @@ export function applyRubyReserve(lineList, context) {
 
     } else {
 
-      rt1 = document.createElement("rtc");
-      rt1.textContent = "\u200B";
+      rt1 = document.createElement('rtc');
+      rt1.textContent = '\u200B';
       rt1.style.fontSize = fs;
 
       let pos;
 
-      if (context.rubyReserve[0] === "after" || (context.rubyReserve[0] === "outside" && i > 0)) {
+      if (context.rubyReserve[0] === 'after' || (context.rubyReserve[0] === 'outside' && i > 0)) {
 
-        pos = RUBYPOSITION_ISWK ? "after" : ((context.bpd === "tb" || context.bpd === "rl") ? "under" : "over");
+        pos = RUBYPOSITION_ISWK ? 'after' : ((context.bpd === 'tb' || context.bpd === 'rl') ? 'under' : 'over');
 
       } else {
 
-        pos = RUBYPOSITION_ISWK ? "before" : ((context.bpd === "tb" || context.bpd === "rl") ? "over" : "under");
+        pos = RUBYPOSITION_ISWK ? 'before' : ((context.bpd === 'tb' || context.bpd === 'rl') ? 'over' : 'under');
 
       }
 

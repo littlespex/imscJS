@@ -33,7 +33,7 @@ export function cleanRubyContainers(element) {
 
   const rubyval = 'styleAttrs' in element ? element.styleAttrs[byName.ruby.qname] : null;
 
-  const isrubycontainer = (element.kind === 'span' && (rubyval === "container" || rubyval === "textContainer" || rubyval === "baseContainer"));
+  const isrubycontainer = (element.kind === 'span' && (rubyval === 'container' || rubyval === 'textContainer' || rubyval === 'baseContainer'));
 
   for (let i = element.contents.length - 1; i >= 0; i--) {
 

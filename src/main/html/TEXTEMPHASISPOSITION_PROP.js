@@ -24,4 +24,4 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export const TEXTEMPHASISPOSITION_PROP = "webkitTextEmphasisPosition" in window.getComputedStyle(document.documentElement) ? "webkitTextEmphasisPosition" : "textEmphasisPosition";
+export const TEXTEMPHASISPOSITION_PROP = 'webkitTextEmphasisPosition' in window.getComputedStyle(document.documentElement) ? 'webkitTextEmphasisPosition' : 'textEmphasisPosition';

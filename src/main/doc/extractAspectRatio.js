@@ -30,11 +30,11 @@ import { findAttribute } from './findAttribute.js';
 
 export function extractAspectRatio(node, errorHandler) {
 
-  let ar = findAttribute(node, imscNames.ns_ittp, "aspectRatio");
+  let ar = findAttribute(node, imscNames.ns_ittp, 'aspectRatio');
 
   if (ar === null) {
 
-    ar = findAttribute(node, imscNames.ns_ttp, "displayAspectRatio");
+    ar = findAttribute(node, imscNames.ns_ttp, 'displayAspectRatio');
 
   }
 
@@ -58,12 +58,12 @@ export function extractAspectRatio(node, errorHandler) {
 
       } else {
 
-        reportError(errorHandler, "Illegal aspectRatio values (ignoring)");
+        reportError(errorHandler, 'Illegal aspectRatio values (ignoring)');
       }
 
     } else {
 
-      reportError(errorHandler, "Malformed aspectRatio attribute (ignoring)");
+      reportError(errorHandler, 'Malformed aspectRatio attribute (ignoring)');
     }
 
   }

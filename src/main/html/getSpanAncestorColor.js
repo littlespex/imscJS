@@ -37,11 +37,11 @@ export function getSpanAncestorColor(element, ancestorList, isAncestor) {
 
   } else {
 
-    if (element.parentElement.nodeName === "SPAN" ||
-      element.parentElement.nodeName === "RUBY" ||
-      element.parentElement.nodeName === "RBC" ||
-      element.parentElement.nodeName === "RTC" ||
-      element.parentElement.nodeName === "RT") {
+    if (element.parentElement.nodeName === 'SPAN' ||
+      element.parentElement.nodeName === 'RUBY' ||
+      element.parentElement.nodeName === 'RBC' ||
+      element.parentElement.nodeName === 'RTC' ||
+      element.parentElement.nodeName === 'RT') {
 
       return getSpanAncestorColor(element.parentElement, ancestorList, true);
 

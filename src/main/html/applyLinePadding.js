@@ -34,9 +34,9 @@ export function applyLinePadding(lineList, lp, context) {
 
     const l = lineList[i].elements.length;
 
-    const pospadpxlen = Math.ceil(lp) + "px";
+    const pospadpxlen = Math.ceil(lp) + 'px';
 
-    const negpadpxlen = "-" + Math.ceil(lp) + "px";
+    const negpadpxlen = '-' + Math.ceil(lp) + 'px';
 
     if (l !== 0) {
 
@@ -59,17 +59,17 @@ export function applyLinePadding(lineList, lp, context) {
       }
 
       // Start element
-      if (context.ipd === "lr") {
+      if (context.ipd === 'lr') {
 
         se.node.style.marginLeft = negpadpxlen;
         se.node.style.paddingLeft = pospadpxlen;
 
-      } else if (context.ipd === "rl") {
+      } else if (context.ipd === 'rl') {
 
         se.node.style.paddingRight = pospadpxlen;
         se.node.style.marginRight = negpadpxlen;
 
-      } else if (context.ipd === "tb") {
+      } else if (context.ipd === 'tb') {
 
         se.node.style.paddingTop = pospadpxlen;
         se.node.style.marginTop = negpadpxlen;
@@ -77,7 +77,7 @@ export function applyLinePadding(lineList, lp, context) {
       }
 
       // End element
-      if (context.ipd === "lr") {
+      if (context.ipd === 'lr') {
 
         // Firefox has a problem with line-breaking when a negative margin is applied.
         // The positioning will be wrong but don't apply when on firefox.
@@ -87,14 +87,14 @@ export function applyLinePadding(lineList, lp, context) {
         }
         ee.node.style.paddingRight = pospadpxlen;
 
-      } else if (context.ipd === "rl") {
+      } else if (context.ipd === 'rl') {
 
         ee.node.style.paddingLeft = pospadpxlen;
         if (!browserIsFirefox) {
           ee.node.style.marginLeft = negpadpxlen;
         }
 
-      } else if (context.ipd === "tb") {
+      } else if (context.ipd === 'tb') {
 
         ee.node.style.paddingBottom = pospadpxlen;
         ee.node.style.marginBottom = negpadpxlen;

@@ -27,7 +27,7 @@
 export function resolveTiming(doc, element, prev_sibling, parent) {
   /* are we in a seq container? */
 
-  const isinseq = parent && parent.timeContainer === "seq";
+  const isinseq = parent && parent.timeContainer === 'seq';
 
   /* determine implicit begin */
   let implicit_begin = 0; /* default */
@@ -59,13 +59,13 @@ export function resolveTiming(doc, element, prev_sibling, parent) {
 
   let s = null;
 
-  if ("sets" in element) {
+  if ('sets' in element) {
 
     for (let set_i = 0; set_i < element.sets.length; set_i++) {
 
       resolveTiming(doc, element.sets[set_i], s, element);
 
-      if (element.timeContainer === "seq") {
+      if (element.timeContainer === 'seq') {
 
         implicit_end = element.sets[set_i].end;
 
@@ -96,13 +96,13 @@ export function resolveTiming(doc, element, prev_sibling, parent) {
 
     }
 
-  } else if ("contents" in element) {
+  } else if ('contents' in element) {
 
     for (let content_i = 0; content_i < element.contents.length; content_i++) {
 
       resolveTiming(doc, element.contents[content_i], s, element);
 
-      if (element.timeContainer === "seq") {
+      if (element.timeContainer === 'seq') {
 
         implicit_end = element.contents[content_i].end;
 

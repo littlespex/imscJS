@@ -49,7 +49,7 @@ export class Set extends TimedElement {
 
       if (this.qname) {
 
-        reportError(errorHandler, "More than one style specified on set");
+        reportError(errorHandler, 'More than one style specified on set');
         break;
 
       }

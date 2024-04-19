@@ -45,7 +45,7 @@ export class Initial {
         node.attributes[i].uri === imscNames.ns_ebutts ||
         node.attributes[i].uri === imscNames.ns_tts) {
 
-        const qname = node.attributes[i].uri + " " + node.attributes[i].local;
+        const qname = node.attributes[i].uri + ' ' + node.attributes[i].local;
 
         this.styleAttrs[qname] = node.attributes[i].value;
 

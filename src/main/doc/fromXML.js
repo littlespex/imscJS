@@ -204,7 +204,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
   p.onopentag = function (node) {
     // maintain the xml:space stack
 
-    const xmlspace = node.attributes["xml:space"];
+    const xmlspace = node.attributes['xml:space'];
 
     if (xmlspace) {
 
@@ -214,7 +214,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
       if (xmlspacestack.length === 0) {
 
-        xmlspacestack.unshift("default");
+        xmlspacestack.unshift('default');
 
       } else {
 
@@ -225,7 +225,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
     }
 
     /* maintain the xml:lang stack */
-    const xmllang = node.attributes["xml:lang"];
+    const xmllang = node.attributes['xml:lang'];
 
     if (xmllang) {
 
@@ -235,7 +235,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
       if (xmllangstack.length === 0) {
 
-        xmllangstack.unshift("");
+        xmllangstack.unshift('');
 
       } else {
 
@@ -253,7 +253,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         if (doc !== null) {
 
-          reportFatal(errorHandler, "Two <tt> elements at (" + this.line + "," + this.column + ")");
+          reportFatal(errorHandler, 'Two <tt> elements at (' + this.line + ',' + this.column + ')');
 
         }
 
@@ -266,7 +266,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
       } else if (node.local === 'head') {
 
         if (!(estack[0] instanceof TT)) {
-          reportFatal(errorHandler, "Parent of <head> element is not <tt> at (" + this.line + "," + this.column + ")");
+          reportFatal(errorHandler, 'Parent of <head> element is not <tt> at (' + this.line + ',' + this.column + ')');
         }
 
         estack.unshift(doc.head);
@@ -274,7 +274,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
       } else if (node.local === 'styling') {
 
         if (!(estack[0] instanceof Head)) {
-          reportFatal(errorHandler, "Parent of <styling> element is not <head> at (" + this.line + "," + this.column + ")");
+          reportFatal(errorHandler, 'Parent of <styling> element is not <head> at (' + this.line + ',' + this.column + ')');
         }
 
         estack.unshift(doc.head.styling);
@@ -292,7 +292,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
           /* ignore <style> element missing @id */
           if (!s.id) {
 
-            reportError(errorHandler, "<style> element missing @id attribute");
+            reportError(errorHandler, '<style> element missing @id attribute');
 
           } else {
 
@@ -318,7 +318,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         } else {
 
-          reportFatal(errorHandler, "Parent of <style> element is not <styling> or <region> at (" + this.line + "," + this.column + ")");
+          reportFatal(errorHandler, 'Parent of <style> element is not <styling> or <region> at (' + this.line + ',' + this.column + ')');
 
         }
 
@@ -344,7 +344,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         } else {
 
-          reportFatal(errorHandler, "Parent of <initial> element is not <styling> at (" + this.line + "," + this.column + ")");
+          reportFatal(errorHandler, 'Parent of <initial> element is not <styling> at (' + this.line + ',' + this.column + ')');
 
         }
 
@@ -352,7 +352,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         if (!(estack[0] instanceof Head)) {
 
-          reportFatal(errorHandler, "Parent of <layout> element is not <head> at " + this.line + "," + this.column + ")");
+          reportFatal(errorHandler, 'Parent of <layout> element is not <head> at ' + this.line + ',' + this.column + ')');
 
         }
 
@@ -361,7 +361,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
       } else if (node.local === 'region') {
 
         if (!(estack[0] instanceof Layout)) {
-          reportFatal(errorHandler, "Parent of <region> element is not <layout> at " + this.line + "," + this.column + ")");
+          reportFatal(errorHandler, 'Parent of <region> element is not <layout> at ' + this.line + ',' + this.column + ')');
         }
 
         const r = new Region();
@@ -370,7 +370,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         if (!r.id || r.id in doc.head.layout.regions) {
 
-          reportError(errorHandler, "Ignoring <region> with duplicate or missing @id at " + this.line + "," + this.column + ")");
+          reportError(errorHandler, 'Ignoring <region> with duplicate or missing @id at ' + this.line + ',' + this.column + ')');
 
         } else {
 
@@ -384,13 +384,13 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         if (!(estack[0] instanceof TT)) {
 
-          reportFatal(errorHandler, "Parent of <body> element is not <tt> at " + this.line + "," + this.column + ")");
+          reportFatal(errorHandler, 'Parent of <body> element is not <tt> at ' + this.line + ',' + this.column + ')');
 
         }
 
         if (doc.body !== null) {
 
-          reportFatal(errorHandler, "Second <body> element at " + this.line + "," + this.column + ")");
+          reportFatal(errorHandler, 'Second <body> element at ' + this.line + ',' + this.column + ')');
 
         }
 
@@ -406,7 +406,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         if (!(estack[0] instanceof Div || estack[0] instanceof Body)) {
 
-          reportFatal(errorHandler, "Parent of <div> element is not <body> or <div> at " + this.line + "," + this.column + ")");
+          reportFatal(errorHandler, 'Parent of <div> element is not <body> or <div> at ' + this.line + ',' + this.column + ')');
 
         }
 
@@ -430,7 +430,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         if (!(estack[0] instanceof Div)) {
 
-          reportFatal(errorHandler, "Parent of <image> element is not <div> at " + this.line + "," + this.column + ")");
+          reportFatal(errorHandler, 'Parent of <image> element is not <div> at ' + this.line + ',' + this.column + ')');
 
         }
 
@@ -446,7 +446,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         if (!(estack[0] instanceof Div)) {
 
-          reportFatal(errorHandler, "Parent of <p> element is not <div> at " + this.line + "," + this.column + ")");
+          reportFatal(errorHandler, 'Parent of <p> element is not <div> at ' + this.line + ',' + this.column + ')');
 
         }
 
@@ -462,7 +462,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         if (!(estack[0] instanceof Span || estack[0] instanceof P)) {
 
-          reportFatal(errorHandler, "Parent of <span> element is not <span> or <p> at " + this.line + "," + this.column + ")");
+          reportFatal(errorHandler, 'Parent of <span> element is not <span> or <p> at ' + this.line + ',' + this.column + ')');
 
         }
 
@@ -478,7 +478,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         if (!(estack[0] instanceof Span || estack[0] instanceof P)) {
 
-          reportFatal(errorHandler, "Parent of <br> element is not <span> or <p> at " + this.line + "," + this.column + ")");
+          reportFatal(errorHandler, 'Parent of <br> element is not <span> or <p> at ' + this.line + ',' + this.column + ')');
 
         }
 
@@ -499,7 +499,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
           estack[0] instanceof Region ||
           estack[0] instanceof Br)) {
 
-          reportFatal(errorHandler, "Parent of <set> element is not a content element or a region at " + this.line + "," + this.column + ")");
+          reportFatal(errorHandler, 'Parent of <set> element is not a content element or a region at ' + this.line + ',' + this.column + ')');
 
         }
 
@@ -541,7 +541,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
         const attrs = [];
 
         for (const a in node.attributes) {
-          attrs[node.attributes[a].uri + " " + node.attributes[a].local] =
+          attrs[node.attributes[a].uri + ' ' + node.attributes[a].local] =
           {
             uri: node.attributes[a].uri,
             local: node.attributes[a].local,

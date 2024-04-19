@@ -93,12 +93,12 @@ export function renderHTML(isd,
 
   }
 
-  const rootcontainer = document.createElement("div");
+  const rootcontainer = document.createElement('div');
 
-  rootcontainer.style.position = "relative";
-  rootcontainer.style.width = width + "px";
-  rootcontainer.style.height = height + "px";
-  rootcontainer.style.margin = "auto";
+  rootcontainer.style.position = 'relative';
+  rootcontainer.style.width = width + 'px';
+  rootcontainer.style.height = height + 'px';
+  rootcontainer.style.margin = 'auto';
   rootcontainer.style.top = 0;
   rootcontainer.style.bottom = 0;
   rootcontainer.style.left = 0;
@@ -129,7 +129,7 @@ export function renderHTML(isd,
 
   element.appendChild(rootcontainer);
 
-  if ("contents" in isd) {
+  if ('contents' in isd) {
 
     for (let i = 0; i < isd.contents.length; i++) {
 

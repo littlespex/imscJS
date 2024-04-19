@@ -32,7 +32,7 @@ export function applyMultiRowAlign(lineList) {
     const l = lineList[i].elements.length;
 
     if (l !== 0 && lineList[i].br === false) {
-      const br = document.createElement("br");
+      const br = document.createElement('br');
 
       const lastnode = lineList[i].elements[l - 1].node;
 

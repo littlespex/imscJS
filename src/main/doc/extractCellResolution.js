@@ -33,7 +33,7 @@ import { findAttribute } from './findAttribute.js';
  */
 export function extractCellResolution(node, errorHandler) {
 
-  const cr = findAttribute(node, imscNames.ns_ttp, "cellResolution");
+  const cr = findAttribute(node, imscNames.ns_ttp, 'cellResolution');
 
   // initial value
   let h = 15;
@@ -53,7 +53,7 @@ export function extractCellResolution(node, errorHandler) {
 
     } else {
 
-      reportWarning(errorHandler, "Malformed cellResolution value (using initial value instead)");
+      reportWarning(errorHandler, 'Malformed cellResolution value (using initial value instead)');
 
     }
 

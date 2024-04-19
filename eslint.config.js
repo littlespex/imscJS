@@ -1,9 +1,9 @@
-import js from "@eslint/js";
-import globals from "globals";
+import js from '@eslint/js';
+import globals from 'globals';
 
 export default [
 	{
-		ignores: ["src/test/webapp/**/*"],
+		ignores: ['src/test/webapp/**/*'],
 	},
 	js.configs.recommended,
 	{
@@ -15,9 +15,9 @@ export default [
 			},
 		},
 		rules: {
-			"no-var": "error",
-			"prefer-const": "error",
-			"quotes": ["error", "double"],
+			'no-var': 'error',
+			'prefer-const': 'error',
+			'quotes': ['error', 'single', { 'avoidEscape': true }],
 		},
 	},
 ];

@@ -36,25 +36,25 @@ export function applyTextEmphasisOutside(lineList, context) {
 
       /* skip if position already set */
       if (lineList[i].te[j].style[TEXTEMPHASISPOSITION_PROP] &&
-        lineList[i].te[j].style[TEXTEMPHASISPOSITION_PROP] !== "none")
+        lineList[i].te[j].style[TEXTEMPHASISPOSITION_PROP] !== 'none')
         continue;
 
       let pos;
 
-      if (context.bpd === "tb") {
+      if (context.bpd === 'tb') {
 
-        pos = (i === 0) ? "left over" : "left under";
+        pos = (i === 0) ? 'left over' : 'left under';
 
 
       } else {
 
-        if (context.bpd === "rl") {
+        if (context.bpd === 'rl') {
 
-          pos = (i === 0) ? "right under" : "left under";
+          pos = (i === 0) ? 'right under' : 'left under';
 
         } else {
 
-          pos = (i === 0) ? "left under" : "right under";
+          pos = (i === 0) ? 'left under' : 'right under';
 
         }
 
