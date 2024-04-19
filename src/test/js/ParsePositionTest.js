@@ -6,7 +6,7 @@ QUnit.test('ParsePosition',
         function position(h_edge, h_offval, h_offunit, v_edge, v_offval, v_offunit) {
             return {
                 h: { edge: h_edge, offset: { value: h_offval, unit: h_offunit } },
-                v: { edge: v_edge, offset: { value: v_offval, unit: v_offunit } }
+                v: { edge: v_edge, offset: { value: v_offval, unit: v_offunit } },
             };
         }
 
@@ -86,15 +86,15 @@ QUnit.test('ParsePosition',
             ['top 25% left 75%', position('left', 75, '%', 'top', 25, '%')],
             ['top 25% right 75%', position('right', 75, '%', 'top', 25, '%')],
             ['left 25% top 75%', position('left', 25, '%', 'top', 75, '%')],
-            ['right 25% top 75%', position('right', 25, '%', 'top', 75, '%')]
+            ['right 25% top 75%', position('right', 25, '%', 'top', 75, '%')],
         ];
 
         for (const i in tests) {
             assert.deepEqual(
                 parsePosition(tests[i][0]),
                 tests[i][1],
-                tests[i][0]
+                tests[i][0],
             );
         }
-    }
+    },
 );

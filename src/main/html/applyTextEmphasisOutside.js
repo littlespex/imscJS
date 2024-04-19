@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -26,7 +26,6 @@
 
 import { TEXTEMPHASISPOSITION_PROP } from './TEXTEMPHASISPOSITION_PROP.js';
 
-
 export function applyTextEmphasisOutside(lineList, context) {
   /* supports "outside" only */
 
@@ -44,7 +43,6 @@ export function applyTextEmphasisOutside(lineList, context) {
       if (context.bpd === 'tb') {
 
         pos = (i === 0) ? 'left over' : 'left under';
-
 
       } else {
 

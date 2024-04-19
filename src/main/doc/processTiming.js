@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -77,7 +77,7 @@ export function processTiming(doc, parent, node, errorHandler) {
   return {
     explicit_begin: explicit_begin,
     explicit_end: explicit_end,
-    explicit_dur: explicit_dur
+    explicit_dur: explicit_dur,
   };
 
 }

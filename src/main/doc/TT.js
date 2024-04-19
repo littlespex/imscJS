@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -35,7 +35,6 @@ import { extractFrameAndTickRate } from './extractFrameAndTickRate.js';
 import { findAttribute } from './findAttribute.js';
 import { indexOf } from './indexOf.js';
 
-
 export class TT {
   constructor() {
     this.events = [];
@@ -50,7 +49,7 @@ export class TT {
 
     this.cellLength = {
       'h': new ComputedLength(0, 1 / cr.h),
-      'w': new ComputedLength(1 / cr.w, 0)
+      'w': new ComputedLength(1 / cr.w, 0),
     };
 
     /* extract frame rate and tick rate */
@@ -79,7 +78,7 @@ export class TT {
 
       this.pxLength = {
         'h': null,
-        'w': null
+        'w': null,
       };
 
     } else {
@@ -90,7 +89,7 @@ export class TT {
 
       this.pxLength = {
         'h': new ComputedLength(0, 1 / e.h.value),
-        'w': new ComputedLength(1 / e.w.value, 0)
+        'w': new ComputedLength(1 / e.w.value, 0),
       };
     }
 
@@ -99,7 +98,7 @@ export class TT {
     **/
     this.dimensions = {
       'h': new ComputedLength(0, 1),
-      'w': new ComputedLength(1, 0)
+      'w': new ComputedLength(1, 0),
     };
 
     /* xml:lang */
@@ -133,7 +132,6 @@ export class TT {
     }
 
   };
-
 
   /*
    * Retrieves the range of ISD times covered by the document

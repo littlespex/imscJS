@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -92,16 +92,13 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
 
       e = document.createElement('rt');
 
-
     } else if (isd_element.styleAttrs[byName.ruby.qname] === 'baseContainer') {
 
       e = document.createElement('rbc');
 
-
     } else if (isd_element.styleAttrs[byName.ruby.qname] === 'textContainer') {
 
       e = document.createElement('rtc');
-
 
     } else if (isd_element.styleAttrs[byName.ruby.qname] === 'delimiter') {
 
@@ -204,7 +201,6 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
 
     const plength = lp.toUsedLength(context.w, context.h);
 
-
     if (plength > 0) {
 
       /* apply padding to the <p> so that line padding does not cause line wraps */
@@ -253,12 +249,10 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
     context.rubyReserve = rr;
   }
 
-
   /* remember we are filling line gaps */
   if (isd_element.styleAttrs[byName.fillLineGap.qname]) {
     context.flg = true;
   }
-
 
   if (isd_element.kind === 'span' && isd_element.text) {
 
@@ -335,7 +329,6 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
   /* list of lines */
   const linelist = [];
 
-
   /* paragraph processing */
   /* TODO: linePadding only supported for horizontal scripts */
   if (isd_element.kind === 'p') {
@@ -389,8 +382,6 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
 
     mergeSpans(linelist, context); // The earlier we can do this the less processing there will be.
 
-
-
     /* fill line gaps linepadding */
     if (context.flg) {
 
@@ -403,7 +394,6 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
     }
 
   }
-
 
   /* region processing */
   if (isd_element.kind === 'region') {

@@ -39,8 +39,8 @@ QUnit.test('ParseColor',
             assert.deepEqual(
                 parseColor(tests[i][0]),
                 tests[i][1],
-                tests[i][0]
+                tests[i][0],
             );
         }
-    }
+    },
 );

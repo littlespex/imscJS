@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -42,7 +42,7 @@ const _rcs_na_styles = [
   byName.textDecoration.qname,
   byName.textEmphasis.qname,
   byName.textOutline.qname,
-  byName.textShadow.qname
+  byName.textShadow.qname,
 ];
 
 export function isdProcessContentElement(doc, offset, region, body, parent, inherited_region_id, elem, errorHandler, context) {
@@ -284,7 +284,7 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
         parent,
         isd_element,
         isd_element.styleAttrs[cs.qname],
-        context
+        context,
       );
 
       if (cstyle !== null) {
@@ -299,7 +299,7 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
           parent,
           isd_element,
           cs.parse(cs.initial),
-          context
+          context,
         );
 
         reportError(errorHandler, "Style '" + cs.qname + "' on element '" + isd_element.kind + "' cannot be computed");
@@ -397,7 +397,6 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
 
     }
 
-
     if (na) {
       delete isd_element.styleAttrs[qnameb];
     }
@@ -438,7 +437,7 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
 
     return {
       region_id: associated_region_id,
-      element: isd_element
+      element: isd_element,
     };
   }
 

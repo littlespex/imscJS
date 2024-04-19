@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -27,7 +27,6 @@
 import { RUBYPOSITION_ISWK } from './RUBYPOSITION_ISWK.js';
 import { RUBYPOSITION_PROP } from './RUBYPOSITION_PROP.js';
 
-
 export function applyRubyPosition(lineList, context) {
 
   for (let i = 0; i < lineList.length; i++) {
@@ -48,7 +47,6 @@ export function applyRubyPosition(lineList, context) {
       } else if (context.bpd === 'tb') {
 
         pos = (i === 0) ? 'over' : 'under';
-
 
       } else {
 

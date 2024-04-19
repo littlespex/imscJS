@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -29,7 +29,6 @@ import { HTMLStylingMapDefinition } from './HTMLStylingMapDefinition.js';
 import { RUBYPOSITION_ISWK } from './RUBYPOSITION_ISWK.js';
 import { RUBYPOSITION_PROP } from './RUBYPOSITION_PROP.js';
 
-
 export const STYLING_MAP_DEFS = [
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling backgroundColor',
@@ -45,7 +44,7 @@ export const STYLING_MAP_DEFS = [
         attr[2].toString() + ',' +
         (attr[3] / 255).toString() +
         ')';
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling color',
@@ -56,7 +55,7 @@ export const STYLING_MAP_DEFS = [
         attr[2].toString() + ',' +
         (attr[3] / 255).toString() +
         ')';
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling direction',
@@ -64,11 +63,11 @@ export const STYLING_MAP_DEFS = [
 
       dom_element.style.direction = attr;
 
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling display',
-    function () { }
+    function () { },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling displayAlign',
@@ -78,7 +77,6 @@ export const STYLING_MAP_DEFS = [
       /* TODO: is this affected by writing direction? */
       dom_element.style.display = 'flex';
       dom_element.style.flexDirection = 'column';
-
 
       if (attr === 'before') {
 
@@ -93,7 +91,7 @@ export const STYLING_MAP_DEFS = [
         dom_element.style.justifyContent = 'flex-end';
       }
 
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling extent',
@@ -123,7 +121,7 @@ export const STYLING_MAP_DEFS = [
       dom_element.style.height = (context.regionH - hdelta) + 'px';
       dom_element.style.width = (context.regionW - wdelta) + 'px';
 
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling fontFamily',
@@ -178,7 +176,7 @@ export const STYLING_MAP_DEFS = [
 
       }
 
-      // prune later duplicates we may have inserted 
+      // prune later duplicates we may have inserted
       if (rslt.length > 0) {
 
         const unique = [rslt[0]];
@@ -196,7 +194,7 @@ export const STYLING_MAP_DEFS = [
       }
 
       dom_element.style.fontFamily = rslt.join(',');
-    }
+    },
   ),
 
   new HTMLStylingMapDefinition(
@@ -220,27 +218,27 @@ export const STYLING_MAP_DEFS = [
 
       }
 
-    }
+    },
   ),
 
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling fontSize',
     function (context, dom_element, isd_element, attr) {
       dom_element.style.fontSize = attr.toUsedLength(context.w, context.h) + 'px';
-    }
+    },
   ),
 
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling fontStyle',
     function (context, dom_element, isd_element, attr) {
       dom_element.style.fontStyle = attr;
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling fontWeight',
     function (context, dom_element, isd_element, attr) {
       dom_element.style.fontWeight = attr;
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling lineHeight',
@@ -253,26 +251,26 @@ export const STYLING_MAP_DEFS = [
 
         dom_element.style.lineHeight = attr.toUsedLength(context.w, context.h) + 'px';
       }
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling opacity',
     function (context, dom_element, isd_element, attr) {
       dom_element.style.opacity = attr;
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling origin',
     function (context, dom_element, isd_element, attr) {
       dom_element.style.top = attr.h.toUsedLength(context.w, context.h) + 'px';
       dom_element.style.left = attr.w.toUsedLength(context.w, context.h) + 'px';
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling overflow',
     function (context, dom_element, isd_element, attr) {
       dom_element.style.overflow = attr;
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling padding',
@@ -288,20 +286,20 @@ export const STYLING_MAP_DEFS = [
       rslt[3] = attr[1].toUsedLength(context.w, context.h) + 'px';
 
       dom_element.style.padding = rslt.join(' ');
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling position',
     function (context, dom_element, isd_element, attr) {
       dom_element.style.top = attr.h.toUsedLength(context.w, context.h) + 'px';
       dom_element.style.left = attr.w.toUsedLength(context.w, context.h) + 'px';
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling rubyAlign',
     function (context, dom_element, isd_element, attr) {
       dom_element.style.rubyAlign = attr === 'spaceAround' ? 'space-around' : 'center';
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling rubyPosition',
@@ -321,7 +319,6 @@ export const STYLING_MAP_DEFS = [
 
           pos = (attr === 'before') ? 'over' : 'under';
 
-
         } else {
 
           if (context.bpd === 'rl') {
@@ -339,11 +336,11 @@ export const STYLING_MAP_DEFS = [
         /* apply position to the parent dom_element, i.e. ruby or rtc */
         dom_element.parentElement.style[RUBYPOSITION_PROP] = pos;
       }
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling showBackground',
-    null
+    null,
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling textAlign',
@@ -368,19 +365,19 @@ export const STYLING_MAP_DEFS = [
 
       dom_element.style.textAlign = ta;
 
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling textDecoration',
     function (context, dom_element, isd_element, attr) {
       dom_element.style.textDecoration = attr.join(' ').replace('lineThrough', 'line-through');
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling textOutline',
     function () {
       /* defer to tts:textShadow */
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling textShadow',
@@ -426,7 +423,7 @@ export const STYLING_MAP_DEFS = [
               attr[i].color[1].toString() + ',' +
               attr[i].color[2].toString() + ',' +
               (attr[i].color[3] / 255).toString() +
-              ')'
+              ')',
             );
 
           }
@@ -436,7 +433,7 @@ export const STYLING_MAP_DEFS = [
         dom_element.style.textShadow = s.join(',');
 
       }
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling textCombine',
@@ -444,13 +441,13 @@ export const STYLING_MAP_DEFS = [
 
       dom_element.style.textCombineUpright = attr;
 
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling textEmphasis',
     function () {
       /* applied as part of HTML document construction */
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling unicodeBidi',
@@ -465,13 +462,13 @@ export const STYLING_MAP_DEFS = [
       }
 
       dom_element.style.unicodeBidi = ub;
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling visibility',
     function (context, dom_element, isd_element, attr) {
       dom_element.style.visibility = attr;
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling wrapOption',
@@ -497,7 +494,7 @@ export const STYLING_MAP_DEFS = [
 
       }
 
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling writingMode',
@@ -521,13 +518,13 @@ export const STYLING_MAP_DEFS = [
 
       }
 
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml#styling zIndex',
     function (context, dom_element, isd_element, attr) {
       dom_element.style.zIndex = attr;
-    }
+    },
   ),
   new HTMLStylingMapDefinition(
     'http://www.w3.org/ns/ttml/profile/imsc1#styling forcedDisplay',
@@ -537,6 +534,6 @@ export const STYLING_MAP_DEFS = [
         dom_element.style.visibility = 'hidden';
       }
 
-    }
-  )
+    },
+  ),
 ];

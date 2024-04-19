@@ -27,7 +27,6 @@
 import { parseColor } from './parseColor.js';
 import { parseLength } from './parseLength.js';
 
-
 export function parseTextShadow(str) {
 
   const shadows = str.match(/([^(,)]|\([^)]+\))+/g);

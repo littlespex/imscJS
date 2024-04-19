@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -24,6 +24,5 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 import { RUBYPOSITION_ISWK } from './RUBYPOSITION_ISWK.js';
-
 
 export const RUBYPOSITION_PROP = RUBYPOSITION_ISWK ? 'webkitRubyPosition' : 'rubyPosition';

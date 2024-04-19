@@ -42,8 +42,6 @@ import { parseLength } from './parseLength.js';
  * @class
  */
 
-
-
 export function parsePosition(str) {
   /* see https://www.w3.org/TR/ttml2/#style-value-position */
 
@@ -83,7 +81,7 @@ export function parsePosition(str) {
   /* position default */
   const pos = {
     h: { edge: 'left', offset: { value: 50, unit: '%' } },
-    v: { edge: 'top', offset: { value: 50, unit: '%' } }
+    v: { edge: 'top', offset: { value: 50, unit: '%' } },
   };
 
   /* update position */
@@ -116,19 +114,15 @@ export function parsePosition(str) {
 
         pos.v.edge = comp;
 
-
         pos.v.offset = offset;
-
 
       } else if (comp === 'left') {
 
         pos.h.offset = offset;
 
-
       } else if (comp === 'top') {
 
         pos.v.offset = offset;
-
 
       }
 

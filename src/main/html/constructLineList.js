@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -60,7 +60,7 @@ export function constructLineList(context, element, llist, bgcolor) {
           rbc: [],
           te: [],
           text: '',
-          br: false
+          br: false,
         });
 
       } else {
@@ -99,8 +99,8 @@ export function constructLineList(context, element, llist, bgcolor) {
           node: element,
           bgcolor: curbgcolor,
           before: edges.before,
-          after: edges.after
-        }
+          after: edges.after,
+        },
       );
 
     } else if (element.localName === 'br' && llist.length !== 0) {
@@ -140,7 +140,6 @@ export function constructLineList(context, element, llist, bgcolor) {
           }
 
         }
-
 
       }
 

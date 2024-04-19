@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -28,7 +28,6 @@ import { reportError } from '../error/reportError.js';
 import { reportWarning } from '../error/reportWarning.js';
 import { byName } from '../styles/byName.js';
 import { byQName } from '../styles/byQName.js';
-
 
 export function elementGetStyles(node, errorHandler) {
 

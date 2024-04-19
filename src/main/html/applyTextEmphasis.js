@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -27,7 +27,6 @@
 import { TEXTEMPHASISPOSITION_PROP } from './TEXTEMPHASISPOSITION_PROP.js';
 import { TEXTEMPHASISSTYLE_PROP } from './TEXTEMPHASISSTYLE_PROP.js';
 
-
 export function applyTextEmphasis(context, dom_element, isd_element, attr) {
   /* ignore color (not used in IMSC 1.1) */
 
@@ -53,7 +52,6 @@ export function applyTextEmphasis(context, dom_element, isd_element, attr) {
     if (context.bpd === 'tb') {
 
       pos = (attr.position === 'before') ? 'left over' : 'left under';
-
 
     } else {
 

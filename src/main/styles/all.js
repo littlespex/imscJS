@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -44,7 +44,7 @@ export const all = [
     false,
     true,
     parseColor,
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -54,7 +54,7 @@ export const all = [
     true,
     true,
     parseColor,
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -66,7 +66,7 @@ export const all = [
     function (str) {
       return str;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -78,7 +78,7 @@ export const all = [
     function (str) {
       return str;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -90,7 +90,7 @@ export const all = [
     function (str) {
       return str;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -135,9 +135,8 @@ export const all = [
           null,
           doc.dimensions.h,
           null,
-          doc.pxLength.h
+          doc.pxLength.h,
         );
-
 
         if (h === null) {
 
@@ -158,7 +157,7 @@ export const all = [
           null,
           doc.dimensions.w,
           null,
-          doc.pxLength.w
+          doc.pxLength.w,
         );
 
         if (w === null) {
@@ -170,7 +169,7 @@ export const all = [
       }
 
       return { 'h': h, 'w': w };
-    }
+    },
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -209,7 +208,7 @@ export const all = [
 
       return rslt;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -234,7 +233,7 @@ export const all = [
       }
 
       return fs;
-    }
+    },
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -252,11 +251,11 @@ export const all = [
         parent !== null ? parent.styleAttrs[byName.fontSize.qname] : doc.cellLength.h,
         parent !== null ? parent.styleAttrs[byName.fontSize.qname] : doc.cellLength.h,
         doc.cellLength.h,
-        doc.pxLength.h
+        doc.pxLength.h,
       );
 
       return fs;
-    }
+    },
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -269,7 +268,7 @@ export const all = [
       /* TODO: handle font style */
       return str;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -282,7 +281,7 @@ export const all = [
       /* TODO: handle font weight */
       return str;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -315,7 +314,7 @@ export const all = [
           element.styleAttrs[byName.fontSize.qname],
           element.styleAttrs[byName.fontSize.qname],
           doc.cellLength.h,
-          doc.pxLength.h
+          doc.pxLength.h,
         );
 
         if (lh === null) {
@@ -328,7 +327,7 @@ export const all = [
 
       /* TODO: create a Length constructor */
       return lh;
-    }
+    },
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -338,7 +337,7 @@ export const all = [
     false,
     true,
     parseFloat,
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -383,7 +382,7 @@ export const all = [
           null,
           doc.dimensions.h,
           null,
-          doc.pxLength.h
+          doc.pxLength.h,
         );
 
         if (h === null) {
@@ -406,7 +405,7 @@ export const all = [
           null,
           doc.dimensions.w,
           null,
-          doc.pxLength.w
+          doc.pxLength.w,
         );
 
         if (w === null) {
@@ -418,7 +417,7 @@ export const all = [
       }
 
       return { 'h': h, 'w': w };
-    }
+    },
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -430,7 +429,7 @@ export const all = [
     function (str) {
       return str;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -533,7 +532,7 @@ export const all = [
             element.styleAttrs[byName.fontSize.qname],
             i === 0 || i === 2 ? element.styleAttrs[byName.extent.qname].h : element.styleAttrs[byName.extent.qname].w,
             i === 0 || i === 2 ? doc.cellLength.h : doc.cellLength.w,
-            i === 0 || i === 2 ? doc.pxLength.h : doc.pxLength.w
+            i === 0 || i === 2 ? doc.pxLength.h : doc.pxLength.w,
           );
 
           if (out[i] === null) return null;
@@ -541,9 +540,8 @@ export const all = [
         }
       }
 
-
       return out;
-    }
+    },
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -567,20 +565,19 @@ export const all = [
         null,
         new ComputedLength(
           -element.styleAttrs[byName.extent.qname].h.rw,
-          doc.dimensions.h.rh - element.styleAttrs[byName.extent.qname].h.rh
+          doc.dimensions.h.rh - element.styleAttrs[byName.extent.qname].h.rh,
         ),
         null,
-        doc.pxLength.h
+        doc.pxLength.h,
       );
 
       if (h === null) return null;
-
 
       if (attr.v.edge === 'bottom') {
 
         h = new ComputedLength(
           -h.rw - element.styleAttrs[byName.extent.qname].h.rw,
-          doc.dimensions.h.rh - h.rh - element.styleAttrs[byName.extent.qname].h.rh
+          doc.dimensions.h.rh - h.rh - element.styleAttrs[byName.extent.qname].h.rh,
         );
 
       }
@@ -591,10 +588,10 @@ export const all = [
         null,
         new ComputedLength(
           doc.dimensions.w.rw - element.styleAttrs[byName.extent.qname].w.rw,
-          -element.styleAttrs[byName.extent.qname].w.rh
+          -element.styleAttrs[byName.extent.qname].w.rh,
         ),
         null,
-        doc.pxLength.w
+        doc.pxLength.w,
       );
 
       if (h === null) return null;
@@ -603,13 +600,13 @@ export const all = [
 
         w = new ComputedLength(
           doc.dimensions.w.rw - w.rw - element.styleAttrs[byName.extent.qname].w.rw,
-          -w.rh - element.styleAttrs[byName.extent.qname].w.rh
+          -w.rh - element.styleAttrs[byName.extent.qname].w.rh,
         );
 
       }
 
       return { 'h': h, 'w': w };
-    }
+    },
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -621,7 +618,7 @@ export const all = [
     function (str) {
       return str;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -638,7 +635,7 @@ export const all = [
 
       return str;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -650,7 +647,7 @@ export const all = [
     function (str) {
       return str;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -697,7 +694,6 @@ export const all = [
 
       }
 
-
       return r;
     },
     function (doc, parent, element, attr) {
@@ -714,7 +710,7 @@ export const all = [
 
         fs = new ComputedLength(
           element.styleAttrs[byName.fontSize.qname].rw * 0.5,
-          element.styleAttrs[byName.fontSize.qname].rh * 0.5
+          element.styleAttrs[byName.fontSize.qname].rh * 0.5,
         );
 
       } else {
@@ -724,7 +720,7 @@ export const all = [
           element.styleAttrs[byName.fontSize.qname],
           element.styleAttrs[byName.fontSize.qname],
           doc.cellLength.h,
-          doc.pxLength.h
+          doc.pxLength.h,
         );
 
       }
@@ -732,7 +728,7 @@ export const all = [
       if (fs === null) return null;
 
       return [attr[0], fs];
-    }
+    },
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -744,7 +740,7 @@ export const all = [
     function (str) {
       return str;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -771,7 +767,7 @@ export const all = [
         return attr;
 
       }
-    }
+    },
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -788,7 +784,7 @@ export const all = [
 
       return null;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -800,7 +796,7 @@ export const all = [
     function (str) {
       return str.split(' ');
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -865,7 +861,7 @@ export const all = [
 
       return rslt;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -938,14 +934,14 @@ export const all = [
         element.styleAttrs[byName.fontSize.qname],
         element.styleAttrs[byName.fontSize.qname],
         doc.cellLength.h,
-        doc.pxLength.h
+        doc.pxLength.h,
       );
 
       if (rslt.thickness === null)
         return null;
 
       return rslt;
-    }
+    },
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -976,7 +972,7 @@ export const all = [
           null,
           element.styleAttrs[byName.fontSize.qname],
           null,
-          doc.pxLength.w
+          doc.pxLength.w,
         );
 
         if (shadow.x_off === null)
@@ -988,7 +984,7 @@ export const all = [
           null,
           element.styleAttrs[byName.fontSize.qname],
           null,
-          doc.pxLength.h
+          doc.pxLength.h,
         );
 
         if (shadow.y_off === null)
@@ -1006,7 +1002,7 @@ export const all = [
             null,
             element.styleAttrs[byName.fontSize.qname],
             null,
-            doc.pxLength.h
+            doc.pxLength.h,
           );
 
           if (shadow.b_radius === null)
@@ -1029,7 +1025,7 @@ export const all = [
       }
 
       return r;
-    }
+    },
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -1041,7 +1037,7 @@ export const all = [
     function (str) {
       return str;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -1053,7 +1049,7 @@ export const all = [
     function (str) {
       return str;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -1065,7 +1061,7 @@ export const all = [
     function (str) {
       return str;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -1077,7 +1073,7 @@ export const all = [
     function (str) {
       return str;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_tts,
@@ -1106,7 +1102,7 @@ export const all = [
 
       return rslt;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_ebutts,
@@ -1120,7 +1116,7 @@ export const all = [
 
       return toComputedLength(attr.value, attr.unit, null, null, doc.cellLength.w, null);
 
-    }
+    },
   ),
   new StylingAttributeDefinition(
     imscNames.ns_ebutts,
@@ -1132,7 +1128,7 @@ export const all = [
     function (str) {
       return str;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_smpte,
@@ -1144,7 +1140,7 @@ export const all = [
     function (str) {
       return str;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_itts,
@@ -1156,7 +1152,7 @@ export const all = [
     function (str) {
       return str === 'true' ? true : false;
     },
-    null
+    null,
   ),
   new StylingAttributeDefinition(
     imscNames.ns_itts,
@@ -1168,8 +1164,8 @@ export const all = [
     function (str) {
       return str === 'true' ? true : false;
     },
-    null
-  )
+    null,
+  ),
 ];
 
 for (const i in all) {

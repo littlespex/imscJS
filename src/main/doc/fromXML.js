@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -74,7 +74,6 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
   let doc = null;
 
   p.onclosetag = function () {
-
 
     if (estack[0] instanceof Region) {
 
@@ -200,7 +199,6 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
   };
 
-
   p.onopentag = function (node) {
     // maintain the xml:space stack
 
@@ -244,7 +242,6 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
       }
 
     }
-
 
     /* process the element */
     if (node.uri === imscNames.ns_tt) {
@@ -545,7 +542,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
           {
             uri: node.attributes[a].uri,
             local: node.attributes[a].local,
-            value: node.attributes[a].value
+            value: node.attributes[a].value,
           };
         }
 

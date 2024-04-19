@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -41,7 +41,6 @@ export function resolveTiming(doc, element, prev_sibling, parent) {
           */
       implicit_begin = prev_sibling.end;
 
-
     } else {
 
       implicit_begin = parent.begin;
@@ -52,7 +51,6 @@ export function resolveTiming(doc, element, prev_sibling, parent) {
 
   /* compute desired begin */
   element.begin = element.explicit_begin ? element.explicit_begin + implicit_begin : implicit_begin;
-
 
   /* determine implicit end */
   let implicit_end = element.begin;

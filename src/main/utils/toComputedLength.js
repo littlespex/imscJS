@@ -44,42 +44,42 @@ export function toComputedLength(lengthVal, lengthUnit, emLength, percentLength,
 
     return new ComputedLength(
       percentLength.rw * lengthVal / 100,
-      percentLength.rh * lengthVal / 100
+      percentLength.rh * lengthVal / 100,
     );
 
   } else if (lengthUnit === 'em' && emLength) {
 
     return new ComputedLength(
       emLength.rw * lengthVal,
-      emLength.rh * lengthVal
+      emLength.rh * lengthVal,
     );
 
   } else if (lengthUnit === 'c' && cellLength) {
 
     return new ComputedLength(
       lengthVal * cellLength.rw,
-      lengthVal * cellLength.rh
+      lengthVal * cellLength.rh,
     );
 
   } else if (lengthUnit === 'px' && pxLength) {
 
     return new ComputedLength(
       lengthVal * pxLength.rw,
-      lengthVal * pxLength.rh
+      lengthVal * pxLength.rh,
     );
 
   } else if (lengthUnit === 'rh') {
 
     return new ComputedLength(
       0,
-      lengthVal / 100
+      lengthVal / 100,
     );
 
   } else if (lengthUnit === 'rw') {
 
     return new ComputedLength(
       lengthVal / 100,
-      0
+      0,
     );
 
   } else {

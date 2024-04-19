@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -26,7 +26,6 @@
 
 import { reportError } from '../error/reportError.js';
 import { mergeStylesIfNotPresent } from './mergeStylesIfNotPresent.js';
-
 
 export function mergeChainedStyles(styling, style, errorHandler) {
 

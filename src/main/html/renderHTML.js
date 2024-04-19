@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -70,7 +70,7 @@ export function renderHTML(isd,
   displayForcedOnlyMode,
   errorHandler,
   previousISDState,
-  enableRollUp
+  enableRollUp,
 ) {
   /* maintain aspect ratio if specified */
 
@@ -124,7 +124,7 @@ export function renderHTML(isd,
     bpd: null, /* block progression direction (lr, rl, tb) */
     ruby: null, /* is ruby present in a <p> */
     textEmphasis: null, /* is textEmphasis present in a <p> */
-    rubyReserve: null /* is rubyReserve applicable to a <p> */
+    rubyReserve: null, /* is rubyReserve applicable to a <p> */
   };
 
   element.appendChild(rootcontainer);

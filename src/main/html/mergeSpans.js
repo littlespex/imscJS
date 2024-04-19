@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -26,7 +26,6 @@
 
 import { getSpanAncestorColor } from './getSpanAncestorColor.js';
 import { spanMerge } from './spanMerge.js';
-
 
 export function mergeSpans(lineList, context) {
 

@@ -46,12 +46,11 @@ const NAMED_COLOR = {
   blue: [0, 0, 255, 255],
   teal: [0, 128, 128, 255],
   aqua: [0, 255, 255, 255],
-  cyan: [0, 255, 255, 255]
+  cyan: [0, 255, 255, 255],
 };
 
 /*
  * Parses a TTML color expression
- * 
  */
 export function parseColor(str) {
 
