@@ -74,12 +74,12 @@ export function renderHTML(isd,
 ) {
   /* maintain aspect ratio if specified */
 
-  var height = eheight || element.clientHeight;
-  var width = ewidth || element.clientWidth;
+  let height = eheight || element.clientHeight;
+  let width = ewidth || element.clientWidth;
 
   if (isd.aspectRatio !== null) {
 
-    var twidth = height * isd.aspectRatio;
+    const twidth = height * isd.aspectRatio;
 
     if (twidth > width) {
 
@@ -93,7 +93,7 @@ export function renderHTML(isd,
 
   }
 
-  var rootcontainer = document.createElement("div");
+  const rootcontainer = document.createElement("div");
 
   rootcontainer.style.position = "relative";
   rootcontainer.style.width = width + "px";
@@ -105,7 +105,7 @@ export function renderHTML(isd,
   rootcontainer.style.right = 0;
   rootcontainer.style.zIndex = 0;
 
-  var context = {
+  const context = {
     h: height,
     w: width,
     regionH: null,
@@ -131,7 +131,7 @@ export function renderHTML(isd,
 
   if ("contents" in isd) {
 
-    for (var i = 0; i < isd.contents.length; i++) {
+    for (let i = 0; i < isd.contents.length; i++) {
 
       processElement(context, rootcontainer, isd.contents[i], isd);
 

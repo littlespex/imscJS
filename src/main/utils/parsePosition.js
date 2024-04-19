@@ -47,9 +47,9 @@ import { parseLength } from "./parseLength.js";
 export function parsePosition(str) {
   /* see https://www.w3.org/TR/ttml2/#style-value-position */
 
-  var s = str.split(" ");
+  const s = str.split(" ");
 
-  var isKeyword = function (str) {
+  const isKeyword = function (str) {
 
     return str === "center" ||
       str === "left" ||
@@ -66,11 +66,11 @@ export function parsePosition(str) {
   }
 
   /* initial clean-up pass */
-  for (var j = 0; j < s.length; j++) {
+  for (let j = 0; j < s.length; j++) {
 
     if (!isKeyword(s[j])) {
 
-      var l = parseLength(s[j]);
+      const l = parseLength(s[j]);
 
       if (l === null)
         return null;
@@ -81,21 +81,21 @@ export function parsePosition(str) {
   }
 
   /* position default */
-  var pos = {
+  const pos = {
     h: { edge: "left", offset: { value: 50, unit: "%" } },
     v: { edge: "top", offset: { value: 50, unit: "%" } }
   };
 
   /* update position */
-  for (var i = 0; i < s.length;) {
+  for (let i = 0; i < s.length;) {
 
     /* extract the current component */
-    var comp = s[i++];
+    const comp = s[i++];
 
     if (isKeyword(comp)) {
 
       /* we have a keyword */
-      var offset = { value: 0, unit: "%" };
+      let offset = { value: 0, unit: "%" };
 
       /* peek at the next component */
       if (s.length !== 2 && i < s.length && (!isKeyword(s[i]))) {

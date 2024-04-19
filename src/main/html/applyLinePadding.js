@@ -30,24 +30,24 @@ export function applyLinePadding(lineList, lp, context) {
 
   if (lineList === null) return;
 
-  for (var i = 0; i < lineList.length; i++) {
+  for (let i = 0; i < lineList.length; i++) {
 
-    var l = lineList[i].elements.length;
+    const l = lineList[i].elements.length;
 
-    var pospadpxlen = Math.ceil(lp) + "px";
+    const pospadpxlen = Math.ceil(lp) + "px";
 
-    var negpadpxlen = "-" + Math.ceil(lp) + "px";
+    const negpadpxlen = "-" + Math.ceil(lp) + "px";
 
     if (l !== 0) {
 
-      var se = lineList[i].elements[lineList[i].start_elem];
+      const se = lineList[i].elements[lineList[i].start_elem];
 
-      var ee = lineList[i].elements[lineList[i].end_elem];
+      const ee = lineList[i].elements[lineList[i].end_elem];
 
       if (se === ee) {
 
         // Check to see if there's any background at all
-        var elementBoundingRect = se.node.getBoundingClientRect();
+        const elementBoundingRect = se.node.getBoundingClientRect();
 
         if (elementBoundingRect.width == 0 || elementBoundingRect.height == 0) {
 

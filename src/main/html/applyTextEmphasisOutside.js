@@ -30,16 +30,16 @@ import { TEXTEMPHASISPOSITION_PROP } from './TEXTEMPHASISPOSITION_PROP.js';
 export function applyTextEmphasisOutside(lineList, context) {
   /* supports "outside" only */
 
-  for (var i = 0; i < lineList.length; i++) {
+  for (let i = 0; i < lineList.length; i++) {
 
-    for (var j = 0; j < lineList[i].te.length; j++) {
+    for (let j = 0; j < lineList[i].te.length; j++) {
 
       /* skip if position already set */
       if (lineList[i].te[j].style[TEXTEMPHASISPOSITION_PROP] &&
         lineList[i].te[j].style[TEXTEMPHASISPOSITION_PROP] !== "none")
         continue;
 
-      var pos;
+      let pos;
 
       if (context.bpd === "tb") {
 

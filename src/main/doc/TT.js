@@ -46,7 +46,7 @@ export class TT {
   initFromNode(node, xmllang, errorHandler) {
     /* compute cell resolution */
 
-    var cr = extractCellResolution(node, errorHandler);
+    const cr = extractCellResolution(node, errorHandler);
 
     this.cellLength = {
       'h': new ComputedLength(0, 1 / cr.h),
@@ -54,7 +54,7 @@ export class TT {
     };
 
     /* extract frame rate and tick rate */
-    var frtr = extractFrameAndTickRate(node, errorHandler);
+    const frtr = extractFrameAndTickRate(node, errorHandler);
 
     this.effectiveFrameRate = frtr.effectiveFrameRate;
 
@@ -64,7 +64,7 @@ export class TT {
     this.aspectRatio = extractAspectRatio(node, errorHandler);
 
     /* check timebase */
-    var attr = findAttribute(node, imscNames.ns_ttp, "timeBase");
+    const attr = findAttribute(node, imscNames.ns_ttp, "timeBase");
 
     if (attr !== null && attr !== "media") {
 
@@ -73,7 +73,7 @@ export class TT {
     }
 
     /* retrieve extent */
-    var e = extractExtent(node, errorHandler);
+    const e = extractExtent(node, errorHandler);
 
     if (e === null) {
 
@@ -115,7 +115,7 @@ export class TT {
       return;
 
     /* index the begin time of the event */
-    var b_i = indexOf(this.events, elem.begin);
+    const b_i = indexOf(this.events, elem.begin);
 
     if (!b_i.found) {
       this.events.splice(b_i.index, 0, elem.begin);
@@ -124,7 +124,7 @@ export class TT {
     /* index the end time of the event */
     if (elem.end !== Number.POSITIVE_INFINITY) {
 
-      var e_i = indexOf(this.events, elem.end);
+      const e_i = indexOf(this.events, elem.end);
 
       if (!e_i.found) {
         this.events.splice(e_i.index, 0, elem.end);

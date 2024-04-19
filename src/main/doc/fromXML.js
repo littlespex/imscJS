@@ -29,6 +29,7 @@ import { reportError } from '../error/reportError.js';
 import { reportFatal } from '../error/reportFatal.js';
 import { imscNames } from '../imscNames.js';
 import { byName } from '../styles/byName.js';
+import { hasOwnProperty } from '../utils/hasOwnProperty.js';
 import { AnonymousSpan } from './AnonymousSpan.js';
 import { Body } from './Body.js';
 import { Br } from './Br.js';
@@ -65,14 +66,14 @@ import { resolveTiming } from './resolveTiming.js';
  */
 
 export function fromXML(xmlstring, errorHandler, metadataHandler) {
-  var p = sax.parser(true, { xmlns: true });
-  var estack = [];
-  var xmllangstack = [];
-  var xmlspacestack = [];
-  var metadata_depth = 0;
-  var doc = null;
+  const p = sax.parser(true, { xmlns: true });
+  const estack = [];
+  const xmllangstack = [];
+  const xmlspacestack = [];
+  let metadata_depth = 0;
+  let doc = null;
 
-  p.onclosetag = function (node) {
+  p.onclosetag = function () {
 
 
     if (estack[0] instanceof Region) {
@@ -87,9 +88,9 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
     } else if (estack[0] instanceof Styling) {
 
       /* flatten chained referential styling */
-      for (var sid in estack[0].styles) {
+      for (const sid in estack[0].styles) {
 
-        if (!estack[0].styles.hasOwnProperty(sid)) continue;
+        if (!hasOwnProperty(estack[0].styles, sid)) continue;
 
         mergeChainedStyles(estack[0], estack[0].styles[sid], errorHandler);
 
@@ -100,11 +101,9 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
       /* merge anonymous spans */
       if (estack[0].contents.length > 1) {
 
-        var cs = [estack[0].contents[0]];
+        const cs = [estack[0].contents[0]];
 
-        var c;
-
-        for (c = 1; c < estack[0].contents.length; c++) {
+        for (let c = 1; c < estack[0].contents.length; c++) {
 
           if (estack[0].contents[c] instanceof AnonymousSpan &&
             cs[cs.length - 1] instanceof AnonymousSpan) {
@@ -172,7 +171,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
       /* ignore children text nodes in ruby container spans */
       if (estack[0] instanceof Span) {
 
-        var ruby = estack[0].styleAttrs[byName.ruby.qname];
+        const ruby = estack[0].styleAttrs[byName.ruby.qname];
 
         if (ruby === 'container' || ruby === 'textContainer' || ruby === 'baseContainer') {
 
@@ -183,7 +182,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
       }
 
       /* create an anonymous span */
-      var s = new AnonymousSpan();
+      const s = new AnonymousSpan();
 
       s.initFromText(doc, estack[0], str, xmllangstack[0], xmlspacestack[0], errorHandler);
 
@@ -205,7 +204,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
   p.onopentag = function (node) {
     // maintain the xml:space stack
 
-    var xmlspace = node.attributes["xml:space"];
+    const xmlspace = node.attributes["xml:space"];
 
     if (xmlspace) {
 
@@ -226,7 +225,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
     }
 
     /* maintain the xml:lang stack */
-    var xmllang = node.attributes["xml:lang"];
+    const xmllang = node.attributes["xml:lang"];
 
     if (xmllang) {
 
@@ -282,7 +281,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
       } else if (node.local === 'style') {
 
-        var s;
+        let s;
 
         if (estack[0] instanceof Styling) {
 
@@ -325,7 +324,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
       } else if (node.local === 'initial') {
 
-        var ini;
+        let ini;
 
         if (estack[0] instanceof Styling) {
 
@@ -333,9 +332,9 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
           ini.initFromNode(node, errorHandler);
 
-          for (var qn in ini.styleAttrs) {
+          for (const qn in ini.styleAttrs) {
 
-            if (!ini.styleAttrs.hasOwnProperty(qn)) continue;
+            if (!hasOwnProperty(ini.styleAttrs, qn)) continue;
 
             doc.head.styling.initials[qn] = ini.styleAttrs[qn];
 
@@ -365,7 +364,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
           reportFatal(errorHandler, "Parent of <region> element is not <layout> at " + this.line + "," + this.column + ")");
         }
 
-        var r = new Region();
+        const r = new Region();
 
         r.initFromNode(doc, node, xmllangstack[0], errorHandler);
 
@@ -395,7 +394,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         }
 
-        var b = new Body();
+        const b = new Body();
 
         b.initFromNode(doc, node, xmllangstack[0], errorHandler);
 
@@ -411,12 +410,12 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         }
 
-        var d = new Div();
+        const d = new Div();
 
         d.initFromNode(doc, estack[0], node, xmllangstack[0], errorHandler);
 
         /* transform smpte:backgroundImage to TTML2 image element */
-        var bi = d.styleAttrs[byName.backgroundImage.qname];
+        const bi = d.styleAttrs[byName.backgroundImage.qname];
 
         if (bi) {
           d.contents.push(new Image(bi));
@@ -435,7 +434,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         }
 
-        var img = new Image();
+        const img = new Image();
 
         img.initFromNode(doc, estack[0], node, xmllangstack[0], errorHandler);
 
@@ -451,7 +450,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         }
 
-        var p = new P();
+        const p = new P();
 
         p.initFromNode(doc, estack[0], node, xmllangstack[0], errorHandler);
 
@@ -467,7 +466,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         }
 
-        var ns = new Span();
+        const ns = new Span();
 
         ns.initFromNode(doc, estack[0], node, xmllangstack[0], xmlspacestack[0], errorHandler);
 
@@ -483,7 +482,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         }
 
-        var nb = new Br();
+        const nb = new Br();
 
         nb.initFromNode(doc, estack[0], node, xmllangstack[0], errorHandler);
 
@@ -504,7 +503,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         }
 
-        var st = new Set();
+        const st = new Set();
 
         st.initFromNode(doc, estack[0], node, errorHandler);
 
@@ -539,9 +538,9 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
         'onOpenTag' in metadataHandler) {
 
         /* start of child of metadata element */
-        var attrs = [];
+        const attrs = [];
 
-        for (var a in node.attributes) {
+        for (const a in node.attributes) {
           attrs[node.attributes[a].uri + " " + node.attributes[a].local] =
           {
             uri: node.attributes[a].uri,
@@ -565,12 +564,12 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
   delete doc.head.styling.styles;
 
   // create default region if no regions specified
-  var hasRegions = false;
+  let hasRegions = false;
 
   /* AFAIK the only way to determine whether an object has members */
-  for (var i in doc.head.layout.regions) {
+  for (const i in doc.head.layout.regions) {
 
-    if (doc.head.layout.regions.hasOwnProperty(i)) {
+    if (hasOwnProperty(doc.head.layout.regions, i)) {
       hasRegions = true;
       break;
     }
@@ -580,16 +579,16 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
   if (!hasRegions) {
 
     /* create default region */
-    var dr = Region.prototype.createDefaultRegion(doc.lang);
+    const dr = Region.prototype.createDefaultRegion(doc.lang);
 
     doc.head.layout.regions[dr.id] = dr;
 
   }
 
   /* resolve desired timing for regions */
-  for (var region_i in doc.head.layout.regions) {
+  for (const region_i in doc.head.layout.regions) {
 
-    if (!doc.head.layout.regions.hasOwnProperty(region_i)) continue;
+    if (!hasOwnProperty(doc.head.layout.regions, region_i)) continue;
 
     resolveTiming(doc, doc.head.layout.regions[region_i], null, null);
 

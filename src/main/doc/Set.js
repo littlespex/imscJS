@@ -25,6 +25,7 @@
  */
 
 import { reportError } from '../error/reportError.js';
+import { hasOwnProperty } from '../utils/hasOwnProperty.js';
 import { TimedElement } from './TimedElement.js';
 import { elementGetStyles } from './elementGetStyles.js';
 
@@ -37,14 +38,14 @@ export class Set extends TimedElement {
 
     super.initFromNode(doc, parent, node, errorHandler);
 
-    var styles = elementGetStyles(node, errorHandler);
+    const styles = elementGetStyles(node, errorHandler);
 
     this.qname = null;
     this.value = null;
 
-    for (var qname in styles) {
+    for (const qname in styles) {
 
-      if (!styles.hasOwnProperty(qname)) continue;
+      if (!hasOwnProperty(styles, qname)) continue;
 
       if (this.qname) {
 

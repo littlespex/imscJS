@@ -24,13 +24,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-const LENGTH_RE = /^((?:\+|\-)?\d*(?:\.\d+)?)(px|em|c|%|rh|rw)$/;
+const LENGTH_RE = /^((?:\+|-)?\d*(?:\.\d+)?)(px|em|c|%|rh|rw)$/;
 
 export function parseLength(str) {
 
-  var m;
+  let m;
 
-  var r = null;
+  let r = null;
 
   if ((m = LENGTH_RE.exec(str)) !== null) {
 

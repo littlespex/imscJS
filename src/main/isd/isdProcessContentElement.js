@@ -29,6 +29,7 @@ import { all } from '../styles/all.js';
 import { byName } from '../styles/byName.js';
 import { byQName } from '../styles/byQName.js';
 import { ComputedLength } from '../utils/ComputedLength.js';
+import { hasOwnProperty } from '../utils/hasOwnProperty.js';
 import { ISDContentElement } from './ISDContentElement.js';
 import { collapseLWSP } from './collapseLWSP.js';
 import { constructSpanList } from './constructSpanList.js';
@@ -55,7 +56,7 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
       * set the associated region as specified by the regionID attribute, or the
       * inherited associated region otherwise
       */
-  var associated_region_id = 'regionID' in elem && elem.regionID !== '' ? elem.regionID : inherited_region_id;
+  const associated_region_id = 'regionID' in elem && elem.regionID !== '' ? elem.regionID : inherited_region_id;
 
   /* prune the element if either:
       * - the element is not terminal and the associated region is neither the default
@@ -74,11 +75,11 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
     return null;
 
   /* create an ISD element, including applying specified styles */
-  var isd_element = new ISDContentElement(elem);
+  const isd_element = new ISDContentElement(elem);
 
   /* apply set (animation) styling */
   if ("sets" in elem) {
-    for (var i = 0; i < elem.sets.length; i++) {
+    for (let i = 0; i < elem.sets.length; i++) {
 
       if (offset < elem.sets[i].begin || offset >= elem.sets[i].end)
         continue;
@@ -92,11 +93,11 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
       * keep track of specified styling attributes so that we
       * can compute them later
       */
-  var spec_attr = {};
+  const spec_attr = {};
 
-  for (var qname in isd_element.styleAttrs) {
+  for (const qname in isd_element.styleAttrs) {
 
-    if (!isd_element.styleAttrs.hasOwnProperty(qname)) continue;
+    if (!hasOwnProperty(isd_element.styleAttrs, qname)) continue;
 
     spec_attr[qname] = true;
 
@@ -108,7 +109,7 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
       qname === byName.writingMode.qname &&
       !(byName.direction.qname in isd_element.styleAttrs)) {
 
-      var wm = isd_element.styleAttrs[qname];
+      const wm = isd_element.styleAttrs[qname];
 
       if (wm === "lrtb" || wm === "lr") {
 
@@ -126,17 +127,17 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
   /* inherited styling */
   if (parent !== null) {
 
-    for (var j = 0; j < all.length; j++) {
+    for (let j = 0; j < all.length; j++) {
 
-      var sa = all[j];
+      const sa = all[j];
 
       /* textDecoration has special inheritance rules */
       if (sa.qname === byName.textDecoration.qname) {
 
         /* handle both textDecoration inheritance and specification */
-        var ps = parent.styleAttrs[sa.qname];
-        var es = isd_element.styleAttrs[sa.qname];
-        var outs = [];
+        const ps = parent.styleAttrs[sa.qname];
+        const es = isd_element.styleAttrs[sa.qname];
+        let outs = [];
 
         if (es === undefined) {
 
@@ -182,7 +183,7 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
         isd_element.styleAttrs[byName.ruby.qname] === "textContainer") {
 
         /* special inheritance rule for ruby text container font size */
-        var ruby_fs = parent.styleAttrs[byName.fontSize.qname];
+        const ruby_fs = parent.styleAttrs[byName.fontSize.qname];
 
         isd_element.styleAttrs[sa.qname] = new ComputedLength(
           0.5 * ruby_fs.rw,
@@ -194,7 +195,7 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
         isd_element.styleAttrs[byName.ruby.qname] === "text") {
 
         /* special inheritance rule for ruby text font size */
-        var parent_fs = parent.styleAttrs[byName.fontSize.qname];
+        const parent_fs = parent.styleAttrs[byName.fontSize.qname];
 
         if (parent.styleAttrs[byName.ruby.qname] === "textContainer") {
 
@@ -220,9 +221,9 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
   }
 
   /* initial value styling */
-  for (var k = 0; k < all.length; k++) {
+  for (let k = 0; k < all.length; k++) {
 
-    var ivs = all[k];
+    const ivs = all[k];
 
     /* skip if value is already specified */
     if (ivs.qname in isd_element.styleAttrs) continue;
@@ -238,7 +239,7 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
       continue;
 
     /* determine initial value */
-    var iv = doc.head.styling.initials[ivs.qname] || ivs.initial;
+    const iv = doc.head.styling.initials[ivs.qname] || ivs.initial;
 
     if (iv === null) {
       /* skip processing if no initial value defined */
@@ -248,7 +249,7 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
     /* apply initial value to elements other than region only if non-inherited */
     if (isd_element.kind === 'region' || (ivs.inherit === false && iv !== null)) {
 
-      var piv = ivs.parse(iv);
+      const piv = ivs.parse(iv);
 
       if (piv !== null) {
 
@@ -269,15 +270,15 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
 
   /* compute styles (only for non-inherited styles) */
   /* TODO: get rid of spec_attr */
-  for (var z = 0; z < all.length; z++) {
+  for (let z = 0; z < all.length; z++) {
 
-    var cs = all[z];
+    const cs = all[z];
 
     if (!(cs.qname in spec_attr)) continue;
 
     if (cs.compute !== null) {
 
-      var cstyle = cs.compute(
+      const cstyle = cs.compute(
         /*doc, parent, element, attr, context*/
         doc,
         parent,
@@ -312,7 +313,7 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
     return null;
 
   /* process contents of the element */
-  var contents = null;
+  let contents = null;
 
   if (parent === null) {
 
@@ -335,9 +336,9 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
 
   }
 
-  for (var x = 0; contents !== null && x < contents.length; x++) {
+  for (let x = 0; contents !== null && x < contents.length; x++) {
 
-    var c = isdProcessContentElement(doc, offset, region, body, isd_element, associated_region_id, contents[x], errorHandler, context);
+    const c = isdProcessContentElement(doc, offset, region, body, isd_element, associated_region_id, contents[x], errorHandler, context);
 
     /*
         * keep child element only if they are non-null and their region match
@@ -352,17 +353,17 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
   }
 
   /* remove styles that are not applicable */
-  for (var qnameb in isd_element.styleAttrs) {
-    if (!isd_element.styleAttrs.hasOwnProperty(qnameb)) continue;
+  for (const qnameb in isd_element.styleAttrs) {
+    if (!hasOwnProperty(isd_element.styleAttrs, qnameb)) continue;
 
     /* true if not applicable */
-    var na = false;
+    let na = false;
 
     /* special applicability of certain style properties to ruby container spans */
     /* TODO: in the future ruby elements should be translated to elements instead of kept as spans */
     if (isd_element.kind === 'span') {
 
-      var rsp = isd_element.styleAttrs[byName.ruby.qname];
+      const rsp = isd_element.styleAttrs[byName.ruby.qname];
 
       na = (rsp === 'container' || rsp === 'textContainer' || rsp === 'baseContainer') &&
         _rcs_na_styles.indexOf(qnameb) !== -1;
@@ -386,7 +387,7 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
     /* normal applicability */
     if (!na) {
 
-      var da = byQName[qnameb];
+      const da = byQName[qnameb];
 
       if ("applies" in da) {
 
@@ -404,12 +405,12 @@ export function isdProcessContentElement(doc, offset, region, body, parent, inhe
   }
 
   /* trim whitespace around explicit line breaks */
-  var ruby = isd_element.styleAttrs[byName.ruby.qname];
+  const ruby = isd_element.styleAttrs[byName.ruby.qname];
 
   if (isd_element.kind === 'p' ||
     (isd_element.kind === 'span' && (ruby === "textContainer" || ruby === "text"))) {
 
-    var elist = [];
+    const elist = [];
 
     constructSpanList(isd_element, elist);
 

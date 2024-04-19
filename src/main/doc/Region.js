@@ -37,7 +37,7 @@ import { elementGetStyles } from './elementGetStyles.js';
 
 export class Region {
   createDefaultRegion(xmllang) {
-    var r = new Region();
+    const r = new Region();
 
     r.id = '';
     r.styleAttrs = {};

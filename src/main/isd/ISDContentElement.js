@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+import { hasOwnProperty } from '../utils/hasOwnProperty.js';
+
 export class ISDContentElement {
   constructor(ttelem) {
     /* assume the element is a region if it does not have a kind */
@@ -41,9 +43,9 @@ export class ISDContentElement {
     /* deep copy of style attributes */
     this.styleAttrs = {};
 
-    for (var sname in ttelem.styleAttrs) {
+    for (const sname in ttelem.styleAttrs) {
 
-      if (!ttelem.styleAttrs.hasOwnProperty(sname)) continue;
+      if (!hasOwnProperty(ttelem.styleAttrs, sname)) continue;
 
       this.styleAttrs[sname] =
         ttelem.styleAttrs[sname];

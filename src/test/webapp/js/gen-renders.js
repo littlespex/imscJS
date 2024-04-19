@@ -46,20 +46,20 @@ var errorHandler = {
 
 /* */
 
-function generateRenders(reffiles_root) {
+window.generateRenders = function (reffiles_root) {
 
     var zip = new JSZip();
-    
+
     var renders_dir = zip.folder('generated');
     var pngs_dir = zip.folder('png');
 
-    return asyncLoadFile(getTestListPath(reffiles_root))
+    return window.asyncLoadFile(window.getTestListPath(reffiles_root))
         .then(function (contents) {
             finfos = JSON.parse(contents);
 
             var p = [];
 
-            for (var i in finfos) {
+            for (const i in finfos) {
 
                 p.push(asyncProcessRefFile(reffiles_root, renders_dir, pngs_dir, finfos[i]));
 
@@ -71,13 +71,13 @@ function generateRenders(reffiles_root) {
 
             var manifest = {};
 
-            for (var j in output) {
+            for (const j in output) {
                 manifest[output[j].name] = output[j].events;
             }
-            
+
             renders_dir.file("file-list.json", JSON.stringify(manifest, customReplace, 2));
 
-            return zip.generateAsync({type: "blob"});
+            return zip.generateAsync({ type: "blob" });
         })
         .then(function (zipfile) {
             return saveAs(zipfile, "renders.zip");
@@ -87,12 +87,12 @@ function generateRenders(reffiles_root) {
 
 function asyncProcessRefFile(reffiles_root, renders_dir, pngs_dir, finfo) {
 
-    var test_name = finfo.name || getTestName(finfo.path, finfo.params || {});
+    var test_name = finfo.name || window.getTestName(finfo.path, finfo.params || {});
 
     var test_renders_dir = renders_dir.folder(test_name);
     var test_pngs_dir = pngs_dir.folder(test_name);
 
-    return asyncLoadFile(getReferenceFilePath(reffiles_root, finfo.path))
+    return window.asyncLoadFile(window.getReferenceFilePath(reffiles_root, finfo.path))
         .then(function (contents) {
             var doc = imsc.fromXML(contents.replace(/\r\n/g, '\n'), errorHandler);
 
@@ -101,16 +101,16 @@ function asyncProcessRefFile(reffiles_root, renders_dir, pngs_dir, finfo) {
                     doc,
                     customReplace,
                     2
-                    )
-                );
+                )
+            );
 
             var events = doc.getMediaTimeEvents();
 
             var p = [];
 
-            for (var i in events) {
+            for (const i in events) {
 
-                p.push(asyncProcessEvent(doc, test_renders_dir, test_pngs_dir, events[i], finfo.params || {}, getReferenceFileDirectory(reffiles_root, finfo.path)));
+                p.push(asyncProcessEvent(doc, test_renders_dir, test_pngs_dir, events[i], finfo.params || {}, window.getReferenceFileDirectory(reffiles_root, finfo.path)));
 
             }
 
@@ -166,13 +166,13 @@ function asyncProcessEvent(doc, test_renders_dir, test_pngs_dir, offset, params,
     rdiv.style.width = "100%";
     rdiv.style.position = "relative";
     rdiv.style.background = "#A9A9A9";
-    
+
     fo.appendChild(rdiv);
 
     vdiv.appendChild(svg);
-    
+
     var isd = imsc.generateISD(doc, offset);
-    
+
     /* write isd */
 
     var isd_dir = test_renders_dir.folder('isd');
@@ -194,7 +194,7 @@ function asyncProcessEvent(doc, test_renders_dir, test_pngs_dir, offset, params,
                 canvas.height = this.naturalHeight;
 
                 var ctx = canvas.getContext('2d');
-               
+
                 ctx.drawImage(this, 0, 0);
 
                 // Get raw image data
@@ -223,7 +223,7 @@ function asyncProcessEvent(doc, test_renders_dir, test_pngs_dir, offset, params,
         exp_width,
         params.displayForcedOnlyMode === true,
         errorHandler
-        );
+    );
 
 
     return Promise.all(imgs).then(
@@ -255,7 +255,7 @@ function asyncProcessEvent(doc, test_renders_dir, test_pngs_dir, offset, params,
 
                         var data = canvas.toDataURL("image/png");
 
-                        test_pngs_dir.file(name + ".png", data.substr(data.indexOf(',') + 1), {base64: true});
+                        test_pngs_dir.file(name + ".png", data.substr(data.indexOf(',') + 1), { base64: true });
 
                         resolve(name);
                     };

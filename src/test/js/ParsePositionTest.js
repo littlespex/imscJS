@@ -89,7 +89,7 @@ QUnit.test("ParsePosition",
             ["right 25% top 75%", position("right", 25, "%", "top", 75, "%")]
         ];
 
-        for (var i in tests) {
+        for (const i in tests) {
             assert.deepEqual(
                 parsePosition(tests[i][0]),
                 tests[i][1],

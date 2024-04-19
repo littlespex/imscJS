@@ -107,21 +107,21 @@ export const all = [
 
       } else {
 
-        var s = str.split(" ");
+        const s = str.split(" ");
         if (s.length !== 2)
           return null;
-        var w = parseLength(s[0]);
-        var h = parseLength(s[1]);
+        const w = parseLength(s[0]);
+        const h = parseLength(s[1]);
         if (!h || !w)
           return null;
-        return { 'h': h, 'w': w };
+        return { h, w };
       }
 
     },
-    function (doc, parent, element, attr, context) {
+    function (doc, parent, element, attr) {
 
-      var h;
-      var w;
+      let h;
+      let w;
 
       if (attr === "auto") {
 
@@ -180,10 +180,10 @@ export const all = [
     true,
     true,
     function (str) {
-      var ffs = str.split(",");
-      var rslt = [];
+      const ffs = str.split(",");
+      const rslt = [];
 
-      for (var i = 0; i < ffs.length; i++) {
+      for (let i = 0; i < ffs.length; i++) {
         ffs[i] = ffs[i].trim();
 
         if (ffs[i].charAt(0) !== "'" && ffs[i].charAt(0) !== '"') {
@@ -221,7 +221,7 @@ export const all = [
     parseLength,
     function (doc, parent, element, attr) {
 
-      var fs;
+      let fs;
 
       if (attr.unit === "%") {
 
@@ -244,11 +244,9 @@ export const all = [
     true,
     true,
     parseLength,
-    function (doc, parent, element, attr, context) {
+    function (doc, parent, element, attr) {
 
-      var fs;
-
-      fs = toComputedLength(
+      const fs = toComputedLength(
         attr.value,
         attr.unit,
         parent !== null ? parent.styleAttrs[byName.fontSize.qname] : doc.cellLength.h,
@@ -300,9 +298,9 @@ export const all = [
         return parseLength(str);
       }
     },
-    function (doc, parent, element, attr, context) {
+    function (doc, parent, element, attr) {
 
-      var lh;
+      let lh;
 
       if (attr === "normal") {
 
@@ -357,21 +355,21 @@ export const all = [
 
       } else {
 
-        var s = str.split(" ");
+        const s = str.split(" ");
         if (s.length !== 2)
           return null;
-        var w = parseLength(s[0]);
-        var h = parseLength(s[1]);
+        const w = parseLength(s[0]);
+        const h = parseLength(s[1]);
         if (!h || !w)
           return null;
-        return { 'h': h, 'w': w };
+        return { h, w };
       }
 
     },
-    function (doc, parent, element, attr, context) {
+    function (doc, parent, element, attr) {
 
-      var h;
-      var w;
+      let h;
+      let w;
 
       if (attr === "auto") {
 
@@ -443,13 +441,13 @@ export const all = [
     true,
     function (str) {
 
-      var s = str.split(" ");
+      const s = str.split(" ");
       if (s.length > 4)
         return null;
-      var r = [];
-      for (var i = 0; i < s.length; i++) {
+      const r = [];
+      for (let i = 0; i < s.length; i++) {
 
-        var l = parseLength(s[i]);
+        const l = parseLength(s[i]);
         if (!l)
           return null;
         r.push(l);
@@ -457,9 +455,9 @@ export const all = [
 
       return r;
     },
-    function (doc, parent, element, attr, context) {
+    function (doc, parent, element, attr) {
 
-      var padding;
+      let padding;
 
       /* TODO: make sure we are in region */
       /*
@@ -495,7 +493,7 @@ export const all = [
           * [top,left,bottom,right]
           *
           */
-      var dir = element.styleAttrs[byName.writingMode.qname];
+      const dir = element.styleAttrs[byName.writingMode.qname];
 
       if (dir === "lrtb" || dir === "lr") {
 
@@ -519,9 +517,9 @@ export const all = [
 
       }
 
-      var out = [];
+      const out = [];
 
-      for (var i = 0; i < padding.length; i++) {
+      for (let i = 0; i < padding.length; i++) {
 
         if (padding[i].value === 0) {
 
@@ -560,8 +558,8 @@ export const all = [
 
     },
     function (doc, parent, element, attr) {
-      var h;
-      var w;
+      let h;
+      let w;
 
       h = toComputedLength(
         attr.v.offset.value,
@@ -662,9 +660,9 @@ export const all = [
     true,
     true,
     function (str) {
-      var s = str.split(" ");
+      const s = str.split(" ");
 
-      var r = [null, null];
+      const r = [null, null];
 
       if (s.length === 0 || s.length > 2)
         return null;
@@ -685,7 +683,7 @@ export const all = [
 
       if (s.length === 2 && s[0] !== "none") {
 
-        var l = parseLength(s[1]);
+        const l = parseLength(s[1]);
 
         if (l) {
 
@@ -702,7 +700,7 @@ export const all = [
 
       return r;
     },
-    function (doc, parent, element, attr, context) {
+    function (doc, parent, element, attr) {
 
       if (attr[0] === "none") {
 
@@ -710,7 +708,7 @@ export const all = [
 
       }
 
-      var fs = null;
+      let fs = null;
 
       if (attr[1] === null) {
 
@@ -758,7 +756,7 @@ export const all = [
     function (str) {
       return str;
     },
-    function (doc, parent, element, attr, context) {
+    function (doc, parent, element, attr) {
       /* Section 7.16.9 of XSL */
       if (attr === "left") {
 
@@ -812,11 +810,11 @@ export const all = [
     true,
     true,
     function (str) {
-      var e = str.split(" ");
+      const e = str.split(" ");
 
-      var rslt = { style: null, symbol: null, color: null, position: null };
+      const rslt = { style: null, symbol: null, color: null, position: null };
 
-      for (var i = 0; i < e.length; i++) {
+      for (let i = 0; i < e.length; i++) {
 
         if (e[i] === "none" || e[i] === "auto") {
 
@@ -888,11 +886,11 @@ export const all = [
 
       } else {
 
-        var r = {};
-        var s = str.split(" ");
+        const r = {};
+        const s = str.split(" ");
         if (s.length === 0 || s.length > 2)
           return null;
-        var c = parseColor(s[0]);
+        const c = parseColor(s[0]);
 
         r.color = c;
 
@@ -902,7 +900,7 @@ export const all = [
         if (s.length !== 1)
           return null;
 
-        var l = parseLength(s[0]);
+        const l = parseLength(s[0]);
 
         if (!l)
           return null;
@@ -913,7 +911,7 @@ export const all = [
       }
 
     },
-    function (doc, parent, element, attr, context) {
+    function (doc, parent, element, attr) {
       /*
           * returns {color: <color>, thickness: <norm length>}
           *
@@ -922,7 +920,7 @@ export const all = [
       if (attr === "none")
         return attr;
 
-      var rslt = {};
+      const rslt = {};
 
       if (attr.color === null) {
 
@@ -966,11 +964,11 @@ export const all = [
       if (attr === "none")
         return attr;
 
-      var r = [];
+      const r = [];
 
-      for (var i = 0; i < attr.length; i++) {
+      for (let i = 0; i < attr.length; i++) {
 
-        var shadow = {};
+        const shadow = {};
 
         shadow.x_off = toComputedLength(
           attr[i][0].value,
@@ -1090,7 +1088,7 @@ export const all = [
     true,
     function (str) {
 
-      var rslt;
+      let rslt;
 
       if (str === 'auto') {
 
@@ -1118,7 +1116,7 @@ export const all = [
     true,
     false,
     parseLength,
-    function (doc, parent, element, attr, context) {
+    function (doc, parent, element, attr) {
 
       return toComputedLength(attr.value, attr.unit, null, null, doc.cellLength.w, null);
 

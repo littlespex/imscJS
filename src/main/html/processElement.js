@@ -41,7 +41,7 @@ import { rect2edges } from './rect2edges.js';
 
 export function processElement(context, dom_parent, isd_element, isd_parent) {
 
-  var e;
+  let e;
 
   if (isd_element.kind === 'region') {
 
@@ -62,7 +62,7 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
 
     if (context.imgResolver !== null && isd_element.src !== null) {
 
-      var uri = context.imgResolver(isd_element.src, e);
+      const uri = context.imgResolver(isd_element.src, e);
 
       if (uri)
         e.src = uri;
@@ -148,7 +148,7 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
   /* determine ipd and bpd */
   if (isd_element.kind === "region") {
 
-    var wdir = isd_element.styleAttrs[byName.writingMode.qname];
+    const wdir = isd_element.styleAttrs[byName.writingMode.qname];
 
     if (wdir === "lrtb" || wdir === "lr") {
 
@@ -174,18 +174,18 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
 
   } else if (isd_element.kind === "p" && context.bpd === "tb") {
 
-    var pdir = isd_element.styleAttrs[byName.direction.qname];
+    const pdir = isd_element.styleAttrs[byName.direction.qname];
 
     context.ipd = pdir === "ltr" ? "lr" : "rl";
 
   }
 
   /* tranform TTML styles to CSS styles */
-  for (var i = 0; i < STYLING_MAP_DEFS.length; i++) {
+  for (let i = 0; i < STYLING_MAP_DEFS.length; i++) {
 
-    var sm = STYLING_MAP_DEFS[i];
+    const sm = STYLING_MAP_DEFS[i];
 
-    var attr = isd_element.styleAttrs[sm.qname];
+    const attr = isd_element.styleAttrs[sm.qname];
 
     if (attr !== undefined && sm.map !== null) {
 
@@ -195,20 +195,20 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
 
   }
 
-  var proc_e = e;
+  let proc_e = e;
 
   /* do we have linePadding ? */
-  var lp = isd_element.styleAttrs[byName.linePadding.qname];
+  const lp = isd_element.styleAttrs[byName.linePadding.qname];
 
   if (lp && (!lp.isZero())) {
 
-    var plength = lp.toUsedLength(context.w, context.h);
+    const plength = lp.toUsedLength(context.w, context.h);
 
 
     if (plength > 0) {
 
       /* apply padding to the <p> so that line padding does not cause line wraps */
-      var padmeasure = Math.ceil(plength) + "px";
+      const padmeasure = Math.ceil(plength) + "px";
 
       if (context.bpd === "tb") {
 
@@ -227,12 +227,12 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
   }
 
   // do we have multiRowAlign?
-  var mra = isd_element.styleAttrs[byName.multiRowAlign.qname];
+  const mra = isd_element.styleAttrs[byName.multiRowAlign.qname];
 
   if (mra && mra !== "auto") {
 
     /* create inline block to handle multirowAlign */
-    var s = document.createElement("span");
+    const s = document.createElement("span");
 
     s.style.display = "inline-block";
 
@@ -247,7 +247,7 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
   }
 
   /* do we have rubyReserve? */
-  var rr = isd_element.styleAttrs[byName.rubyReserve.qname];
+  const rr = isd_element.styleAttrs[byName.rubyReserve.qname];
 
   if (rr && rr[0] !== "none") {
     context.rubyReserve = rr;
@@ -262,7 +262,7 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
 
   if (isd_element.kind === "span" && isd_element.text) {
 
-    var te = isd_element.styleAttrs[byName.textEmphasis.qname];
+    const te = isd_element.styleAttrs[byName.textEmphasis.qname];
 
     if (te && te.style !== "none") {
 
@@ -286,18 +286,18 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
     } else {
 
       // wrap characters in spans to find the line wrap locations
-      var cbuf = '';
+      let cbuf = '';
 
-      for (var j = 0; j < isd_element.text.length; j++) {
+      for (let j = 0; j < isd_element.text.length; j++) {
 
         cbuf += isd_element.text.charAt(j);
 
-        var cc = isd_element.text.charCodeAt(j);
+        const cc = isd_element.text.charCodeAt(j);
 
         if (cc < 55296 || cc > 56319 || j === isd_element.text.length - 1) {
 
           /* wrap the character(s) in a span unless it is a high surrogate */
-          var span = document.createElement("span");
+          const span = document.createElement("span");
 
           span.textContent = cbuf;
 
@@ -324,7 +324,7 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
   /* process the children of the ISD element */
   if ("contents" in isd_element) {
 
-    for (var k = 0; k < isd_element.contents.length; k++) {
+    for (let k = 0; k < isd_element.contents.length; k++) {
 
       processElement(context, proc_e, isd_element.contents[k], isd_element);
 
@@ -333,7 +333,7 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
   }
 
   /* list of lines */
-  var linelist = [];
+  const linelist = [];
 
 
   /* paragraph processing */
@@ -394,7 +394,7 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
     /* fill line gaps linepadding */
     if (context.flg) {
 
-      var par_edges = rect2edges(proc_e.getBoundingClientRect(), context);
+      const par_edges = rect2edges(proc_e.getBoundingClientRect(), context);
 
       applyFillLineGap(linelist, par_edges.before, par_edges.after, context, proc_e);
 
@@ -418,9 +418,9 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
       constructLineList(context, proc_e, linelist, null);
 
       /* horrible hack, perhaps default region id should be underscore everywhere? */
-      var rid = isd_element.id === '' ? '_' : isd_element.id;
+      const rid = isd_element.id === '' ? '_' : isd_element.id;
 
-      var rb = new RegionPBuffer(rid, linelist);
+      const rb = new RegionPBuffer(rid, linelist);
 
       context.currentISDState[rb.id] = rb;
 
@@ -431,9 +431,9 @@ export function processElement(context, dom_parent, isd_element, isd_parent) {
         rb.plist[rb.plist.length - 2].text ===
         context.previousISDState[rb.id].plist[context.previousISDState[rb.id].plist.length - 1].text) {
 
-        var body_elem = e.firstElementChild;
+        const body_elem = e.firstElementChild;
 
-        var h = rb.plist[rb.plist.length - 1].after - rb.plist[rb.plist.length - 1].before;
+        const h = rb.plist[rb.plist.length - 1].after - rb.plist[rb.plist.length - 1].before;
 
         body_elem.style.bottom = "-" + h + "px";
         body_elem.style.transition = "transform 0.4s";

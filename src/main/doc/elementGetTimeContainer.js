@@ -28,7 +28,7 @@ import { reportError } from '../error/reportError.js';
 
 export function elementGetTimeContainer(node, errorHandler) {
 
-  var tc = node && 'timeContainer' in node.attributes ? node.attributes.timeContainer.value : null;
+  const tc = node && 'timeContainer' in node.attributes ? node.attributes.timeContainer.value : null;
 
   if ((!tc) || tc === "par") {
 

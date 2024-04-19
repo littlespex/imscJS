@@ -68,7 +68,7 @@ export const STYLING_MAP_DEFS = [
   ),
   new HTMLStylingMapDefinition(
     "http://www.w3.org/ns/ttml#styling display",
-    function (context, dom_element, isd_element, attr) { }
+    function () { }
   ),
   new HTMLStylingMapDefinition(
     "http://www.w3.org/ns/ttml#styling displayAlign",
@@ -106,10 +106,10 @@ export const STYLING_MAP_DEFS = [
           * CSS height/width are measured against the content rectangle,
           * whereas TTML height/width include padding
           */
-      var hdelta = 0;
-      var wdelta = 0;
+      let hdelta = 0;
+      let wdelta = 0;
 
-      var p = isd_element.styleAttrs["http://www.w3.org/ns/ttml#styling padding"];
+      const p = isd_element.styleAttrs["http://www.w3.org/ns/ttml#styling padding"];
 
       if (!p) {
         /* error */
@@ -129,10 +129,10 @@ export const STYLING_MAP_DEFS = [
     "http://www.w3.org/ns/ttml#styling fontFamily",
     function (context, dom_element, isd_element, attr) {
 
-      var rslt = [];
+      let rslt = [];
 
       /* per IMSC1 */
-      for (var i = 0; i < attr.length; i++) {
+      for (let i = 0; i < attr.length; i++) {
         attr[i] = attr[i].trim();
 
         if (attr[i] === "monospaceSerif") {
@@ -181,9 +181,9 @@ export const STYLING_MAP_DEFS = [
       // prune later duplicates we may have inserted 
       if (rslt.length > 0) {
 
-        var unique = [rslt[0]];
+        const unique = [rslt[0]];
 
-        for (var fi = 1; fi < rslt.length; fi++) {
+        for (let fi = 1; fi < rslt.length; fi++) {
 
           if (unique.indexOf(rslt[fi]) == -1) {
 
@@ -207,7 +207,7 @@ export const STYLING_MAP_DEFS = [
       if (attr === 0)
         return;
 
-      var angle = attr * -0.9;
+      const angle = attr * -0.9;
 
       /* context.bpd is needed since writing mode is not inherited and sets the inline progression */
       if (context.bpd === "tb") {
@@ -280,7 +280,7 @@ export const STYLING_MAP_DEFS = [
       /* attr: top,left,bottom,right*/
 
       /* style: top right bottom left*/
-      var rslt = [];
+      const rslt = [];
 
       rslt[0] = attr[0].toUsedLength(context.w, context.h) + "px";
       rslt[1] = attr[3].toUsedLength(context.w, context.h) + "px";
@@ -310,7 +310,7 @@ export const STYLING_MAP_DEFS = [
 
       if (attr === "before" || attr === "after") {
 
-        var pos;
+        let pos;
 
         if (RUBYPOSITION_ISWK) {
 
@@ -349,7 +349,7 @@ export const STYLING_MAP_DEFS = [
     "http://www.w3.org/ns/ttml#styling textAlign",
     function (context, dom_element, isd_element, attr) {
 
-      var ta;
+      let ta;
 
       /* handle UAs that do not understand start or end */
       if (attr === "start") {
@@ -378,7 +378,7 @@ export const STYLING_MAP_DEFS = [
   ),
   new HTMLStylingMapDefinition(
     "http://www.w3.org/ns/ttml#styling textOutline",
-    function (context, dom_element, isd_element, attr) {
+    function () {
       /* defer to tts:textShadow */
     }
   ),
@@ -386,7 +386,7 @@ export const STYLING_MAP_DEFS = [
     "http://www.w3.org/ns/ttml#styling textShadow",
     function (context, dom_element, isd_element, attr) {
 
-      var txto = isd_element.styleAttrs[byName.textOutline.qname];
+      const txto = isd_element.styleAttrs[byName.textOutline.qname];
 
       if (attr === "none" && txto === "none") {
 
@@ -394,12 +394,12 @@ export const STYLING_MAP_DEFS = [
 
       } else {
 
-        var s = [];
+        const s = [];
 
         if (txto !== "none") {
 
           /* emulate text outline */
-          var to_color = "rgba(" +
+          const to_color = "rgba(" +
             txto.color[0].toString() + "," +
             txto.color[1].toString() + "," +
             txto.color[2].toString() + "," +
@@ -416,8 +416,7 @@ export const STYLING_MAP_DEFS = [
         /* add text shadow */
         if (attr !== "none") {
 
-          for (var i = 0; i < attr.length; i++) {
-
+          for (let i = 0; i < attr.length; i++) {
 
             s.push(attr[i].x_off.toUsedLength(context.w, context.h) + "px " +
               attr[i].y_off.toUsedLength(context.w, context.h) + "px " +
@@ -449,7 +448,7 @@ export const STYLING_MAP_DEFS = [
   ),
   new HTMLStylingMapDefinition(
     "http://www.w3.org/ns/ttml#styling textEmphasis",
-    function (context, dom_element, isd_element, attr) {
+    function () {
       /* applied as part of HTML document construction */
     }
   ),
@@ -457,7 +456,7 @@ export const STYLING_MAP_DEFS = [
     "http://www.w3.org/ns/ttml#styling unicodeBidi",
     function (context, dom_element, isd_element, attr) {
 
-      var ub;
+      let ub;
 
       if (attr === 'bidiOverride') {
         ub = "bidi-override";
@@ -503,8 +502,6 @@ export const STYLING_MAP_DEFS = [
   new HTMLStylingMapDefinition(
     "http://www.w3.org/ns/ttml#styling writingMode",
     function (context, dom_element, isd_element, attr) {
-
-      var wm;
 
       if (attr === "lrtb" || attr === "lr") {
 

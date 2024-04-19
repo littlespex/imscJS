@@ -32,17 +32,17 @@ export function extractFrameAndTickRate(node, errorHandler) {
   // subFrameRate is ignored per IMSC1 specification
 
   // extract frame rate
-  var fps_attr = findAttribute(node, imscNames.ns_ttp, "frameRate");
+  const fps_attr = findAttribute(node, imscNames.ns_ttp, "frameRate");
 
   // initial value
-  var fps = 30;
+  let fps = 30;
 
   // match variable
-  var m;
+  let m;
 
   if (fps_attr !== null) {
 
-    var FRAME_RATE_RE = /(\d+)/;
+    const FRAME_RATE_RE = /(\d+)/;
 
     m = FRAME_RATE_RE.exec(fps_attr);
 
@@ -58,14 +58,14 @@ export function extractFrameAndTickRate(node, errorHandler) {
   }
 
   // extract frame rate multiplier
-  var frm_attr = findAttribute(node, imscNames.ns_ttp, "frameRateMultiplier");
+  const frm_attr = findAttribute(node, imscNames.ns_ttp, "frameRateMultiplier");
 
   // initial value
-  var frm = 1;
+  let frm = 1;
 
   if (frm_attr !== null) {
 
-    var FRAME_RATE_MULT_RE = /(\d+) (\d+)/;
+    const FRAME_RATE_MULT_RE = /(\d+) (\d+)/;
 
     m = FRAME_RATE_MULT_RE.exec(frm_attr);
 
@@ -80,12 +80,12 @@ export function extractFrameAndTickRate(node, errorHandler) {
 
   }
 
-  var efps = frm * fps;
+  const efps = frm * fps;
 
   // extract tick rate
-  var tr = 1;
+  let tr = 1;
 
-  var trattr = findAttribute(node, imscNames.ns_ttp, "tickRate");
+  const trattr = findAttribute(node, imscNames.ns_ttp, "tickRate");
 
   if (trattr === null) {
 
@@ -94,7 +94,7 @@ export function extractFrameAndTickRate(node, errorHandler) {
 
   } else {
 
-    var TICK_RATE_RE = /(\d+)/;
+    const TICK_RATE_RE = /(\d+)/;
 
     m = TICK_RATE_RE.exec(trattr);
 

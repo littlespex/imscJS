@@ -30,15 +30,15 @@ import { RUBYPOSITION_PROP } from './RUBYPOSITION_PROP.js';
 
 export function applyRubyPosition(lineList, context) {
 
-  for (var i = 0; i < lineList.length; i++) {
+  for (let i = 0; i < lineList.length; i++) {
 
-    for (var j = 0; j < lineList[i].rbc.length; j++) {
+    for (let j = 0; j < lineList[i].rbc.length; j++) {
 
       /* skip if ruby-position already set */
       if (lineList[i].rbc[j].style[RUBYPOSITION_PROP])
         continue;
 
-      var pos;
+      let pos;
 
       if (RUBYPOSITION_ISWK) {
 

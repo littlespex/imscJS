@@ -29,21 +29,23 @@
     "scripts": {
         "prepublishOnly": "grunt build:release",
         "build": "grunt build",
-        "dev": "npx http-server build/public_html"
+        "dev": "npx http-server build/public_html",
+        "lint": "grunt lint",
+        "fix": "eslint --fix src"
     },
     "dependencies": {
         "sax": "1.2.1"
     },
     "devDependencies": {
+        "@eslint/js": "^9.0.0",
         "@rollup/plugin-commonjs": "^25.0.7",
         "@rollup/plugin-node-resolve": "^15.2.3",
         "@rollup/plugin-terser": "^0.4.4",
+        "eslint": "^9.0.0",
         "filesaver.js-npm": "latest",
-        "google-closure-compiler": "^20180910.1.0",
+        "globals": "^15.0.0",
         "grunt": "latest",
-        "grunt-browserify": "latest",
         "grunt-contrib-clean": "latest",
-        "grunt-contrib-jshint": "latest",
         "grunt-exec": "^3.0.0",
         "grunt-npmcopy": "latest",
         "grunt-sync": "latest",

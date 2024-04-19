@@ -29,7 +29,7 @@ export class ContainerElement {
     this.contents = contents;
   }
 
-  initFromNode(doc, parent, node, errorHandler) {
+  initFromNode() {
     this.contents = [];
   }
 }

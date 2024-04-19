@@ -29,7 +29,7 @@ export class AnimatedElement {
     this.sets = sets;
   }
 
-  initFromNode(doc, parent, node, errorHandler) {
+  initFromNode() {
     this.sets = [];
   }
 }

@@ -37,15 +37,15 @@ export function constructLineList(context, element, llist, bgcolor) {
 
   }
 
-  var curbgcolor = element.style.backgroundColor || bgcolor;
+  const curbgcolor = element.style.backgroundColor || bgcolor;
 
   if (element.childElementCount === 0) {
 
     if (element.localName === 'span' || element.localName === 'rb') {
 
-      var r = element.getBoundingClientRect();
+      const r = element.getBoundingClientRect();
 
-      var edges = rect2edges(r, context);
+      const edges = rect2edges(r, context);
 
       if (llist.length === 0 ||
         (!isSameLine(edges.before, edges.after, llist[llist.length - 1].before, llist[llist.length - 1].after))) {
@@ -66,10 +66,10 @@ export function constructLineList(context, element, llist, bgcolor) {
       } else {
 
         /* positive for BPD = lr and tb, negative for BPD = rl */
-        var bpd_dir = Math.sign(edges.after - edges.before);
+        const bpd_dir = Math.sign(edges.after - edges.before);
 
         /* positive for IPD = lr and tb, negative for IPD = rl */
-        var ipd_dir = Math.sign(edges.end - edges.start);
+        const ipd_dir = Math.sign(edges.end - edges.start);
 
         /* check if the line height has increased */
         if (bpd_dir * (edges.before - llist[llist.length - 1].before) < 0) {
@@ -111,7 +111,7 @@ export function constructLineList(context, element, llist, bgcolor) {
 
   } else {
 
-    var child = element.firstChild;
+    let child = element.firstChild;
 
     while (child) {
 

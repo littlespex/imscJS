@@ -32,19 +32,19 @@ import { byQName } from '../styles/byQName.js';
 
 export function elementGetStyles(node, errorHandler) {
 
-  var s = {};
+  const s = {};
 
   if (node !== null) {
 
-    for (var i in node.attributes) {
+    for (const i in node.attributes) {
 
-      var qname = node.attributes[i].uri + " " + node.attributes[i].local;
+      const qname = node.attributes[i].uri + " " + node.attributes[i].local;
 
-      var sa = byQName[qname];
+      const sa = byQName[qname];
 
       if (sa !== undefined) {
 
-        var val = sa.parse(node.attributes[i].value);
+        const val = sa.parse(node.attributes[i].value);
 
         if (val !== null) {
 

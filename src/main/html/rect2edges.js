@@ -26,7 +26,7 @@
 
 export function rect2edges(rect, context) {
 
-  var edges = { before: null, after: null, start: null, end: null };
+  const edges = { before: null, after: null, start: null, end: null };
 
   if (context.bpd === "tb") {
 

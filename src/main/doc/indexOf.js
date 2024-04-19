@@ -37,15 +37,15 @@
  */
 export function indexOf(arr, searchval) {
 
-  var min = 0;
-  var max = arr.length - 1;
-  var cur;
+  let min = 0;
+  let max = arr.length - 1;
+  let cur;
 
   while (min <= max) {
 
     cur = Math.floor((min + max) / 2);
 
-    var curval = arr[cur];
+    const curval = arr[cur];
 
     if (curval < searchval) {
 

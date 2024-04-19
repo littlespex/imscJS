@@ -30,14 +30,14 @@ import { spanMerge } from './spanMerge.js';
 
 export function mergeSpans(lineList, context) {
 
-  for (var i = 0; i < lineList.length; i++) {
+  for (let i = 0; i < lineList.length; i++) {
 
-    var line = lineList[i];
+    const line = lineList[i];
 
-    for (var j = 1; j < line.elements.length;) {
+    for (let j = 1; j < line.elements.length;) {
 
-      var previous = line.elements[j - 1];
-      var span = line.elements[j];
+      const previous = line.elements[j - 1];
+      const span = line.elements[j];
 
       if (spanMerge(previous.node, span.node, context)) {
 
@@ -55,12 +55,12 @@ export function mergeSpans(lineList, context) {
   }
 
   // Copy backgroundColor to each span so that fillLineGap will apply padding to elements with the right background
-  var thisNode, ancestorBackgroundColor;
-  var clearTheseBackgrounds = [];
+  let thisNode, ancestorBackgroundColor;
+  const clearTheseBackgrounds = [];
 
-  for (var l = 0; l < lineList.length; l++) {
+  for (let l = 0; l < lineList.length; l++) {
 
-    for (var el = 0; el < lineList[l].elements.length; el++) {
+    for (let el = 0; el < lineList[l].elements.length; el++) {
 
       thisNode = lineList[l].elements[el].node;
       ancestorBackgroundColor = getSpanAncestorColor(thisNode, clearTheseBackgrounds, false);
@@ -73,7 +73,7 @@ export function mergeSpans(lineList, context) {
     }
   }
 
-  for (var bi = 0; bi < clearTheseBackgrounds.length; bi++) {
+  for (let bi = 0; bi < clearTheseBackgrounds.length; bi++) {
 
     clearTheseBackgrounds[bi].style.backgroundColor = "";
 

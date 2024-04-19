@@ -26,16 +26,17 @@
 
 export function parseTimeExpression(tickRate, effectiveFrameRate, str) {
 
-  var CLOCK_TIME_FRACTION_RE = /^(\d{2,}):(\d\d):(\d\d(?:\.\d+)?)$/;
-  var CLOCK_TIME_FRAMES_RE = /^(\d{2,}):(\d\d):(\d\d)\:(\d{2,})$/;
-  var OFFSET_FRAME_RE = /^(\d+(?:\.\d+)?)f$/;
-  var OFFSET_TICK_RE = /^(\d+(?:\.\d+)?)t$/;
-  var OFFSET_MS_RE = /^(\d+(?:\.\d+)?)ms$/;
-  var OFFSET_S_RE = /^(\d+(?:\.\d+)?)s$/;
-  var OFFSET_H_RE = /^(\d+(?:\.\d+)?)h$/;
-  var OFFSET_M_RE = /^(\d+(?:\.\d+)?)m$/;
-  var m;
-  var r = null;
+  const CLOCK_TIME_FRACTION_RE = /^(\d{2,}):(\d\d):(\d\d(?:\.\d+)?)$/;
+  const CLOCK_TIME_FRAMES_RE = /^(\d{2,}):(\d\d):(\d\d):(\d{2,})$/;
+  const OFFSET_FRAME_RE = /^(\d+(?:\.\d+)?)f$/;
+  const OFFSET_TICK_RE = /^(\d+(?:\.\d+)?)t$/;
+  const OFFSET_MS_RE = /^(\d+(?:\.\d+)?)ms$/;
+  const OFFSET_S_RE = /^(\d+(?:\.\d+)?)s$/;
+  const OFFSET_H_RE = /^(\d+(?:\.\d+)?)h$/;
+  const OFFSET_M_RE = /^(\d+(?:\.\d+)?)m$/;
+  let m;
+  let r = null;
+
   if ((m = OFFSET_FRAME_RE.exec(str)) !== null) {
 
     if (effectiveFrameRate !== null) {

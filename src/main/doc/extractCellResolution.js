@@ -33,17 +33,17 @@ import { findAttribute } from './findAttribute.js';
  */
 export function extractCellResolution(node, errorHandler) {
 
-  var cr = findAttribute(node, imscNames.ns_ttp, "cellResolution");
+  const cr = findAttribute(node, imscNames.ns_ttp, "cellResolution");
 
   // initial value
-  var h = 15;
-  var w = 32;
+  let h = 15;
+  let w = 32;
 
   if (cr !== null) {
 
-    var CELL_RESOLUTION_RE = /(\d+) (\d+)/;
+    const CELL_RESOLUTION_RE = /(\d+) (\d+)/;
 
-    var m = CELL_RESOLUTION_RE.exec(cr);
+    const m = CELL_RESOLUTION_RE.exec(cr);
 
     if (m !== null) {
 
@@ -59,6 +59,6 @@ export function extractCellResolution(node, errorHandler) {
 
   }
 
-  return { 'w': w, 'h': h };
+  return { w, h };
 
 }

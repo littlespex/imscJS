@@ -55,11 +55,11 @@ const NAMED_COLOR = {
  */
 export function parseColor(str) {
 
-  var m;
+  let m;
 
-  var r = null;
+  let r = null;
 
-  var nc = NAMED_COLOR[str.toLowerCase()];
+  const nc = NAMED_COLOR[str.toLowerCase()];
 
   if (nc !== undefined) {
 

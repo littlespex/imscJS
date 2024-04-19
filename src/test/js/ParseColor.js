@@ -3,7 +3,7 @@ import { parseColor } from "../../main/js/imscUtils.js";
 QUnit.test("ParseColor",
     function (assert) {
 
-        var tests = [
+        const tests = [
             ["#FFFFFF", [255, 255, 255, 255]],
             ["#FFFFFF7F", [255, 255, 255, 127]],
             ["rgb(255,128,255)", [255, 128, 255, 255]],
@@ -35,7 +35,7 @@ QUnit.test("ParseColor",
             ["#red", null],
         ];
 
-        for (var i in tests) {
+        for (const i in tests) {
             assert.deepEqual(
                 parseColor(tests[i][0]),
                 tests[i][1],

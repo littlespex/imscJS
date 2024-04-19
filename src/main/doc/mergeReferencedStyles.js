@@ -30,9 +30,9 @@ import { mergeStylesIfNotPresent } from './mergeStylesIfNotPresent.js';
 
 export function mergeReferencedStyles(styling, stylerefs, styleattrs, errorHandler) {
 
-  for (var i = stylerefs.length - 1; i >= 0; i--) {
+  for (let i = stylerefs.length - 1; i >= 0; i--) {
 
-    var sref = stylerefs[i];
+    const sref = stylerefs[i];
 
     if (!(sref in styling.styles)) {
       reportError(errorHandler, "Non-existant style id referenced");

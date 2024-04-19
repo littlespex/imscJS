@@ -49,19 +49,13 @@ module.exports = function (grunt) {
             }
         },
 
-        jshint: {
-            'default': {
-                src: "src/main",
-                options: {
-                    "-W032": true,
-                    esversion: 6
-                }
-            }
-        },
-
         exec:
         {
-            rollup: {
+            lint: {
+                cmd: "eslint src",
+            },
+
+            bundle: {
                 cmd: "rollup -c rollup.config.js",
             }
         }
@@ -73,15 +67,15 @@ module.exports = function (grunt) {
 
     grunt.loadNpmTasks('grunt-npmcopy');
 
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-
     grunt.loadNpmTasks('grunt-sync');
 
     grunt.loadNpmTasks('grunt-exec');
 
-    grunt.registerTask('build:release', ['jshint', 'exec:rollup', 'sync:all', 'sync:release', 'npmcopy']);
+    grunt.registerTask('lint', ['exec:lint']);
 
-    grunt.registerTask('build:debug', ['jshint', 'exec:rollup', 'sync:all', 'sync:debug', 'npmcopy']);
+    grunt.registerTask('build:release', ['exec:lint', 'exec:bundle', 'sync:all', 'sync:release', 'npmcopy']);
+
+    grunt.registerTask('build:debug', ['exec:lint', 'exec:bundle', 'sync:all', 'sync:debug', 'npmcopy']);
 
     grunt.registerTask('build', ['build:debug']);
 

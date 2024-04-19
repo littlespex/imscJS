@@ -25,7 +25,7 @@
  */
 
 export function findAttribute(node, ns, name) {
-  for (var i in node.attributes) {
+  for (const i in node.attributes) {
 
     if (node.attributes[i].uri === ns &&
       node.attributes[i].local === name) {

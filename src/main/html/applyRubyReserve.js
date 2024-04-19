@@ -30,19 +30,19 @@ import { RUBYPOSITION_PROP } from './RUBYPOSITION_PROP.js';
 
 export function applyRubyReserve(lineList, context) {
 
-  for (var i = 0; i < lineList.length; i++) {
+  for (let i = 0; i < lineList.length; i++) {
 
-    var ruby = document.createElement("ruby");
+    const ruby = document.createElement("ruby");
 
-    var rb = document.createElement("span"); // rb element is deprecated in HTML
+    const rb = document.createElement("span"); // rb element is deprecated in HTML
     rb.textContent = "\u200B";
 
     ruby.appendChild(rb);
 
-    var rt1;
-    var rt2;
+    let rt1;
+    let rt2;
 
-    var fs = context.rubyReserve[1].toUsedLength(context.w, context.h) + "px";
+    const fs = context.rubyReserve[1].toUsedLength(context.w, context.h) + "px";
 
     if (context.rubyReserve[0] === "both" || (context.rubyReserve[0] === "outside" && lineList.length == 1)) {
 
@@ -65,7 +65,7 @@ export function applyRubyReserve(lineList, context) {
       rt1.textContent = "\u200B";
       rt1.style.fontSize = fs;
 
-      var pos;
+      let pos;
 
       if (context.rubyReserve[0] === "after" || (context.rubyReserve[0] === "outside" && i > 0)) {
 
@@ -84,16 +84,16 @@ export function applyRubyReserve(lineList, context) {
     }
 
     /* add in front of the first ruby element of the line, if it exists */
-    var sib = null;
+    let sib = null;
 
-    for (var j = 0; j < lineList[i].rbc.length; j++) {
+    for (let j = 0; j < lineList[i].rbc.length; j++) {
 
       if (lineList[i].rbc[j].localName === 'ruby') {
 
         sib = lineList[i].rbc[j];
 
         /* copy specified style properties from the sibling ruby container */
-        for (var k = 0; k < sib.style.length; k++) {
+        for (let k = 0; k < sib.style.length; k++) {
 
           ruby.style.setProperty(sib.style.item(k), sib.style.getPropertyValue(sib.style.item(k)));
 

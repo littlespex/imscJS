@@ -48,7 +48,7 @@ export function applyTextEmphasis(context, dom_element, isd_element, attr) {
   /* ignore "outside" position (set in postprocessing) */
   if (attr.position === "before" || attr.position === "after") {
 
-    var pos;
+    let pos;
 
     if (context.bpd === "tb") {
 

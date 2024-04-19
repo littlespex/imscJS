@@ -23,7 +23,7 @@ QUnit.test("ParseTextShadow",
 
         ];
 
-        for (var i in tests) {
+        for (const i in tests) {
             assert.deepEqual(
                 parseTextShadow(tests[i][0]),
                 tests[i][1],

@@ -31,7 +31,7 @@ export class IdentifiedElement {
     this.id = id;
   }
 
-  initFromNode(doc, parent, node, errorHandler) {
+  initFromNode(doc, parent, node) {
     this.id = elementGetXMLID(node);
   }
 }

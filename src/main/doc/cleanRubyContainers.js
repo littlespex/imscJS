@@ -31,11 +31,11 @@ export function cleanRubyContainers(element) {
 
   if (!('contents' in element)) return;
 
-  var rubyval = 'styleAttrs' in element ? element.styleAttrs[byName.ruby.qname] : null;
+  const rubyval = 'styleAttrs' in element ? element.styleAttrs[byName.ruby.qname] : null;
 
-  var isrubycontainer = (element.kind === 'span' && (rubyval === "container" || rubyval === "textContainer" || rubyval === "baseContainer"));
+  const isrubycontainer = (element.kind === 'span' && (rubyval === "container" || rubyval === "textContainer" || rubyval === "baseContainer"));
 
-  for (var i = element.contents.length - 1; i >= 0; i--) {
+  for (let i = element.contents.length - 1; i >= 0; i--) {
 
     if (isrubycontainer && !('styleAttrs' in element.contents[i] && byName.ruby.qname in element.contents[i].styleAttrs)) {
 

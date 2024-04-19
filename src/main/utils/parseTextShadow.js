@@ -30,13 +30,13 @@ import { parseLength } from "./parseLength.js";
 
 export function parseTextShadow(str) {
 
-  var shadows = str.match(/([^\(,\)]|\([^\)]+\))+/g);
+  const shadows = str.match(/([^(,)]|\([^)]+\))+/g);
 
-  var r = [];
+  const r = [];
 
-  for (var i = 0; i < shadows.length; i++) {
+  for (let i = 0; i < shadows.length; i++) {
 
-    var shadow = shadows[i].split(" ");
+    const shadow = shadows[i].split(" ");
 
     if (shadow.length === 1 && shadow[0] === "none") {
 
@@ -44,10 +44,10 @@ export function parseTextShadow(str) {
 
     } else if (shadow.length > 1 && shadow.length < 5) {
 
-      var out_shadow = [null, null, null, null];
+      const out_shadow = [null, null, null, null];
 
       /* x offset */
-      var l = parseLength(shadow.shift());
+      let l = parseLength(shadow.shift());
 
       if (l === null)
         return null;
@@ -83,7 +83,7 @@ export function parseTextShadow(str) {
         continue;
       }
 
-      var c = parseColor(shadow[0]);
+      const c = parseColor(shadow[0]);
 
       if (c === null)
         return null;

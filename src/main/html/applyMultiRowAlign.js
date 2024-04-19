@@ -27,14 +27,14 @@
 export function applyMultiRowAlign(lineList) {
   /* apply an explicit br to all but the last line */
 
-  for (var i = 0; i < lineList.length - 1; i++) {
+  for (let i = 0; i < lineList.length - 1; i++) {
 
-    var l = lineList[i].elements.length;
+    const l = lineList[i].elements.length;
 
     if (l !== 0 && lineList[i].br === false) {
-      var br = document.createElement("br");
+      const br = document.createElement("br");
 
-      var lastnode = lineList[i].elements[l - 1].node;
+      const lastnode = lineList[i].elements[l - 1].node;
 
       lastnode.parentElement.insertBefore(br, lastnode.nextSibling);
     }

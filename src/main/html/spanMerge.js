@@ -40,9 +40,9 @@ export function spanMerge(first, second, context) {
 
     first.textContent += second.textContent;
 
-    for (var i = 0; i < second.style.length; i++) {
+    for (let i = 0; i < second.style.length; i++) {
 
-      var styleName = second.style[i];
+      const styleName = second.style[i];
       if (styleName.indexOf("border") >= 0 ||
         styleName.indexOf("padding") >= 0 ||
         styleName.indexOf("margin") >= 0) {

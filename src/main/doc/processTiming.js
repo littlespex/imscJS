@@ -30,7 +30,7 @@ import { parseTimeExpression } from './parseTimeExpression.js';
 export function processTiming(doc, parent, node, errorHandler) {
   /* determine explicit begin */
 
-  var explicit_begin = null;
+  let explicit_begin = null;
 
   if (node && 'begin' in node.attributes) {
 
@@ -45,7 +45,7 @@ export function processTiming(doc, parent, node, errorHandler) {
   }
 
   /* determine explicit duration */
-  var explicit_dur = null;
+  let explicit_dur = null;
 
   if (node && 'dur' in node.attributes) {
 
@@ -60,7 +60,7 @@ export function processTiming(doc, parent, node, errorHandler) {
   }
 
   /* determine explicit end */
-  var explicit_end = null;
+  let explicit_end = null;
 
   if (node && 'end' in node.attributes) {
 

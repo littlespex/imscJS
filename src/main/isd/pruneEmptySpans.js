@@ -36,7 +36,7 @@ export function pruneEmptySpans(element) {
 
   } else if ('contents' in element) {
 
-    var i = element.contents.length;
+    let i = element.contents.length;
 
     while (i--) {
 

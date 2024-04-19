@@ -31,7 +31,7 @@ export class LayoutElement {
     this.regionID = id;
   }
 
-  initFromNode(doc, parent, node, errorHandler) {
+  initFromNode(doc, parent, node) {
     this.regionID = elementGetRegionID(node);
   }
 }

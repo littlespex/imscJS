@@ -30,7 +30,7 @@ import { findAttribute } from './findAttribute.js';
 
 export function extractAspectRatio(node, errorHandler) {
 
-  var ar = findAttribute(node, imscNames.ns_ittp, "aspectRatio");
+  let ar = findAttribute(node, imscNames.ns_ittp, "aspectRatio");
 
   if (ar === null) {
 
@@ -38,19 +38,19 @@ export function extractAspectRatio(node, errorHandler) {
 
   }
 
-  var rslt = null;
+  let rslt = null;
 
   if (ar !== null) {
 
-    var ASPECT_RATIO_RE = /(\d+)\s+(\d+)/;
+    const ASPECT_RATIO_RE = /(\d+)\s+(\d+)/;
 
-    var m = ASPECT_RATIO_RE.exec(ar);
+    const m = ASPECT_RATIO_RE.exec(ar);
 
     if (m !== null) {
 
-      var w = parseInt(m[1]);
+      const w = parseInt(m[1]);
 
-      var h = parseInt(m[2]);
+      const h = parseInt(m[2]);
 
       if (w !== 0 && h !== 0) {
 

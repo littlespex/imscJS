@@ -24,15 +24,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export function applyFillLineGap(lineList, par_before, par_after, context, element) {
+export function applyFillLineGap(lineList, par_before, par_after, context) {
 
   /* positive for BPD = lr and tb, negative for BPD = rl */
-  var s = Math.sign(par_after - par_before);
+  const s = Math.sign(par_after - par_before);
 
-  for (var i = 0; i <= lineList.length; i++) {
+  for (let i = 0; i <= lineList.length; i++) {
 
     /* compute frontier between lines */
-    var frontier;
+    let frontier;
 
     if (i === 0) {
 
@@ -48,8 +48,8 @@ export function applyFillLineGap(lineList, par_before, par_after, context, eleme
 
     }
 
-    var padding;
-    var l, thisNode;
+    let padding;
+    let l, thisNode;
 
     /* before line */
     if (i > 0) {
@@ -102,6 +102,7 @@ export function applyFillLineGap(lineList, par_before, par_after, context, eleme
           thisNode.node.style.paddingTop = padding;
 
         }
+
       }
 
     }

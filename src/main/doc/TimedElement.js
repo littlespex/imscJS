@@ -35,7 +35,7 @@ export class TimedElement {
   }
 
   initFromNode(doc, parent, node, errorHandler) {
-    var t = processTiming(doc, parent, node, errorHandler);
+    const t = processTiming(doc, parent, node, errorHandler);
     this.explicit_begin = t.explicit_begin;
     this.explicit_end = t.explicit_end;
     this.explicit_dur = t.explicit_dur;

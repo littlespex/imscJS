@@ -26,7 +26,7 @@
 
 var genfiles_root = "generated";
 
-function asyncLoadFile(url) {
+window.asyncLoadFile = function (url) {
 
     return new Promise(function (resolve, reject) {
 
@@ -62,19 +62,19 @@ function asyncLoadFile(url) {
     });
 }
 
-function getTestListPath(reffiles_root) {
+window.getTestListPath = function (reffiles_root) {
     return reffiles_root + "/tests.json";
 }
 
-function getReferenceFilePath(reffiles_root, reffile_path) {
+window.getReferenceFilePath = function (reffiles_root, reffile_path) {
     return reffiles_root + "/ttml/" + reffile_path;
 }
 
-function getReferenceFileDirectory(reffiles_root, reffile_path) {
+window.getReferenceFileDirectory = function (reffiles_root, reffile_path) {
     return reffiles_root + "/ttml/" + reffile_path.substring(0, Math.max(reffile_path.lastIndexOf("/"), reffile_path.lastIndexOf("\\")) + 1);
 }
 
-function getTestName(reffile_path, renderer_params) {
+window.getTestName = function (reffile_path) {
     return reffile_path.split('\\').pop().split('/').pop().split(".")[0];
 }
 
@@ -86,18 +86,18 @@ function filenameFromOffset(offset) {
     return offset.toFixed(6).toString();
 }
 
-function getReferencePNGPath(reffiles_root, test_name, offset) {
+window.getReferencePNGPath = function (reffiles_root, test_name, offset) {
     return reffiles_root + "/png/" + test_name + "/" + filenameFromOffset(offset) + ".png";
 }
 
-function getReferenceDocPath(test_name) {
+window.getReferenceDocPath = function (test_name) {
     return getTestOutputDirectory(test_name) + "/doc.json";
 }
 
-function getReferenceISDPath(test_name, offset) {
+window.getReferenceISDPath = function (test_name, offset) {
     return getTestOutputDirectory(test_name) + "/isd/" + filenameFromOffset(offset) + ".json";
 }
 
-function getReferenceHTMLPath(test_name, offset) {
+window.getReferenceHTMLPath = function (test_name, offset) {
     return getTestOutputDirectory(test_name) + "/html/" + filenameFromOffset(offset) + ".html";
 }

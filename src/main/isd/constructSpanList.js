@@ -32,10 +32,10 @@ export function constructSpanList(element, elist) {
     return;
   }
 
-  for (var i = 0; i < element.contents.length; i++) {
+  for (let i = 0; i < element.contents.length; i++) {
 
-    var child = element.contents[i];
-    var ruby = child.styleAttrs[byName.ruby.qname];
+    const child = element.contents[i];
+    const ruby = child.styleAttrs[byName.ruby.qname];
 
     if (child.kind === 'span' && (ruby === "textContainer" || ruby === "text")) {
 

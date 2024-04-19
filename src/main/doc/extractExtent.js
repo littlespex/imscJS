@@ -31,12 +31,12 @@ import { findAttribute } from './findAttribute.js';
 
 export function extractExtent(node, errorHandler) {
 
-  var attr = findAttribute(node, imscNames.ns_tts, "extent");
+  const attr = findAttribute(node, imscNames.ns_tts, "extent");
 
   if (attr === null)
     return null;
 
-  var s = attr.split(" ");
+  const s = attr.split(" ");
 
   if (s.length !== 2) {
 
@@ -45,9 +45,9 @@ export function extractExtent(node, errorHandler) {
     return null;
   }
 
-  var w = parseLength(s[0]);
+  const w = parseLength(s[0]);
 
-  var h = parseLength(s[1]);
+  const h = parseLength(s[1]);
 
   if (!h || !w) {
 
@@ -56,6 +56,6 @@ export function extractExtent(node, errorHandler) {
     return null;
   }
 
-  return { 'h': h, 'w': w };
+  return { h, w };
 
 }

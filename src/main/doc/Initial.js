@@ -35,17 +35,17 @@ export class Initial {
     this.styleAttrs = null;
   }
 
-  initFromNode(node, errorHandler) {
+  initFromNode(node) {
 
     this.styleAttrs = {};
 
-    for (var i in node.attributes) {
+    for (const i in node.attributes) {
 
       if (node.attributes[i].uri === imscNames.ns_itts ||
         node.attributes[i].uri === imscNames.ns_ebutts ||
         node.attributes[i].uri === imscNames.ns_tts) {
 
-        var qname = node.attributes[i].uri + " " + node.attributes[i].local;
+        const qname = node.attributes[i].uri + " " + node.attributes[i].local;
 
         this.styleAttrs[qname] = node.attributes[i].value;
 

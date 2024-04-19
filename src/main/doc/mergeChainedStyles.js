@@ -32,7 +32,7 @@ export function mergeChainedStyles(styling, style, errorHandler) {
 
   while (style.styleRefs.length > 0) {
 
-    var sref = style.styleRefs.pop();
+    const sref = style.styleRefs.pop();
 
     if (!(sref in styling.styles)) {
       reportError(errorHandler, "Non-existant style id referenced");

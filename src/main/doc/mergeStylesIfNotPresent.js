@@ -24,11 +24,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+import { hasOwnProperty } from '../utils/hasOwnProperty.js';
+
 export function mergeStylesIfNotPresent(from_styles, into_styles) {
 
-  for (var sname in from_styles) {
+  for (const sname in from_styles) {
 
-    if (!from_styles.hasOwnProperty(sname)) continue;
+    if (!hasOwnProperty(from_styles, sname)) continue;
 
     if (sname in into_styles)
       continue;

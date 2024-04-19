@@ -35,9 +35,9 @@ export function collapseLWSP(elist) {
   }
 
   /* collapse spaces and remove leading LWSPs */
-  var element;
+  let element;
 
-  for (var i = 0; i < elist.length;) {
+  for (let i = 0; i < elist.length;) {
 
     element = elist[i];
 
@@ -46,7 +46,7 @@ export function collapseLWSP(elist) {
       continue;
     }
 
-    var trimmed_text = element.text.replace(/[\t\r\n ]+/g, ' ');
+    let trimmed_text = element.text.replace(/[\t\r\n ]+/g, ' ');
 
     if (/^[ ]/.test(trimmed_text)) {
 
@@ -67,7 +67,7 @@ export function collapseLWSP(elist) {
   }
 
   /* remove trailing LWSPs */
-  for (i = 0; i < elist.length; i++) {
+  for (let i = 0; i < elist.length; i++) {
 
     element = elist[i];
 

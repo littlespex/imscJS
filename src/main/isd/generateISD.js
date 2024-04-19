@@ -25,6 +25,7 @@
  */
 
 import { byName } from '../styles/byName.js';
+import { hasOwnProperty } from '../utils/hasOwnProperty.js';
 import { ISD } from './ISD.js';
 import { isdProcessContentElement } from './isdProcessContentElement.js';
 
@@ -42,25 +43,25 @@ export function generateISD(tt, offset, errorHandler) {
   /* TODO check for tt and offset validity */
 
   /* create the ISD object from the IMSC1 doc */
-  var isd = new ISD(tt);
+  const isd = new ISD(tt);
 
   /* context */
-  var context = {
+  const context = {
     /*rubyfs: []*/ /* font size of the nearest textContainer or container */
   };
 
   /* Filter body contents - Only process what we need within the offset and discard regions not applicable to the content */
-  var body = {};
-  var activeRegions = {};
+  let body = {};
+  const activeRegions = {};
 
   /* gather any regions that might have showBackground="always" and show a background */
-  var initialShowBackground = tt.head.styling.initials[byName.showBackground.qname];
-  var initialbackgroundColor = tt.head.styling.initials[byName.backgroundColor.qname];
-  for (var layout_child in tt.head.layout.regions) {
-    if (tt.head.layout.regions.hasOwnProperty(layout_child)) {
-      var region = tt.head.layout.regions[layout_child];
-      var showBackground = region.styleAttrs[byName.showBackground.qname] || initialShowBackground;
-      var backgroundColor = region.styleAttrs[byName.backgroundColor.qname] || initialbackgroundColor;
+  const initialShowBackground = tt.head.styling.initials[byName.showBackground.qname];
+  const initialbackgroundColor = tt.head.styling.initials[byName.backgroundColor.qname];
+  for (const layout_child in tt.head.layout.regions) {
+    if (hasOwnProperty(tt.head.layout.regions, layout_child)) {
+      const region = tt.head.layout.regions[layout_child];
+      const showBackground = region.styleAttrs[byName.showBackground.qname] || initialShowBackground;
+      const backgroundColor = region.styleAttrs[byName.backgroundColor.qname] || initialbackgroundColor;
       activeRegions[region.id] = (
         (showBackground === 'always' || showBackground === undefined) &&
         backgroundColor !== undefined &&
@@ -81,16 +82,16 @@ export function generateISD(tt, offset, errorHandler) {
     }
 
     if (element.contents) {
-      var clone = {};
-      for (var prop in element) {
-        if (element.hasOwnProperty(prop)) {
+      const clone = {};
+      for (const prop in element) {
+        if (hasOwnProperty(element, prop)) {
           clone[prop] = element[prop];
         }
       }
       clone.contents = [];
 
       element.contents.filter(offsetFilter).forEach(function (el) {
-        var filteredElement = filter(offset, el);
+        const filteredElement = filter(offset, el);
         if (filteredElement.regionID) {
           activeRegions[filteredElement.regionID] = true;
         }
@@ -117,10 +118,10 @@ export function generateISD(tt, offset, errorHandler) {
   }
 
   /* process regions */
-  for (var regionID in activeRegions) {
+  for (const regionID in activeRegions) {
     if (activeRegions[regionID]) {
       /* post-order traversal of the body tree per [construct intermediate document] */
-      var c = isdProcessContentElement(tt, offset, tt.head.layout.regions[regionID], body, null, '', tt.head.layout.regions[regionID], errorHandler, context);
+      const c = isdProcessContentElement(tt, offset, tt.head.layout.regions[regionID], body, null, '', tt.head.layout.regions[regionID], errorHandler, context);
 
       if (c !== null) {
 
