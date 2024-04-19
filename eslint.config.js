@@ -21,6 +21,7 @@ export default [
 			'no-trailing-spaces': 'error',
 			'no-multiple-empty-lines': ['error', { 'max': 1 }],
 			'comma-dangle': ['error', 'always-multiline'],
+			'eol-last': ['error', 'always'],
 		},
 	},
 ];

@@ -46,14 +46,14 @@ var errorHandler = {
 
 /* */
 
-window.generateRenders = function (reffiles_root) {
+function generateRenders(reffiles_root) {
 
     var zip = new JSZip();
 
     var renders_dir = zip.folder('generated');
     var pngs_dir = zip.folder('png');
 
-    return window.asyncLoadFile(window.getTestListPath(reffiles_root))
+    return asyncLoadFile(getTestListPath(reffiles_root))
         .then(function (contents) {
             finfos = JSON.parse(contents);
 
@@ -87,12 +87,12 @@ window.generateRenders = function (reffiles_root) {
 
 function asyncProcessRefFile(reffiles_root, renders_dir, pngs_dir, finfo) {
 
-    var test_name = finfo.name || window.getTestName(finfo.path, finfo.params || {});
+    var test_name = finfo.name || getTestName(finfo.path, finfo.params || {});
 
     var test_renders_dir = renders_dir.folder(test_name);
     var test_pngs_dir = pngs_dir.folder(test_name);
 
-    return window.asyncLoadFile(window.getReferenceFilePath(reffiles_root, finfo.path))
+    return asyncLoadFile(getReferenceFilePath(reffiles_root, finfo.path))
         .then(function (contents) {
             var doc = imsc.fromXML(contents.replace(/\r\n/g, '\n'), errorHandler);
 
@@ -110,7 +110,7 @@ function asyncProcessRefFile(reffiles_root, renders_dir, pngs_dir, finfo) {
 
             for (const i in events) {
 
-                p.push(asyncProcessEvent(doc, test_renders_dir, test_pngs_dir, events[i], finfo.params || {}, window.getReferenceFileDirectory(reffiles_root, finfo.path)));
+                p.push(asyncProcessEvent(doc, test_renders_dir, test_pngs_dir, events[i], finfo.params || {}, getReferenceFileDirectory(reffiles_root, finfo.path)));
 
             }
 

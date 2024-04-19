@@ -40,7 +40,7 @@ var errorHandler = {
 };
 
 function getIMSC1Document(url, metadataHandler) {
-    return new window.asyncLoadFile(url).then(function (contents) {
+    return new asyncLoadFile(url).then(function (contents) {
         return imsc.fromXML(contents, errorHandler, metadataHandler);
     });
 }

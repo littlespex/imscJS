@@ -20,19 +20,19 @@ module.exports = function (grunt) {
                         { expand: true, cwd: '<%= properties.unitTestsResourcesDir %>', src: 'imsc-tests/imsc1/tests.json', dest: '<%= properties.webappBuildDir %>' },
                         { expand: true, cwd: '<%= properties.unitTestsResourcesDir %>', src: 'imsc-tests/imsc1_1/ttml/**', dest: '<%= properties.webappBuildDir %>' },
                         { expand: true, cwd: '<%= properties.unitTestsResourcesDir %>', src: 'imsc-tests/imsc1_1/tests.json', dest: '<%= properties.webappBuildDir %>' },
-                        { expand: true, cwd: '<%= properties.unitTestsResourcesDir %>', src: 'unit-tests/**', dest: '<%= properties.webappBuildDir %>' }
-                    ]
+                        { expand: true, cwd: '<%= properties.unitTestsResourcesDir %>', src: 'unit-tests/**', dest: '<%= properties.webappBuildDir %>' },
+                    ],
             },
 
             release: {
                 src: '<%= properties.umdBuildDir %>/<%= properties.umdMinName %>',
-                dest: '<%= properties.webappBuildDir %>/libs/imsc.js'
+                dest: '<%= properties.webappBuildDir %>/libs/imsc.js',
             },
 
             debug: {
                 src: '<%= properties.umdBuildDir %>/<%= properties.umdDebugName %>',
-                dest: '<%= properties.webappBuildDir %>/libs/imsc.js'
-            }
+                dest: '<%= properties.webappBuildDir %>/libs/imsc.js',
+            },
         },
 
         npmcopy: {
@@ -43,23 +43,23 @@ module.exports = function (grunt) {
                         'qunit-assert-close:main',
                         'qunitjs:main',
                         'filesaver.js-npm:main',
-                        'jszip/dist/jszip.js'
-                    ]
-                }
-            }
+                        'jszip/dist/jszip.js',
+                    ],
+                },
+            },
         },
 
         exec:
         {
             lint: {
-                cmd: "eslint src",
+                cmd: 'eslint src',
             },
 
             bundle: {
-                cmd: "rollup -c rollup.config.js",
-            }
-        }
-    }
+                cmd: 'rollup -c rollup.config.js',
+            },
+        },
+    },
 
     );
 
