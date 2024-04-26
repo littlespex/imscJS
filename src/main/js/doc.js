@@ -24,812 +24,818 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+import sax from 'sax';
+import { reportError, reportFatal, reportWarning } from './error.js';
+import { ns_ebutts, ns_ittp, ns_itts, ns_tt, ns_ttp } from './names.js';
+import { byName, byQName } from './styles.js';
+import { ComputedLength, parseLength } from './utils.js';
+
 /**
  * @module imscDoc
  */
 
-;
-(function (imscDoc, sax, imscNames, imscStyles, imscUtils) {
+
+/**
+ * Allows a client to provide callbacks to handle children of the <metadata> element
+ * @typedef {Object} MetadataHandler
+ * @property {?OpenTagCallBack} onOpenTag
+ * @property {?CloseTagCallBack} onCloseTag
+ * @property {?TextCallBack} onText
+ */
+
+/**
+ * Called when the opening tag of an element node is encountered.
+ * @callback OpenTagCallBack
+ * @param {string} ns Namespace URI of the element
+ * @param {string} name Local name of the element
+ * @param {Object[]} attributes List of attributes, each consisting of a
+ *                              `uri`, `name` and `value`
+ */
+
+/**
+ * Called when the closing tag of an element node is encountered.
+ * @callback CloseTagCallBack
+ */
+
+/**
+ * Called when a text node is encountered.
+ * @callback TextCallBack
+ * @param {string} contents Contents of the text node
+ */
+
+/**
+ * Parses an IMSC1 document into an opaque in-memory representation that exposes
+ * a single method <pre>getMediaTimeEvents()</pre> that returns a list of time
+ * offsets (in seconds) of the ISD, i.e. the points in time where the visual
+ * representation of the document change. `metadataHandler` allows the caller to
+ * be called back when nodes are present in <metadata> elements. 
+ * 
+ * @param {string} xmlstring XML document
+ * @param {?module:imscUtils.ErrorHandler} errorHandler Error callback
+ * @param {?MetadataHandler} metadataHandler Callback for <Metadata> elements
+ * @returns {Object} Opaque in-memory representation of an IMSC1 document
+ */
+
+export function fromXM(xmlstring, errorHandler, metadataHandler) {
+    var p = sax.parser(true, { xmlns: true });
+    var estack = [];
+    var xmllangstack = [];
+    var xmlspacestack = [];
+    var metadata_depth = 0;
+    var doc = null;
+
+    p.onclosetag = function (node) {
 
 
-    /**
-     * Allows a client to provide callbacks to handle children of the <metadata> element
-     * @typedef {Object} MetadataHandler
-     * @property {?OpenTagCallBack} onOpenTag
-     * @property {?CloseTagCallBack} onCloseTag
-     * @property {?TextCallBack} onText
-     */
+        if (estack[0] instanceof Region) {
 
-    /**
-     * Called when the opening tag of an element node is encountered.
-     * @callback OpenTagCallBack
-     * @param {string} ns Namespace URI of the element
-     * @param {string} name Local name of the element
-     * @param {Object[]} attributes List of attributes, each consisting of a
-     *                              `uri`, `name` and `value`
-     */
+            /* merge referenced styles */
 
-    /**
-     * Called when the closing tag of an element node is encountered.
-     * @callback CloseTagCallBack
-     */
+            if (doc.head !== null && doc.head.styling !== null) {
+                mergeReferencedStyles(doc.head.styling, estack[0].styleRefs, estack[0].styleAttrs, errorHandler);
+            }
 
-    /**
-     * Called when a text node is encountered.
-     * @callback TextCallBack
-     * @param {string} contents Contents of the text node
-     */
+            delete estack[0].styleRefs;
 
-    /**
-     * Parses an IMSC1 document into an opaque in-memory representation that exposes
-     * a single method <pre>getMediaTimeEvents()</pre> that returns a list of time
-     * offsets (in seconds) of the ISD, i.e. the points in time where the visual
-     * representation of the document change. `metadataHandler` allows the caller to
-     * be called back when nodes are present in <metadata> elements. 
-     * 
-     * @param {string} xmlstring XML document
-     * @param {?module:imscUtils.ErrorHandler} errorHandler Error callback
-     * @param {?MetadataHandler} metadataHandler Callback for <Metadata> elements
-     * @returns {Object} Opaque in-memory representation of an IMSC1 document
-     */
+        } else if (estack[0] instanceof Styling) {
 
-    imscDoc.fromXML = function (xmlstring, errorHandler, metadataHandler) {
-        var p = sax.parser(true, {xmlns: true});
-        var estack = [];
-        var xmllangstack = [];
-        var xmlspacestack = [];
-        var metadata_depth = 0;
-        var doc = null;
+            /* flatten chained referential styling */
 
-        p.onclosetag = function (node) {
+            for (var sid in estack[0].styles) {
 
-            
-            if (estack[0] instanceof Region) {
+                if (!estack[0].styles.hasOwnProperty(sid)) continue;
 
-                /* merge referenced styles */
-
-                if (doc.head !== null && doc.head.styling !== null) {
-                    mergeReferencedStyles(doc.head.styling, estack[0].styleRefs, estack[0].styleAttrs, errorHandler);
-                }
-
-                delete estack[0].styleRefs;
-
-            } else if (estack[0] instanceof Styling) {
-
-                /* flatten chained referential styling */
-
-                for (var sid in estack[0].styles) {
-
-                    if (! estack[0].styles.hasOwnProperty(sid)) continue;
-
-                    mergeChainedStyles(estack[0], estack[0].styles[sid], errorHandler);
-
-                }
-
-            } else if (estack[0] instanceof P || estack[0] instanceof Span) {
-
-                /* merge anonymous spans */
-
-                if (estack[0].contents.length > 1) {
-
-                    var cs = [estack[0].contents[0]];
-
-                    var c;
-
-                    for (c = 1; c < estack[0].contents.length; c++) {
-
-                        if (estack[0].contents[c] instanceof AnonymousSpan &&
-                                cs[cs.length - 1] instanceof AnonymousSpan) {
-
-                            cs[cs.length - 1].text += estack[0].contents[c].text;
-
-                        } else {
-
-                            cs.push(estack[0].contents[c]);
-
-                        }
-
-                    }
-
-                    estack[0].contents = cs;
-
-                }
-
-                // remove redundant nested anonymous spans (9.3.3(1)(c))
-
-                if (estack[0] instanceof Span &&
-                        estack[0].contents.length === 1 &&
-                        estack[0].contents[0] instanceof AnonymousSpan) {
-
-                    estack[0].text = estack[0].contents[0].text;
-                    delete estack[0].contents;
-
-                }
-
-            } else if (estack[0] instanceof ForeignElement) {
-
-                if (estack[0].node.uri === imscNames.ns_tt &&
-                        estack[0].node.local === 'metadata') {
-
-                    /* leave the metadata element */
-
-                    metadata_depth--;
-
-                } else if (metadata_depth > 0 &&
-                        metadataHandler &&
-                        'onCloseTag' in metadataHandler) {
-
-                    /* end of child of metadata element */
-
-                    metadataHandler.onCloseTag();
-
-                }
+                mergeChainedStyles(estack[0], estack[0].styles[sid], errorHandler);
 
             }
 
-            // TODO: delete stylerefs?
+        } else if (estack[0] instanceof P || estack[0] instanceof Span) {
 
-            // maintain the xml:space stack
+            /* merge anonymous spans */
 
-            xmlspacestack.shift();
+            if (estack[0].contents.length > 1) {
 
-            // maintain the xml:lang stack
+                var cs = [estack[0].contents[0]];
 
-            xmllangstack.shift();
+                var c;
 
-            // prepare for the next element
+                for (c = 1; c < estack[0].contents.length; c++) {
 
-            estack.shift();
-        };
+                    if (estack[0].contents[c] instanceof AnonymousSpan &&
+                        cs[cs.length - 1] instanceof AnonymousSpan) {
 
-        p.ontext = function (str) {
-
-            if (estack[0] === undefined) {
-
-                /* ignoring text outside of elements */
-
-            } else if (estack[0] instanceof Span || estack[0] instanceof P) {
-
-                /* ignore children text nodes in ruby container spans */
-
-                if (estack[0] instanceof Span) {
-
-                    var ruby = estack[0].styleAttrs[imscStyles.byName.ruby.qname];
-
-                    if (ruby === 'container' || ruby === 'textContainer' || ruby === 'baseContainer') {
-
-                        return;
-
-                    }
-
-                }
-
-                /* create an anonymous span */
-
-                var s = new AnonymousSpan();
-
-                s.initFromText(doc, estack[0], str, xmllangstack[0], xmlspacestack[0], errorHandler);
-
-                estack[0].contents.push(s);
-
-            } else if (estack[0] instanceof ForeignElement &&
-                    metadata_depth > 0 &&
-                    metadataHandler &&
-                    'onText' in metadataHandler) {
-
-                /* text node within a child of metadata element */
-
-                metadataHandler.onText(str);
-
-            }
-
-        };
-
-
-        p.onopentag = function (node) {
-
-            // maintain the xml:space stack
-
-            var xmlspace = node.attributes["xml:space"];
-
-            if (xmlspace) {
-
-                xmlspacestack.unshift(xmlspace.value);
-
-            } else {
-
-                if (xmlspacestack.length === 0) {
-
-                    xmlspacestack.unshift("default");
-
-                } else {
-
-                    xmlspacestack.unshift(xmlspacestack[0]);
-
-                }
-
-            }
-
-            /* maintain the xml:lang stack */
-
-
-            var xmllang = node.attributes["xml:lang"];
-
-            if (xmllang) {
-
-                xmllangstack.unshift(xmllang.value);
-
-            } else {
-
-                if (xmllangstack.length === 0) {
-
-                    xmllangstack.unshift("");
-
-                } else {
-
-                    xmllangstack.unshift(xmllangstack[0]);
-
-                }
-
-            }
-
-
-            /* process the element */
-
-            if (node.uri === imscNames.ns_tt) {
-
-                if (node.local === 'tt') {
-
-                    if (doc !== null) {
-
-                        reportFatal(errorHandler, "Two <tt> elements at (" + this.line + "," + this.column + ")");
-
-                    }
-
-                    doc = new TT();
-
-                    doc.initFromNode(node, xmllangstack[0], errorHandler);
-
-                    estack.unshift(doc);
-
-                } else if (node.local === 'head') {
-
-                    if (!(estack[0] instanceof TT)) {
-                        reportFatal(errorHandler, "Parent of <head> element is not <tt> at (" + this.line + "," + this.column + ")");
-                    }
-
-                    estack.unshift(doc.head);
-
-                } else if (node.local === 'styling') {
-
-                    if (!(estack[0] instanceof Head)) {
-                        reportFatal(errorHandler, "Parent of <styling> element is not <head> at (" + this.line + "," + this.column + ")");
-                    }
-
-                    estack.unshift(doc.head.styling);
-
-                } else if (node.local === 'style') {
-
-                    var s;
-
-                    if (estack[0] instanceof Styling) {
-
-                        s = new Style();
-
-                        s.initFromNode(node, errorHandler);
-
-                        /* ignore <style> element missing @id */
-
-                        if (!s.id) {
-
-                            reportError(errorHandler, "<style> element missing @id attribute");
-
-                        } else {
-
-                            doc.head.styling.styles[s.id] = s;
-
-                        }
-
-                        estack.unshift(s);
-
-                    } else if (estack[0] instanceof Region) {
-
-                        /* nested styles can be merged with specified styles
-                         * immediately, with lower priority
-                         * (see 8.4.4.2(3) at TTML1 )
-                         */
-
-                        s = new Style();
-
-                        s.initFromNode(node, errorHandler);
-
-                        mergeStylesIfNotPresent(s.styleAttrs, estack[0].styleAttrs);
-
-                        estack.unshift(s);
+                        cs[cs.length - 1].text += estack[0].contents[c].text;
 
                     } else {
 
-                        reportFatal(errorHandler, "Parent of <style> element is not <styling> or <region> at (" + this.line + "," + this.column + ")");
+                        cs.push(estack[0].contents[c]);
 
                     }
-
-                }  else if (node.local === 'initial') {
-
-                    var ini;
-
-                    if (estack[0] instanceof Styling) {
-
-                        ini = new Initial();
-
-                        ini.initFromNode(node, errorHandler);
-                        
-                        for (var qn in ini.styleAttrs) {
-
-                            if (! ini.styleAttrs.hasOwnProperty(qn)) continue;
-                            
-                            doc.head.styling.initials[qn] = ini.styleAttrs[qn];
-                            
-                        }
-                        
-                        estack.unshift(ini);
-
-                    } else {
-
-                        reportFatal(errorHandler, "Parent of <initial> element is not <styling> at (" + this.line + "," + this.column + ")");
-
-                    }
-
-                } else if (node.local === 'layout') {
-
-                    if (!(estack[0] instanceof Head)) {
-
-                        reportFatal(errorHandler, "Parent of <layout> element is not <head> at " + this.line + "," + this.column + ")");
-
-                    }
-
-                    estack.unshift(doc.head.layout);
-
-                } else if (node.local === 'region') {
-
-                    if (!(estack[0] instanceof Layout)) {
-                        reportFatal(errorHandler, "Parent of <region> element is not <layout> at " + this.line + "," + this.column + ")");
-                    }
-
-                    var r = new Region();
-
-                    r.initFromNode(doc, node, xmllangstack[0], errorHandler);
-
-                    if (!r.id || r.id in doc.head.layout.regions) {
-
-                        reportError(errorHandler, "Ignoring <region> with duplicate or missing @id at " + this.line + "," + this.column + ")");
-
-                    } else {
-
-                        doc.head.layout.regions[r.id] = r;
-
-                    }
-
-                    estack.unshift(r);
-
-                } else if (node.local === 'body') {
-
-                    if (!(estack[0] instanceof TT)) {
-
-                        reportFatal(errorHandler, "Parent of <body> element is not <tt> at " + this.line + "," + this.column + ")");
-
-                    }
-
-                    if (doc.body !== null) {
-
-                        reportFatal(errorHandler, "Second <body> element at " + this.line + "," + this.column + ")");
-
-                    }
-
-                    var b = new Body();
-
-                    b.initFromNode(doc, node, xmllangstack[0], errorHandler);
-
-                    doc.body = b;
-
-                    estack.unshift(b);
-
-                } else if (node.local === 'div') {
-
-                    if (!(estack[0] instanceof Div || estack[0] instanceof Body)) {
-
-                        reportFatal(errorHandler, "Parent of <div> element is not <body> or <div> at " + this.line + "," + this.column + ")");
-
-                    }
-
-                    var d = new Div();
-
-                    d.initFromNode(doc, estack[0], node, xmllangstack[0], errorHandler);
-                    
-                    /* transform smpte:backgroundImage to TTML2 image element */
-                    
-                    var bi = d.styleAttrs[imscStyles.byName.backgroundImage.qname];
-                    
-                    if (bi) {
-                        d.contents.push(new Image(bi));
-                        delete d.styleAttrs[imscStyles.byName.backgroundImage.qname];                  
-                    }
-
-                    estack[0].contents.push(d);
-
-                    estack.unshift(d);
-
-                } else if (node.local === 'image') {
-
-                    if (!(estack[0] instanceof Div)) {
-
-                        reportFatal(errorHandler, "Parent of <image> element is not <div> at " + this.line + "," + this.column + ")");
-
-                    }
-
-                    var img = new Image();
-                    
-                    img.initFromNode(doc, estack[0], node, xmllangstack[0], errorHandler);
-                    
-                    estack[0].contents.push(img);
-
-                    estack.unshift(img);
-
-                } else if (node.local === 'p') {
-
-                    if (!(estack[0] instanceof Div)) {
-
-                        reportFatal(errorHandler, "Parent of <p> element is not <div> at " + this.line + "," + this.column + ")");
-
-                    }
-
-                    var p = new P();
-
-                    p.initFromNode(doc, estack[0], node, xmllangstack[0], errorHandler);
-
-                    estack[0].contents.push(p);
-
-                    estack.unshift(p);
-
-                } else if (node.local === 'span') {
-
-                    if (!(estack[0] instanceof Span || estack[0] instanceof P)) {
-
-                        reportFatal(errorHandler, "Parent of <span> element is not <span> or <p> at " + this.line + "," + this.column + ")");
-
-                    }
-
-                    var ns = new Span();
-
-                    ns.initFromNode(doc, estack[0], node, xmllangstack[0], xmlspacestack[0], errorHandler);
-
-                    estack[0].contents.push(ns);
-
-                    estack.unshift(ns);
-
-                } else if (node.local === 'br') {
-
-                    if (!(estack[0] instanceof Span || estack[0] instanceof P)) {
-
-                        reportFatal(errorHandler, "Parent of <br> element is not <span> or <p> at " + this.line + "," + this.column + ")");
-
-                    }
-
-                    var nb = new Br();
-
-                    nb.initFromNode(doc, estack[0], node, xmllangstack[0], errorHandler);
-
-                    estack[0].contents.push(nb);
-
-                    estack.unshift(nb);
-
-                } else if (node.local === 'set') {
-
-                    if (!(estack[0] instanceof Span ||
-                            estack[0] instanceof P ||
-                            estack[0] instanceof Div ||
-                            estack[0] instanceof Body ||
-                            estack[0] instanceof Region ||
-                            estack[0] instanceof Br)) {
-
-                        reportFatal(errorHandler, "Parent of <set> element is not a content element or a region at " + this.line + "," + this.column + ")");
-
-                    }
-
-                    var st = new Set();
-
-                    st.initFromNode(doc, estack[0], node, errorHandler);
-
-                    estack[0].sets.push(st);
-
-                    estack.unshift(st);
-
-                } else {
-
-                    /* element in the TT namespace, but not a content element */
-
-                    estack.unshift(new ForeignElement(node));
-                }
-
-            } else {
-
-                /* ignore elements not in the TTML namespace unless in metadata element */
-
-                estack.unshift(new ForeignElement(node));
-
-            }
-
-            /* handle metadata callbacks */
-
-            if (estack[0] instanceof ForeignElement) {
-
-                if (node.uri === imscNames.ns_tt &&
-                        node.local === 'metadata') {
-
-                    /* enter the metadata element */
-
-                    metadata_depth++;
-
-                } else if (
-                        metadata_depth > 0 &&
-                        metadataHandler &&
-                        'onOpenTag' in metadataHandler
-                        ) {
-
-                    /* start of child of metadata element */
-
-                    var attrs = [];
-
-                    for (var a in node.attributes) {
-                        attrs[node.attributes[a].uri + " " + node.attributes[a].local] =
-                                {
-                                    uri: node.attributes[a].uri,
-                                    local: node.attributes[a].local,
-                                    value: node.attributes[a].value
-                                };
-                    }
-
-                    metadataHandler.onOpenTag(node.uri, node.local, attrs);
 
                 }
 
+                estack[0].contents = cs;
+
             }
 
-        };
+            // remove redundant nested anonymous spans (9.3.3(1)(c))
 
-        // parse the document
+            if (estack[0] instanceof Span &&
+                estack[0].contents.length === 1 &&
+                estack[0].contents[0] instanceof AnonymousSpan) {
 
-        p.write(xmlstring).close();
+                estack[0].text = estack[0].contents[0].text;
+                delete estack[0].contents;
 
-        // all referential styling has been flatten, so delete styles
+            }
 
-        delete doc.head.styling.styles;
-       
-        // create default region if no regions specified
+        } else if (estack[0] instanceof ForeignElement) {
 
-        var hasRegions = false;
+            if (estack[0].node.uri === ns_tt &&
+                estack[0].node.local === 'metadata') {
 
-        /* AFAIK the only way to determine whether an object has members */
+                /* leave the metadata element */
 
-        for (var i in doc.head.layout.regions) {
+                metadata_depth--;
 
-            if (doc.head.layout.regions.hasOwnProperty(i)) {
-                hasRegions = true;
-                break;
+            } else if (metadata_depth > 0 &&
+                metadataHandler &&
+                'onCloseTag' in metadataHandler) {
+
+                /* end of child of metadata element */
+
+                metadataHandler.onCloseTag();
+
             }
 
         }
 
-        if (!hasRegions) {
+        // TODO: delete stylerefs?
 
-            /* create default region */
+        // maintain the xml:space stack
 
-            var dr = Region.prototype.createDefaultRegion(doc.lang);
+        xmlspacestack.shift();
 
-            doc.head.layout.regions[dr.id] = dr;
+        // maintain the xml:lang stack
 
-        }
+        xmllangstack.shift();
 
-        /* resolve desired timing for regions */
+        // prepare for the next element
 
-        for (var region_i in doc.head.layout.regions) {
-
-            if (! doc.head.layout.regions.hasOwnProperty(region_i)) continue;
-
-            resolveTiming(doc, doc.head.layout.regions[region_i], null, null);
-
-        }
-
-        /* resolve desired timing for content elements */
-
-        if (doc.body) {
-            resolveTiming(doc, doc.body, null, null);
-        }
-
-        /* remove undefined spans in ruby containers */
-
-        if (doc.body) {
-            cleanRubyContainers(doc.body);
-        }
-
-        return doc;
+        estack.shift();
     };
 
-    function cleanRubyContainers(element) {
-        
-        if (! ('contents' in element)) return;
+    p.ontext = function (str) {
 
-        var rubyval = 'styleAttrs' in element ? element.styleAttrs[imscStyles.byName.ruby.qname] : null;
+        if (estack[0] === undefined) {
 
-        var isrubycontainer = (element.kind === 'span' && (rubyval === "container" || rubyval === "textContainer" || rubyval === "baseContainer"));
+            /* ignoring text outside of elements */
 
-        for (var i = element.contents.length - 1; i >= 0; i--) {
+        } else if (estack[0] instanceof Span || estack[0] instanceof P) {
 
-            if (isrubycontainer && !('styleAttrs' in element.contents[i] && imscStyles.byName.ruby.qname in element.contents[i].styleAttrs)) {
+            /* ignore children text nodes in ruby container spans */
 
-                /* prune undefined <span> in ruby containers */
+            if (estack[0] instanceof Span) {
 
-                delete element.contents[i];
+                var ruby = estack[0].styleAttrs[byName.ruby.qname];
 
-            } else {
+                if (ruby === 'container' || ruby === 'textContainer' || ruby === 'baseContainer') {
 
-                cleanRubyContainers(element.contents[i]);
-
-            }
-
-        }
-
-    }
-
-    function resolveTiming(doc, element, prev_sibling, parent) {
-
-        /* are we in a seq container? */
-
-        var isinseq = parent && parent.timeContainer === "seq";
-
-        /* determine implicit begin */
-
-        var implicit_begin = 0; /* default */
-
-        if (parent) {
-
-            if (isinseq && prev_sibling) {
-
-                /*
-                 * if seq time container, offset from the previous sibling end
-                 */
-
-                implicit_begin = prev_sibling.end;
-
-
-            } else {
-
-                implicit_begin = parent.begin;
-
-            }
-
-        }
-
-        /* compute desired begin */
-
-        element.begin = element.explicit_begin ? element.explicit_begin + implicit_begin : implicit_begin;
-
-
-        /* determine implicit end */
-
-        var implicit_end = element.begin;
-
-        var s = null;
-
-        if ("sets" in element) {
-
-            for (var set_i = 0; set_i < element.sets.length; set_i++) {
-
-                resolveTiming(doc, element.sets[set_i], s, element);
-
-                if (element.timeContainer === "seq") {
-
-                    implicit_end = element.sets[set_i].end;
-
-                } else {
-
-                    implicit_end = Math.max(implicit_end, element.sets[set_i].end);
+                    return;
 
                 }
 
-                s = element.sets[set_i];
-
             }
+
+            /* create an anonymous span */
+
+            var s = new AnonymousSpan();
+
+            s.initFromText(doc, estack[0], str, xmllangstack[0], xmlspacestack[0], errorHandler);
+
+            estack[0].contents.push(s);
+
+        } else if (estack[0] instanceof ForeignElement &&
+            metadata_depth > 0 &&
+            metadataHandler &&
+            'onText' in metadataHandler) {
+
+            /* text node within a child of metadata element */
+
+            metadataHandler.onText(str);
 
         }
 
-        if (!('contents' in element)) {
+    };
 
-            /* anonymous spans and regions and <set> and <br>s and spans with only children text nodes */
 
-            if (isinseq) {
+    p.onopentag = function (node) {
 
-                /* in seq container, implicit duration is zero */
+        // maintain the xml:space stack
 
-                implicit_end = element.begin;
+        var xmlspace = node.attributes["xml:space"];
 
-            } else {
+        if (xmlspace) {
 
-                /* in par container, implicit duration is indefinite */
-
-                implicit_end = Number.POSITIVE_INFINITY;
-
-            }
-
-        } else if ("contents" in element) {
- 
-            for (var content_i = 0; content_i < element.contents.length; content_i++) {
-
-                resolveTiming(doc, element.contents[content_i], s, element);
-
-                if (element.timeContainer === "seq") {
-
-                    implicit_end = element.contents[content_i].end;
-
-                } else {
-
-                    implicit_end = Math.max(implicit_end, element.contents[content_i].end);
-
-                }
-
-                s = element.contents[content_i];
-
-            }
-
-        }
-
-        /* determine desired end */
-        /* it is never made really clear in SMIL that the explicit end is offset by the implicit begin */
-
-        if (element.explicit_end !== null && element.explicit_dur !== null) {
-
-            element.end = Math.min(element.begin + element.explicit_dur, implicit_begin + element.explicit_end);
-
-        } else if (element.explicit_end === null && element.explicit_dur !== null) {
-
-            element.end = element.begin + element.explicit_dur;
-
-        } else if (element.explicit_end !== null && element.explicit_dur === null) {
-
-            element.end = implicit_begin + element.explicit_end;
+            xmlspacestack.unshift(xmlspace.value);
 
         } else {
 
-            element.end = implicit_end;
+            if (xmlspacestack.length === 0) {
+
+                xmlspacestack.unshift("default");
+
+            } else {
+
+                xmlspacestack.unshift(xmlspacestack[0]);
+
+            }
+
         }
 
-        delete element.explicit_begin;
-        delete element.explicit_dur;
-        delete element.explicit_end;
+        /* maintain the xml:lang stack */
 
-        doc._registerEvent(element);
+
+        var xmllang = node.attributes["xml:lang"];
+
+        if (xmllang) {
+
+            xmllangstack.unshift(xmllang.value);
+
+        } else {
+
+            if (xmllangstack.length === 0) {
+
+                xmllangstack.unshift("");
+
+            } else {
+
+                xmllangstack.unshift(xmllangstack[0]);
+
+            }
+
+        }
+
+
+        /* process the element */
+
+        if (node.uri === ns_tt) {
+
+            if (node.local === 'tt') {
+
+                if (doc !== null) {
+
+                    reportFatal(errorHandler, "Two <tt> elements at (" + this.line + "," + this.column + ")");
+
+                }
+
+                doc = new TT();
+
+                doc.initFromNode(node, xmllangstack[0], errorHandler);
+
+                estack.unshift(doc);
+
+            } else if (node.local === 'head') {
+
+                if (!(estack[0] instanceof TT)) {
+                    reportFatal(errorHandler, "Parent of <head> element is not <tt> at (" + this.line + "," + this.column + ")");
+                }
+
+                estack.unshift(doc.head);
+
+            } else if (node.local === 'styling') {
+
+                if (!(estack[0] instanceof Head)) {
+                    reportFatal(errorHandler, "Parent of <styling> element is not <head> at (" + this.line + "," + this.column + ")");
+                }
+
+                estack.unshift(doc.head.styling);
+
+            } else if (node.local === 'style') {
+
+                var s;
+
+                if (estack[0] instanceof Styling) {
+
+                    s = new Style();
+
+                    s.initFromNode(node, errorHandler);
+
+                    /* ignore <style> element missing @id */
+
+                    if (!s.id) {
+
+                        reportError(errorHandler, "<style> element missing @id attribute");
+
+                    } else {
+
+                        doc.head.styling.styles[s.id] = s;
+
+                    }
+
+                    estack.unshift(s);
+
+                } else if (estack[0] instanceof Region) {
+
+                    /* nested styles can be merged with specified styles
+                     * immediately, with lower priority
+                     * (see 8.4.4.2(3) at TTML1 )
+                     */
+
+                    s = new Style();
+
+                    s.initFromNode(node, errorHandler);
+
+                    mergeStylesIfNotPresent(s.styleAttrs, estack[0].styleAttrs);
+
+                    estack.unshift(s);
+
+                } else {
+
+                    reportFatal(errorHandler, "Parent of <style> element is not <styling> or <region> at (" + this.line + "," + this.column + ")");
+
+                }
+
+            } else if (node.local === 'initial') {
+
+                var ini;
+
+                if (estack[0] instanceof Styling) {
+
+                    ini = new Initial();
+
+                    ini.initFromNode(node, errorHandler);
+
+                    for (var qn in ini.styleAttrs) {
+
+                        if (!ini.styleAttrs.hasOwnProperty(qn)) continue;
+
+                        doc.head.styling.initials[qn] = ini.styleAttrs[qn];
+
+                    }
+
+                    estack.unshift(ini);
+
+                } else {
+
+                    reportFatal(errorHandler, "Parent of <initial> element is not <styling> at (" + this.line + "," + this.column + ")");
+
+                }
+
+            } else if (node.local === 'layout') {
+
+                if (!(estack[0] instanceof Head)) {
+
+                    reportFatal(errorHandler, "Parent of <layout> element is not <head> at " + this.line + "," + this.column + ")");
+
+                }
+
+                estack.unshift(doc.head.layout);
+
+            } else if (node.local === 'region') {
+
+                if (!(estack[0] instanceof Layout)) {
+                    reportFatal(errorHandler, "Parent of <region> element is not <layout> at " + this.line + "," + this.column + ")");
+                }
+
+                var r = new Region();
+
+                r.initFromNode(doc, node, xmllangstack[0], errorHandler);
+
+                if (!r.id || r.id in doc.head.layout.regions) {
+
+                    reportError(errorHandler, "Ignoring <region> with duplicate or missing @id at " + this.line + "," + this.column + ")");
+
+                } else {
+
+                    doc.head.layout.regions[r.id] = r;
+
+                }
+
+                estack.unshift(r);
+
+            } else if (node.local === 'body') {
+
+                if (!(estack[0] instanceof TT)) {
+
+                    reportFatal(errorHandler, "Parent of <body> element is not <tt> at " + this.line + "," + this.column + ")");
+
+                }
+
+                if (doc.body !== null) {
+
+                    reportFatal(errorHandler, "Second <body> element at " + this.line + "," + this.column + ")");
+
+                }
+
+                var b = new Body();
+
+                b.initFromNode(doc, node, xmllangstack[0], errorHandler);
+
+                doc.body = b;
+
+                estack.unshift(b);
+
+            } else if (node.local === 'div') {
+
+                if (!(estack[0] instanceof Div || estack[0] instanceof Body)) {
+
+                    reportFatal(errorHandler, "Parent of <div> element is not <body> or <div> at " + this.line + "," + this.column + ")");
+
+                }
+
+                var d = new Div();
+
+                d.initFromNode(doc, estack[0], node, xmllangstack[0], errorHandler);
+
+                /* transform smpte:backgroundImage to TTML2 image element */
+
+                var bi = d.styleAttrs[byName.backgroundImage.qname];
+
+                if (bi) {
+                    d.contents.push(new Image(bi));
+                    delete d.styleAttrs[byName.backgroundImage.qname];
+                }
+
+                estack[0].contents.push(d);
+
+                estack.unshift(d);
+
+            } else if (node.local === 'image') {
+
+                if (!(estack[0] instanceof Div)) {
+
+                    reportFatal(errorHandler, "Parent of <image> element is not <div> at " + this.line + "," + this.column + ")");
+
+                }
+
+                var img = new Image();
+
+                img.initFromNode(doc, estack[0], node, xmllangstack[0], errorHandler);
+
+                estack[0].contents.push(img);
+
+                estack.unshift(img);
+
+            } else if (node.local === 'p') {
+
+                if (!(estack[0] instanceof Div)) {
+
+                    reportFatal(errorHandler, "Parent of <p> element is not <div> at " + this.line + "," + this.column + ")");
+
+                }
+
+                var p = new P();
+
+                p.initFromNode(doc, estack[0], node, xmllangstack[0], errorHandler);
+
+                estack[0].contents.push(p);
+
+                estack.unshift(p);
+
+            } else if (node.local === 'span') {
+
+                if (!(estack[0] instanceof Span || estack[0] instanceof P)) {
+
+                    reportFatal(errorHandler, "Parent of <span> element is not <span> or <p> at " + this.line + "," + this.column + ")");
+
+                }
+
+                var ns = new Span();
+
+                ns.initFromNode(doc, estack[0], node, xmllangstack[0], xmlspacestack[0], errorHandler);
+
+                estack[0].contents.push(ns);
+
+                estack.unshift(ns);
+
+            } else if (node.local === 'br') {
+
+                if (!(estack[0] instanceof Span || estack[0] instanceof P)) {
+
+                    reportFatal(errorHandler, "Parent of <br> element is not <span> or <p> at " + this.line + "," + this.column + ")");
+
+                }
+
+                var nb = new Br();
+
+                nb.initFromNode(doc, estack[0], node, xmllangstack[0], errorHandler);
+
+                estack[0].contents.push(nb);
+
+                estack.unshift(nb);
+
+            } else if (node.local === 'set') {
+
+                if (!(estack[0] instanceof Span ||
+                    estack[0] instanceof P ||
+                    estack[0] instanceof Div ||
+                    estack[0] instanceof Body ||
+                    estack[0] instanceof Region ||
+                    estack[0] instanceof Br)) {
+
+                    reportFatal(errorHandler, "Parent of <set> element is not a content element or a region at " + this.line + "," + this.column + ")");
+
+                }
+
+                var st = new Set();
+
+                st.initFromNode(doc, estack[0], node, errorHandler);
+
+                estack[0].sets.push(st);
+
+                estack.unshift(st);
+
+            } else {
+
+                /* element in the TT namespace, but not a content element */
+
+                estack.unshift(new ForeignElement(node));
+            }
+
+        } else {
+
+            /* ignore elements not in the TTML namespace unless in metadata element */
+
+            estack.unshift(new ForeignElement(node));
+
+        }
+
+        /* handle metadata callbacks */
+
+        if (estack[0] instanceof ForeignElement) {
+
+            if (node.uri === ns_tt &&
+                node.local === 'metadata') {
+
+                /* enter the metadata element */
+
+                metadata_depth++;
+
+            } else if (
+                metadata_depth > 0 &&
+                metadataHandler &&
+                'onOpenTag' in metadataHandler
+            ) {
+
+                /* start of child of metadata element */
+
+                var attrs = [];
+
+                for (var a in node.attributes) {
+                    attrs[node.attributes[a].uri + " " + node.attributes[a].local] =
+                    {
+                        uri: node.attributes[a].uri,
+                        local: node.attributes[a].local,
+                        value: node.attributes[a].value
+                    };
+                }
+
+                metadataHandler.onOpenTag(node.uri, node.local, attrs);
+
+            }
+
+        }
+
+    };
+
+    // parse the document
+
+    p.write(xmlstring).close();
+
+    // all referential styling has been flatten, so delete styles
+
+    delete doc.head.styling.styles;
+
+    // create default region if no regions specified
+
+    var hasRegions = false;
+
+    /* AFAIK the only way to determine whether an object has members */
+
+    for (var i in doc.head.layout.regions) {
+
+        if (doc.head.layout.regions.hasOwnProperty(i)) {
+            hasRegions = true;
+            break;
+        }
 
     }
 
-    function ForeignElement(node) {
+    if (!hasRegions) {
+
+        /* create default region */
+
+        var dr = Region.createDefaultRegion(doc.lang);
+
+        doc.head.layout.regions[dr.id] = dr;
+
+    }
+
+    /* resolve desired timing for regions */
+
+    for (var region_i in doc.head.layout.regions) {
+
+        if (!doc.head.layout.regions.hasOwnProperty(region_i)) continue;
+
+        resolveTiming(doc, doc.head.layout.regions[region_i], null, null);
+
+    }
+
+    /* resolve desired timing for content elements */
+
+    if (doc.body) {
+        resolveTiming(doc, doc.body, null, null);
+    }
+
+    /* remove undefined spans in ruby containers */
+
+    if (doc.body) {
+        cleanRubyContainers(doc.body);
+    }
+
+    return doc;
+};
+
+function cleanRubyContainers(element) {
+
+    if (!('contents' in element)) return;
+
+    var rubyval = 'styleAttrs' in element ? element.styleAttrs[byName.ruby.qname] : null;
+
+    var isrubycontainer = (element.kind === 'span' && (rubyval === "container" || rubyval === "textContainer" || rubyval === "baseContainer"));
+
+    for (var i = element.contents.length - 1; i >= 0; i--) {
+
+        if (isrubycontainer && !('styleAttrs' in element.contents[i] && byName.ruby.qname in element.contents[i].styleAttrs)) {
+
+            /* prune undefined <span> in ruby containers */
+
+            delete element.contents[i];
+
+        } else {
+
+            cleanRubyContainers(element.contents[i]);
+
+        }
+
+    }
+
+}
+
+function resolveTiming(doc, element, prev_sibling, parent) {
+
+    /* are we in a seq container? */
+
+    var isinseq = parent && parent.timeContainer === "seq";
+
+    /* determine implicit begin */
+
+    var implicit_begin = 0; /* default */
+
+    if (parent) {
+
+        if (isinseq && prev_sibling) {
+
+            /*
+             * if seq time container, offset from the previous sibling end
+             */
+
+            implicit_begin = prev_sibling.end;
+
+
+        } else {
+
+            implicit_begin = parent.begin;
+
+        }
+
+    }
+
+    /* compute desired begin */
+
+    element.begin = element.explicit_begin ? element.explicit_begin + implicit_begin : implicit_begin;
+
+
+    /* determine implicit end */
+
+    var implicit_end = element.begin;
+
+    var s = null;
+
+    if ("sets" in element) {
+
+        for (var set_i = 0; set_i < element.sets.length; set_i++) {
+
+            resolveTiming(doc, element.sets[set_i], s, element);
+
+            if (element.timeContainer === "seq") {
+
+                implicit_end = element.sets[set_i].end;
+
+            } else {
+
+                implicit_end = Math.max(implicit_end, element.sets[set_i].end);
+
+            }
+
+            s = element.sets[set_i];
+
+        }
+
+    }
+
+    if (!('contents' in element)) {
+
+        /* anonymous spans and regions and <set> and <br>s and spans with only children text nodes */
+
+        if (isinseq) {
+
+            /* in seq container, implicit duration is zero */
+
+            implicit_end = element.begin;
+
+        } else {
+
+            /* in par container, implicit duration is indefinite */
+
+            implicit_end = Number.POSITIVE_INFINITY;
+
+        }
+
+    } else if ("contents" in element) {
+
+        for (var content_i = 0; content_i < element.contents.length; content_i++) {
+
+            resolveTiming(doc, element.contents[content_i], s, element);
+
+            if (element.timeContainer === "seq") {
+
+                implicit_end = element.contents[content_i].end;
+
+            } else {
+
+                implicit_end = Math.max(implicit_end, element.contents[content_i].end);
+
+            }
+
+            s = element.contents[content_i];
+
+        }
+
+    }
+
+    /* determine desired end */
+    /* it is never made really clear in SMIL that the explicit end is offset by the implicit begin */
+
+    if (element.explicit_end !== null && element.explicit_dur !== null) {
+
+        element.end = Math.min(element.begin + element.explicit_dur, implicit_begin + element.explicit_end);
+
+    } else if (element.explicit_end === null && element.explicit_dur !== null) {
+
+        element.end = element.begin + element.explicit_dur;
+
+    } else if (element.explicit_end !== null && element.explicit_dur === null) {
+
+        element.end = implicit_begin + element.explicit_end;
+
+    } else {
+
+        element.end = implicit_end;
+    }
+
+    delete element.explicit_begin;
+    delete element.explicit_dur;
+    delete element.explicit_end;
+
+    doc._registerEvent(element);
+
+}
+
+class ForeignElement {
+    constructor(node) {
         this.node = node;
     }
+}
 
-    function TT() {
+class TT {
+    constructor() {
         this.events = [];
         this.head = new Head();
         this.body = null;
     }
 
-    TT.prototype.initFromNode = function (node, xmllang, errorHandler) {
+    initFromNode(node, xmllang, errorHandler) {
 
         /* compute cell resolution */
 
         var cr = extractCellResolution(node, errorHandler);
-        
+
         this.cellLength = {
-                'h': new imscUtils.ComputedLength(0, 1/cr.h),
-                'w': new imscUtils.ComputedLength(1/cr.w, 0)
-            };
+            'h': new ComputedLength(0, 1 / cr.h),
+            'w': new ComputedLength(1 / cr.w, 0)
+        };
 
         /* extract frame rate and tick rate */
 
@@ -845,7 +851,7 @@
 
         /* check timebase */
 
-        var attr = findAttribute(node, imscNames.ns_ttp, "timeBase");
+        var attr = findAttribute(node, ns_ttp, "timeBase");
 
         if (attr !== null && attr !== "media") {
 
@@ -871,18 +877,18 @@
             }
 
             this.pxLength = {
-                'h': new imscUtils.ComputedLength(0, 1 / e.h.value),
-                'w': new imscUtils.ComputedLength(1 / e.w.value, 0)
+                'h': new ComputedLength(0, 1 / e.h.value),
+                'w': new ComputedLength(1 / e.w.value, 0)
             };
         }
-        
+
         /** set root container dimensions to (1, 1) arbitrarily
           * the root container is mapped to actual dimensions at rendering
         **/
-        
+
         this.dimensions = {
-                'h': new imscUtils.ComputedLength(0, 1),
-                'w': new imscUtils.ComputedLength(1, 0)
+            'h': new ComputedLength(0, 1),
+            'w': new ComputedLength(1, 0)
 
         };
 
@@ -890,10 +896,10 @@
 
         this.lang = xmllang;
 
-    };
+    }
 
     /* register a temporal events */
-    TT.prototype._registerEvent = function (elem) {
+    _registerEvent(elem) {
 
         /* skip if begin is not < then end */
 
@@ -920,8 +926,7 @@
 
         }
 
-    };
-
+    }
 
     /*
      * Retrieves the range of ISD times covered by the document
@@ -929,7 +934,7 @@
      * @returns {Array} Array of two elements: min_begin_time and max_begin_time
      * 
      */
-    TT.prototype.getMediaTimeRange = function () {
+    getMediaTimeRange() {
 
         return [this.events[0], this.events[this.events.length - 1]];
     };
@@ -939,142 +944,163 @@
      * 
      * @returns {Array}
      */
-    TT.prototype.getMediaTimeEvents = function () {
+    getMediaTimeEvents() {
 
         return this.events;
     };
+}
 
-    /*
-     * Represents a TTML Head element
-     */
 
-    function Head() {
+/*
+ * Represents a TTML Head element
+ */
+
+class Head {
+    constructor() {
         this.styling = new Styling();
         this.layout = new Layout();
     }
+}
 
-    /*
-     * Represents a TTML Styling element
-     */
+/*
+ * Represents a TTML Styling element
+ */
 
-    function Styling() {
+class Styling {
+    constructor() {
         this.styles = {};
         this.initials = {};
     }
+}
 
-    /*
-     * Represents a TTML Style element
-     */
+/*
+ * Represents a TTML Style element
+ */
 
-    function Style() {
+class Style {
+    constructor() {
         this.id = null;
         this.styleAttrs = null;
         this.styleRefs = null;
     }
 
-    Style.prototype.initFromNode = function (node, errorHandler) {
+    initFromNode(node, errorHandler) {
         this.id = elementGetXMLID(node);
         this.styleAttrs = elementGetStyles(node, errorHandler);
         this.styleRefs = elementGetStyleRefs(node);
     };
-    
-    /*
-     * Represents a TTML initial element
-     */
+}
 
-    function Initial() {
+/*
+ * Represents a TTML initial element
+ */
+
+class Initial {
+    constructor() {
         this.styleAttrs = null;
     }
 
-    Initial.prototype.initFromNode = function (node, errorHandler) {
-        
+    initFromNode(node, errorHandler) {
+
         this.styleAttrs = {};
-        
+
         for (var i in node.attributes) {
 
-            if (node.attributes[i].uri === imscNames.ns_itts ||
-                node.attributes[i].uri === imscNames.ns_ebutts ||
-                node.attributes[i].uri === imscNames.ns_tts) {
-                
+            if (node.attributes[i].uri === ns_itts ||
+                node.attributes[i].uri === ns_ebutts ||
+                node.attributes[i].uri === ns_tts) {
+
                 var qname = node.attributes[i].uri + " " + node.attributes[i].local;
-                
+
                 this.styleAttrs[qname] = node.attributes[i].value;
 
             }
         }
-        
-    };
 
-    /*
-     * Represents a TTML Layout element
-     * 
-     */
+    }
+}
 
-    function Layout() {
+/*
+ * Represents a TTML Layout element
+ * 
+ */
+
+class Layout {
+    constructor() {
         this.regions = {};
     }
-    
-    /*
-     * Represents a TTML image element
-     */
+}
 
-    function Image(src, type) {
+/*
+ * Represents a TTML image element
+ */
+
+class Image {
+    constructor(src, type) {
         ContentElement.call(this, 'image');
         this.src = src;
         this.type = type;
     }
 
-    Image.prototype.initFromNode = function (doc, parent, node, xmllang, errorHandler) {
+    initFromNode(doc, parent, node, xmllang, errorHandler) {
         this.src = 'src' in node.attributes ? node.attributes.src.value : null;
-        
-        if (! this.src) {
+
+        if (!this.src) {
             reportError(errorHandler, "Invalid image@src attribute");
         }
-        
+
         this.type = 'type' in node.attributes ? node.attributes.type.value : null;
-        
-        if (! this.type) {
+
+        if (!this.type) {
             reportError(errorHandler, "Invalid image@type attribute");
         }
-        
+
         StyledElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
         TimedElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
         AnimatedElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
         LayoutElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
 
         this.lang = xmllang;
-    };
+    }
+}
 
-    /*
-     * TTML element utility functions
-     * 
-     */
+/*
+ * TTML element utility functions
+ * 
+ */
 
-    function ContentElement(kind) {
+class ContentElement {
+    constructor(kind) {
         this.kind = kind;
     }
+}
 
-    function IdentifiedElement(id) {
+class IdentifiedElement {
+    constructor(id) {
         this.id = id;
     }
 
-    IdentifiedElement.prototype.initFromNode = function (doc, parent, node, errorHandler) {
+    initFromNode(doc, parent, node, errorHandler) {
         this.id = elementGetXMLID(node);
-    };
+    }
+}
 
-    function LayoutElement(id) {
+class LayoutElement {
+    constructor(id) {
         this.regionID = id;
     }
 
-    LayoutElement.prototype.initFromNode = function (doc, parent, node, errorHandler) {
+    initFromNode(doc, parent, node, errorHandler) {
         this.regionID = elementGetRegionID(node);
-    };
+    }
+}
 
-    function StyledElement(styleAttrs) {
+class StyledElement {
+    constructor(styleAttrs) {
         this.styleAttrs = styleAttrs;
     }
 
-    StyledElement.prototype.initFromNode = function (doc, parent, node, errorHandler) {
+    initFromNode(doc, parent, node, errorHandler) {
 
         this.styleAttrs = elementGetStyles(node, errorHandler);
 
@@ -1082,52 +1108,60 @@
             mergeReferencedStyles(doc.head.styling, elementGetStyleRefs(node), this.styleAttrs, errorHandler);
         }
 
-    };
+    }
+}
 
-    function AnimatedElement(sets) {
+class AnimatedElement {
+    constructor(sets) {
         this.sets = sets;
     }
 
-    AnimatedElement.prototype.initFromNode = function (doc, parent, node, errorHandler) {
+    initFromNode(doc, parent, node, errorHandler) {
         this.sets = [];
-    };
+    }
+}
 
-    function ContainerElement(contents) {
+class ContainerElement {
+    constructor(contents) {
         this.contents = contents;
     }
 
-    ContainerElement.prototype.initFromNode = function (doc, parent, node, errorHandler) {
+    initFromNode(doc, parent, node, errorHandler) {
         this.contents = [];
-    };
+    }
+}
 
-    function TimedElement(explicit_begin, explicit_end, explicit_dur) {
+class TimedElement {
+    constructor(explicit_begin, explicit_end, explicit_dur) {
         this.explicit_begin = explicit_begin;
         this.explicit_end = explicit_end;
         this.explicit_dur = explicit_dur;
     }
 
-    TimedElement.prototype.initFromNode = function (doc, parent, node, errorHandler) {
+    initFromNode(doc, parent, node, errorHandler) {
         var t = processTiming(doc, parent, node, errorHandler);
         this.explicit_begin = t.explicit_begin;
         this.explicit_end = t.explicit_end;
         this.explicit_dur = t.explicit_dur;
 
         this.timeContainer = elementGetTimeContainer(node, errorHandler);
-    };
+    }
+}
 
 
-    /*
-     * Represents a TTML body element
-     */
+/*
+ * Represents a TTML body element
+ */
 
 
 
-    function Body() {
+class Body {
+    constructor() {
         ContentElement.call(this, 'body');
     }
 
 
-    Body.prototype.initFromNode = function (doc, node, xmllang, errorHandler) {
+    initFromNode(doc, node, xmllang, errorHandler) {
         StyledElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
         TimedElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
         AnimatedElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
@@ -1135,17 +1169,19 @@
         ContainerElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
 
         this.lang = xmllang;
-    };
+    }
+}
 
-    /*
-     * Represents a TTML div element
-     */
+/*
+ * Represents a TTML div element
+ */
 
-    function Div() {
+class Div {
+    constructor() {
         ContentElement.call(this, 'div');
     }
 
-    Div.prototype.initFromNode = function (doc, parent, node, xmllang, errorHandler) {
+    initFromNode(doc, parent, node, xmllang, errorHandler) {
         StyledElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
         TimedElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
         AnimatedElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
@@ -1153,17 +1189,19 @@
         ContainerElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
 
         this.lang = xmllang;
-    };
+    }
+}
 
-    /*
-     * Represents a TTML p element
-     */
+/*
+ * Represents a TTML p element
+ */
 
-    function P() {
+class P {
+    constructor() {
         ContentElement.call(this, 'p');
     }
 
-    P.prototype.initFromNode = function (doc, parent, node, xmllang, errorHandler) {
+    initFromNode(doc, parent, node, xmllang, errorHandler) {
         StyledElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
         TimedElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
         AnimatedElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
@@ -1171,17 +1209,19 @@
         ContainerElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
 
         this.lang = xmllang;
-    };
+    }
+}
 
-    /*
-     * Represents a TTML span element
-     */
+/*
+ * Represents a TTML span element
+ */
 
-    function Span() {
+class Span {
+    constructor() {
         ContentElement.call(this, 'span');
     }
 
-    Span.prototype.initFromNode = function (doc, parent, node, xmllang, xmlspace, errorHandler) {
+    initFromNode(doc, parent, node, xmllang, xmlspace, errorHandler) {
         StyledElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
         TimedElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
         AnimatedElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
@@ -1190,48 +1230,54 @@
 
         this.space = xmlspace;
         this.lang = xmllang;
-    };
+    }
+}
 
-    /*
-     * Represents a TTML anonymous span element
-     */
+/*
+ * Represents a TTML anonymous span element
+ */
 
-    function AnonymousSpan() {
+class AnonymousSpan {
+    constructor() {
         ContentElement.call(this, 'span');
     }
 
-    AnonymousSpan.prototype.initFromText = function (doc, parent, text, xmllang, xmlspace, errorHandler) {
+    initFromText(doc, parent, text, xmllang, xmlspace, errorHandler) {
         TimedElement.prototype.initFromNode.call(this, doc, parent, null, errorHandler);
 
         this.text = text;
         this.space = xmlspace;
         this.lang = xmllang;
-    };
+    }
+}
 
-    /*
-     * Represents a TTML br element
-     */
+/*
+ * Represents a TTML br element
+ */
 
-    function Br() {
+class Br {
+    constructor() {
         ContentElement.call(this, 'br');
     }
 
-    Br.prototype.initFromNode = function (doc, parent, node, xmllang, errorHandler) {
+    initFromNode(doc, parent, node, xmllang, errorHandler) {
         LayoutElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
         TimedElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
 
         this.lang = xmllang;
-    };
+    }
+}
 
-    /*
-     * Represents a TTML Region element
-     * 
-     */
+/*
+ * Represents a TTML Region element
+ * 
+ */
 
-    function Region() {
+class Region {
+    constructor() {
     }
 
-    Region.prototype.createDefaultRegion = function (xmllang) {
+    static createDefaultRegion(xmllang) {
         var r = new Region();
 
         IdentifiedElement.call(r, '');
@@ -1242,9 +1288,9 @@
         this.lang = xmllang;
 
         return r;
-    };
+    }
 
-    Region.prototype.initFromNode = function (doc, node, xmllang, errorHandler) {
+    initFromNode(doc, node, xmllang, errorHandler) {
         IdentifiedElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
         TimedElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
         AnimatedElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
@@ -1260,17 +1306,20 @@
         /* xml:lang */
 
         this.lang = xmllang;
-    };
+    }
+}
 
-    /*
-     * Represents a TTML Set element
-     * 
-     */
 
-    function Set() {
+/*
+ * Represents a TTML Set element
+ * 
+ */
+
+class Set {
+    constructor() {
     }
 
-    Set.prototype.initFromNode = function (doc, parent, node, errorHandler) {
+    initFromNode(doc, parent, node, errorHandler) {
 
         TimedElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
 
@@ -1281,7 +1330,7 @@
 
         for (var qname in styles) {
 
-            if (! styles.hasOwnProperty(qname)) continue;
+            if (!styles.hasOwnProperty(qname)) continue;
 
             if (this.qname) {
 
@@ -1295,81 +1344,80 @@
 
         }
 
-    };
-
-    /*
-     * Utility functions
-     * 
-     */
-
-
-    function elementGetXMLID(node) {
-        return node && 'xml:id' in node.attributes ? node.attributes['xml:id'].value || null : null;
     }
+}
 
-    function elementGetRegionID(node) {
-        return node && 'region' in node.attributes ? node.attributes.region.value : '';
-    }
+/*
+ * Utility functions
+ * 
+ */
 
-    function elementGetTimeContainer(node, errorHandler) {
 
-        var tc = node && 'timeContainer' in node.attributes ? node.attributes.timeContainer.value : null;
+function elementGetXMLID(node) {
+    return node && 'xml:id' in node.attributes ? node.attributes['xml:id'].value || null : null;
+}
 
-        if ((!tc) || tc === "par") {
+function elementGetRegionID(node) {
+    return node && 'region' in node.attributes ? node.attributes.region.value : '';
+}
 
-            return "par";
+function elementGetTimeContainer(node, errorHandler) {
 
-        } else if (tc === "seq") {
+    var tc = node && 'timeContainer' in node.attributes ? node.attributes.timeContainer.value : null;
 
-            return "seq";
+    if ((!tc) || tc === "par") {
 
-        } else {
+        return "par";
 
-            reportError(errorHandler, "Illegal value of timeContainer (assuming 'par')");
+    } else if (tc === "seq") {
 
-            return "par";
+        return "seq";
 
-        }
+    } else {
 
-    }
+        reportError(errorHandler, "Illegal value of timeContainer (assuming 'par')");
 
-    function elementGetStyleRefs(node) {
-
-        return node && 'style' in node.attributes ? node.attributes.style.value.split(" ") : [];
+        return "par";
 
     }
 
-    function elementGetStyles(node, errorHandler) {
+}
 
-        var s = {};
+function elementGetStyleRefs(node) {
 
-        if (node !== null) {
+    return node && 'style' in node.attributes ? node.attributes.style.value.split(" ") : [];
 
-            for (var i in node.attributes) {
+}
 
-                var qname = node.attributes[i].uri + " " + node.attributes[i].local;
+function elementGetStyles(node, errorHandler) {
 
-                var sa = imscStyles.byQName[qname];
+    var s = {};
 
-                if (sa !== undefined) {
+    if (node !== null) {
 
-                    var val = sa.parse(node.attributes[i].value);
+        for (var i in node.attributes) {
 
-                    if (val !== null) {
+            var qname = node.attributes[i].uri + " " + node.attributes[i].local;
 
-                        s[qname] = val;
+            var sa = byQName[qname];
 
-                        /* TODO: consider refactoring errorHandler into parse and compute routines */
+            if (sa !== undefined) {
 
-                        if (sa === imscStyles.byName.zIndex) {
-                            reportWarning(errorHandler, "zIndex attribute present but not used by IMSC1 since regions do not overlap");
-                        }
+                var val = sa.parse(node.attributes[i].value);
 
-                    } else {
+                if (val !== null) {
 
-                        reportError(errorHandler, "Cannot parse styling attribute " + qname + " --> " + node.attributes[i].value);
+                    s[qname] = val;
 
+                    /* TODO: consider refactoring errorHandler into parse and compute routines */
+
+                    if (sa === byName.zIndex) {
+                        reportWarning(errorHandler, "zIndex attribute present but not used by IMSC1 since regions do not overlap");
                     }
+
+                } else {
+
+                    reportError(errorHandler, "Cannot parse styling attribute " + qname + " --> " + node.attributes[i].value);
 
                 }
 
@@ -1377,483 +1425,445 @@
 
         }
 
-        return s;
     }
 
-    function findAttribute(node, ns, name) {
-        for (var i in node.attributes) {
+    return s;
+}
 
-            if (node.attributes[i].uri === ns &&
-                    node.attributes[i].local === name) {
+function findAttribute(node, ns, name) {
+    for (var i in node.attributes) {
 
-                return node.attributes[i].value;
-            }
+        if (node.attributes[i].uri === ns &&
+            node.attributes[i].local === name) {
+
+            return node.attributes[i].value;
         }
+    }
+
+    return null;
+}
+
+function extractAspectRatio(node, errorHandler) {
+
+    var ar = findAttribute(node, ns_ittp, "aspectRatio");
+
+    if (ar === null) {
+
+        ar = findAttribute(node, ns_ttp, "displayAspectRatio");
+
+    }
+
+    var rslt = null;
+
+    if (ar !== null) {
+
+        var ASPECT_RATIO_RE = /(\d+)\s+(\d+)/;
+
+        var m = ASPECT_RATIO_RE.exec(ar);
+
+        if (m !== null) {
+
+            var w = parseInt(m[1]);
+
+            var h = parseInt(m[2]);
+
+            if (w !== 0 && h !== 0) {
+
+                rslt = w / h;
+
+            } else {
+
+                reportError(errorHandler, "Illegal aspectRatio values (ignoring)");
+            }
+
+        } else {
+
+            reportError(errorHandler, "Malformed aspectRatio attribute (ignoring)");
+        }
+
+    }
+
+    return rslt;
+
+}
+
+/*
+ * Returns the cellResolution attribute from a node
+ * 
+ */
+function extractCellResolution(node, errorHandler) {
+
+    var cr = findAttribute(node, ns_ttp, "cellResolution");
+
+    // initial value
+
+    var h = 15;
+    var w = 32;
+
+    if (cr !== null) {
+
+        var CELL_RESOLUTION_RE = /(\d+) (\d+)/;
+
+        var m = CELL_RESOLUTION_RE.exec(cr);
+
+        if (m !== null) {
+
+            w = parseInt(m[1]);
+
+            h = parseInt(m[2]);
+
+        } else {
+
+            reportWarning(errorHandler, "Malformed cellResolution value (using initial value instead)");
+
+        }
+
+    }
+
+    return { 'w': w, 'h': h };
+
+}
+
+
+function extractFrameAndTickRate(node, errorHandler) {
+
+    // subFrameRate is ignored per IMSC1 specification
+
+    // extract frame rate
+
+    var fps_attr = findAttribute(node, ns_ttp, "frameRate");
+
+    // initial value
+
+    var fps = 30;
+
+    // match variable
+
+    var m;
+
+    if (fps_attr !== null) {
+
+        var FRAME_RATE_RE = /(\d+)/;
+
+        m = FRAME_RATE_RE.exec(fps_attr);
+
+        if (m !== null) {
+
+            fps = parseInt(m[1]);
+
+        } else {
+
+            reportWarning(errorHandler, "Malformed frame rate attribute (using initial value instead)");
+        }
+
+    }
+
+    // extract frame rate multiplier
+
+    var frm_attr = findAttribute(node, ns_ttp, "frameRateMultiplier");
+
+    // initial value
+
+    var frm = 1;
+
+    if (frm_attr !== null) {
+
+        var FRAME_RATE_MULT_RE = /(\d+) (\d+)/;
+
+        m = FRAME_RATE_MULT_RE.exec(frm_attr);
+
+        if (m !== null) {
+
+            frm = parseInt(m[1]) / parseInt(m[2]);
+
+        } else {
+
+            reportWarning(errorHandler, "Malformed frame rate multiplier attribute (using initial value instead)");
+        }
+
+    }
+
+    var efps = frm * fps;
+
+    // extract tick rate
+
+    var tr = 1;
+
+    var trattr = findAttribute(node, ns_ttp, "tickRate");
+
+    if (trattr === null) {
+
+        if (fps_attr !== null)
+            tr = efps;
+
+    } else {
+
+        var TICK_RATE_RE = /(\d+)/;
+
+        m = TICK_RATE_RE.exec(trattr);
+
+        if (m !== null) {
+
+            tr = parseInt(m[1]);
+
+        } else {
+
+            reportWarning(errorHandler, "Malformed tick rate attribute (using initial value instead)");
+        }
+
+    }
+
+    return { effectiveFrameRate: efps, tickRate: tr };
+
+}
+
+function extractExtent(node, errorHandler) {
+
+    var attr = findAttribute(node, ns_tts, "extent");
+
+    if (attr === null)
+        return null;
+
+    var s = attr.split(" ");
+
+    if (s.length !== 2) {
+
+        reportWarning(errorHandler, "Malformed extent (ignoring)");
 
         return null;
     }
 
-    function extractAspectRatio(node, errorHandler) {
+    var w = parseLength(s[0]);
 
-        var ar = findAttribute(node, imscNames.ns_ittp, "aspectRatio");
+    var h = parseLength(s[1]);
 
-        if (ar === null) {
-            
-            ar = findAttribute(node, imscNames.ns_ttp, "displayAspectRatio");
-            
+    if (!h || !w) {
+
+        reportWarning(errorHandler, "Malformed extent values (ignoring)");
+
+        return null;
+    }
+
+    return { 'h': h, 'w': w };
+
+}
+
+function parseTimeExpression(tickRate, effectiveFrameRate, str) {
+
+    var CLOCK_TIME_FRACTION_RE = /^(\d{2,}):(\d\d):(\d\d(?:\.\d+)?)$/;
+    var CLOCK_TIME_FRAMES_RE = /^(\d{2,}):(\d\d):(\d\d)\:(\d{2,})$/;
+    var OFFSET_FRAME_RE = /^(\d+(?:\.\d+)?)f$/;
+    var OFFSET_TICK_RE = /^(\d+(?:\.\d+)?)t$/;
+    var OFFSET_MS_RE = /^(\d+(?:\.\d+)?)ms$/;
+    var OFFSET_S_RE = /^(\d+(?:\.\d+)?)s$/;
+    var OFFSET_H_RE = /^(\d+(?:\.\d+)?)h$/;
+    var OFFSET_M_RE = /^(\d+(?:\.\d+)?)m$/;
+    var m;
+    var r = null;
+    if ((m = OFFSET_FRAME_RE.exec(str)) !== null) {
+
+        if (effectiveFrameRate !== null) {
+
+            r = parseFloat(m[1]) / effectiveFrameRate;
         }
 
-        var rslt = null;
+    } else if ((m = OFFSET_TICK_RE.exec(str)) !== null) {
 
-        if (ar !== null) {
+        if (tickRate !== null) {
 
-            var ASPECT_RATIO_RE = /(\d+)\s+(\d+)/;
-
-            var m = ASPECT_RATIO_RE.exec(ar);
-
-            if (m !== null) {
-
-                var w = parseInt(m[1]);
-
-                var h = parseInt(m[2]);
-
-                if (w !== 0 && h !== 0) {
-
-                    rslt = w / h;
-
-                } else {
-
-                    reportError(errorHandler, "Illegal aspectRatio values (ignoring)");
-                }
-
-            } else {
-
-                reportError(errorHandler, "Malformed aspectRatio attribute (ignoring)");
-            }
-
+            r = parseFloat(m[1]) / tickRate;
         }
 
-        return rslt;
+    } else if ((m = OFFSET_MS_RE.exec(str)) !== null) {
+
+        r = parseFloat(m[1]) / 1000.0;
+
+    } else if ((m = OFFSET_S_RE.exec(str)) !== null) {
+
+        r = parseFloat(m[1]);
+
+    } else if ((m = OFFSET_H_RE.exec(str)) !== null) {
+
+        r = parseFloat(m[1]) * 3600.0;
+
+    } else if ((m = OFFSET_M_RE.exec(str)) !== null) {
+
+        r = parseFloat(m[1]) * 60.0;
+
+    } else if ((m = CLOCK_TIME_FRACTION_RE.exec(str)) !== null) {
+
+        r = parseInt(m[1]) * 3600 +
+            parseInt(m[2]) * 60 +
+            parseFloat(m[3]);
+
+    } else if ((m = CLOCK_TIME_FRAMES_RE.exec(str)) !== null) {
+
+        /* this assumes that HH:MM:SS is a clock-time-with-fraction */
+
+        if (effectiveFrameRate !== null) {
+
+            r = parseInt(m[1]) * 3600 +
+                parseInt(m[2]) * 60 +
+                parseInt(m[3]) +
+                (m[4] === null ? 0 : parseInt(m[4]) / effectiveFrameRate);
+        }
 
     }
 
-    /*
-     * Returns the cellResolution attribute from a node
-     * 
-     */
-    function extractCellResolution(node, errorHandler) {
+    return r;
+}
 
-        var cr = findAttribute(node, imscNames.ns_ttp, "cellResolution");
+function processTiming(doc, parent, node, errorHandler) {
 
-        // initial value
+    /* determine explicit begin */
 
-        var h = 15;
-        var w = 32;
+    var explicit_begin = null;
 
-        if (cr !== null) {
+    if (node && 'begin' in node.attributes) {
 
-            var CELL_RESOLUTION_RE = /(\d+) (\d+)/;
+        explicit_begin = parseTimeExpression(doc.tickRate, doc.effectiveFrameRate, node.attributes.begin.value);
 
-            var m = CELL_RESOLUTION_RE.exec(cr);
+        if (explicit_begin === null) {
 
-            if (m !== null) {
-
-                w = parseInt(m[1]);
-
-                h = parseInt(m[2]);
-
-            } else {
-
-                reportWarning(errorHandler, "Malformed cellResolution value (using initial value instead)");
-
-            }
+            reportWarning(errorHandler, "Malformed begin value " + node.attributes.begin.value + " (using 0)");
 
         }
-
-        return {'w': w, 'h': h};
 
     }
 
+    /* determine explicit duration */
 
-    function extractFrameAndTickRate(node, errorHandler) {
+    var explicit_dur = null;
 
-        // subFrameRate is ignored per IMSC1 specification
+    if (node && 'dur' in node.attributes) {
 
-        // extract frame rate
+        explicit_dur = parseTimeExpression(doc.tickRate, doc.effectiveFrameRate, node.attributes.dur.value);
 
-        var fps_attr = findAttribute(node, imscNames.ns_ttp, "frameRate");
+        if (explicit_dur === null) {
 
-        // initial value
-
-        var fps = 30;
-
-        // match variable
-
-        var m;
-
-        if (fps_attr !== null) {
-
-            var FRAME_RATE_RE = /(\d+)/;
-
-            m = FRAME_RATE_RE.exec(fps_attr);
-
-            if (m !== null) {
-
-                fps = parseInt(m[1]);
-
-            } else {
-
-                reportWarning(errorHandler, "Malformed frame rate attribute (using initial value instead)");
-            }
+            reportWarning(errorHandler, "Malformed dur value " + node.attributes.dur.value + " (ignoring)");
 
         }
 
-        // extract frame rate multiplier
+    }
 
-        var frm_attr = findAttribute(node, imscNames.ns_ttp, "frameRateMultiplier");
+    /* determine explicit end */
 
-        // initial value
+    var explicit_end = null;
 
-        var frm = 1;
+    if (node && 'end' in node.attributes) {
 
-        if (frm_attr !== null) {
+        explicit_end = parseTimeExpression(doc.tickRate, doc.effectiveFrameRate, node.attributes.end.value);
 
-            var FRAME_RATE_MULT_RE = /(\d+) (\d+)/;
+        if (explicit_end === null) {
 
-            m = FRAME_RATE_MULT_RE.exec(frm_attr);
-
-            if (m !== null) {
-
-                frm = parseInt(m[1]) / parseInt(m[2]);
-
-            } else {
-
-                reportWarning(errorHandler, "Malformed frame rate multiplier attribute (using initial value instead)");
-            }
+            reportWarning(errorHandler, "Malformed end value (ignoring)");
 
         }
 
-        var efps = frm * fps;
+    }
 
-        // extract tick rate
+    return {
+        explicit_begin: explicit_begin,
+        explicit_end: explicit_end,
+        explicit_dur: explicit_dur
+    };
 
-        var tr = 1;
+}
 
-        var trattr = findAttribute(node, imscNames.ns_ttp, "tickRate");
 
-        if (trattr === null) {
 
-            if (fps_attr !== null)
-                tr = efps;
+function mergeChainedStyles(styling, style, errorHandler) {
+
+    while (style.styleRefs.length > 0) {
+
+        var sref = style.styleRefs.pop();
+
+        if (!(sref in styling.styles)) {
+            reportError(errorHandler, "Non-existant style id referenced");
+            continue;
+        }
+
+        mergeChainedStyles(styling, styling.styles[sref], errorHandler);
+
+        mergeStylesIfNotPresent(styling.styles[sref].styleAttrs, style.styleAttrs);
+
+    }
+
+}
+
+function mergeReferencedStyles(styling, stylerefs, styleattrs, errorHandler) {
+
+    for (var i = stylerefs.length - 1; i >= 0; i--) {
+
+        var sref = stylerefs[i];
+
+        if (!(sref in styling.styles)) {
+            reportError(errorHandler, "Non-existant style id referenced");
+            continue;
+        }
+
+        mergeStylesIfNotPresent(styling.styles[sref].styleAttrs, styleattrs);
+
+    }
+
+}
+
+function mergeStylesIfNotPresent(from_styles, into_styles) {
+
+    for (var sname in from_styles) {
+
+        if (!from_styles.hasOwnProperty(sname)) continue;
+
+        if (sname in into_styles)
+            continue;
+
+        into_styles[sname] = from_styles[sname];
+
+    }
+
+}
+
+/* TODO: validate style format at parsing */
+
+
+/*
+ * Binary search utility function
+ * 
+ * @typedef {Object} BinarySearchResult
+ * @property {boolean} found Was an exact match found?
+ * @property {number} index Position of the exact match or insert position
+ * 
+ * @returns {BinarySearchResult}
+ */
+
+function indexOf(arr, searchval) {
+
+    var min = 0;
+    var max = arr.length - 1;
+    var cur;
+
+    while (min <= max) {
+
+        cur = Math.floor((min + max) / 2);
+
+        var curval = arr[cur];
+
+        if (curval < searchval) {
+
+            min = cur + 1;
+
+        } else if (curval > searchval) {
+
+            max = cur - 1;
 
         } else {
 
-            var TICK_RATE_RE = /(\d+)/;
-
-            m = TICK_RATE_RE.exec(trattr);
-
-            if (m !== null) {
-
-                tr = parseInt(m[1]);
-
-            } else {
-
-                reportWarning(errorHandler, "Malformed tick rate attribute (using initial value instead)");
-            }
+            return { found: true, index: cur };
 
         }
 
-        return {effectiveFrameRate: efps, tickRate: tr};
-
     }
 
-    function extractExtent(node, errorHandler) {
-
-        var attr = findAttribute(node, imscNames.ns_tts, "extent");
-
-        if (attr === null)
-            return null;
-
-        var s = attr.split(" ");
-
-        if (s.length !== 2) {
-
-            reportWarning(errorHandler, "Malformed extent (ignoring)");
-
-            return null;
-        }
-
-        var w = imscUtils.parseLength(s[0]);
-
-        var h = imscUtils.parseLength(s[1]);
-
-        if (!h || !w) {
-
-            reportWarning(errorHandler, "Malformed extent values (ignoring)");
-
-            return null;
-        }
-
-        return {'h': h, 'w': w};
-
-    }
-
-    function parseTimeExpression(tickRate, effectiveFrameRate, str) {
-
-        var CLOCK_TIME_FRACTION_RE = /^(\d{2,}):(\d\d):(\d\d(?:\.\d+)?)$/;
-        var CLOCK_TIME_FRAMES_RE = /^(\d{2,}):(\d\d):(\d\d)\:(\d{2,})$/;
-        var OFFSET_FRAME_RE = /^(\d+(?:\.\d+)?)f$/;
-        var OFFSET_TICK_RE = /^(\d+(?:\.\d+)?)t$/;
-        var OFFSET_MS_RE = /^(\d+(?:\.\d+)?)ms$/;
-        var OFFSET_S_RE = /^(\d+(?:\.\d+)?)s$/;
-        var OFFSET_H_RE = /^(\d+(?:\.\d+)?)h$/;
-        var OFFSET_M_RE = /^(\d+(?:\.\d+)?)m$/;
-        var m;
-        var r = null;
-        if ((m = OFFSET_FRAME_RE.exec(str)) !== null) {
-
-            if (effectiveFrameRate !== null) {
-
-                r = parseFloat(m[1]) / effectiveFrameRate;
-            }
-
-        } else if ((m = OFFSET_TICK_RE.exec(str)) !== null) {
-
-            if (tickRate !== null) {
-
-                r = parseFloat(m[1]) / tickRate;
-            }
-
-        } else if ((m = OFFSET_MS_RE.exec(str)) !== null) {
-
-            r = parseFloat(m[1]) / 1000.0;
-
-        } else if ((m = OFFSET_S_RE.exec(str)) !== null) {
-
-            r = parseFloat(m[1]);
-
-        } else if ((m = OFFSET_H_RE.exec(str)) !== null) {
-
-            r = parseFloat(m[1]) * 3600.0;
-
-        } else if ((m = OFFSET_M_RE.exec(str)) !== null) {
-
-            r = parseFloat(m[1]) * 60.0;
-
-        } else if ((m = CLOCK_TIME_FRACTION_RE.exec(str)) !== null) {
-
-            r = parseInt(m[1]) * 3600 +
-                    parseInt(m[2]) * 60 +
-                    parseFloat(m[3]);
-
-        } else if ((m = CLOCK_TIME_FRAMES_RE.exec(str)) !== null) {
-
-            /* this assumes that HH:MM:SS is a clock-time-with-fraction */
-
-            if (effectiveFrameRate !== null) {
-
-                r = parseInt(m[1]) * 3600 +
-                        parseInt(m[2]) * 60 +
-                        parseInt(m[3]) +
-                        (m[4] === null ? 0 : parseInt(m[4]) / effectiveFrameRate);
-            }
-
-        }
-
-        return r;
-    }
-
-    function processTiming(doc, parent, node, errorHandler) {
-
-        /* determine explicit begin */
-
-        var explicit_begin = null;
-
-        if (node && 'begin' in node.attributes) {
-
-            explicit_begin = parseTimeExpression(doc.tickRate, doc.effectiveFrameRate, node.attributes.begin.value);
-
-            if (explicit_begin === null) {
-
-                reportWarning(errorHandler, "Malformed begin value " + node.attributes.begin.value + " (using 0)");
-
-            }
-
-        }
-
-        /* determine explicit duration */
-
-        var explicit_dur = null;
-
-        if (node && 'dur' in node.attributes) {
-
-            explicit_dur = parseTimeExpression(doc.tickRate, doc.effectiveFrameRate, node.attributes.dur.value);
-
-            if (explicit_dur === null) {
-
-                reportWarning(errorHandler, "Malformed dur value " + node.attributes.dur.value + " (ignoring)");
-
-            }
-
-        }
-
-        /* determine explicit end */
-
-        var explicit_end = null;
-
-        if (node && 'end' in node.attributes) {
-
-            explicit_end = parseTimeExpression(doc.tickRate, doc.effectiveFrameRate, node.attributes.end.value);
-
-            if (explicit_end === null) {
-
-                reportWarning(errorHandler, "Malformed end value (ignoring)");
-
-            }
-
-        }
-
-        return {explicit_begin: explicit_begin,
-            explicit_end: explicit_end,
-            explicit_dur: explicit_dur};
-
-    }
-
-
-
-    function mergeChainedStyles(styling, style, errorHandler) {
-
-        while (style.styleRefs.length > 0) {
-
-            var sref = style.styleRefs.pop();
-
-            if (!(sref in styling.styles)) {
-                reportError(errorHandler, "Non-existant style id referenced");
-                continue;
-            }
-
-            mergeChainedStyles(styling, styling.styles[sref], errorHandler);
-
-            mergeStylesIfNotPresent(styling.styles[sref].styleAttrs, style.styleAttrs);
-
-        }
-
-    }
-
-    function mergeReferencedStyles(styling, stylerefs, styleattrs, errorHandler) {
-
-        for (var i = stylerefs.length - 1; i >= 0; i--) {
-
-            var sref = stylerefs[i];
-
-            if (!(sref in styling.styles)) {
-                reportError(errorHandler, "Non-existant style id referenced");
-                continue;
-            }
-
-            mergeStylesIfNotPresent(styling.styles[sref].styleAttrs, styleattrs);
-
-        }
-
-    }
-
-    function mergeStylesIfNotPresent(from_styles, into_styles) {
-
-        for (var sname in from_styles) {
-
-            if (! from_styles.hasOwnProperty(sname)) continue;
-
-            if (sname in into_styles)
-                continue;
-
-            into_styles[sname] = from_styles[sname];
-
-        }
-
-    }
-
-    /* TODO: validate style format at parsing */
-
-
-    /*
-     * ERROR HANDLING UTILITY FUNCTIONS
-     * 
-     */
-
-    function reportInfo(errorHandler, msg) {
-
-        if (errorHandler && errorHandler.info && errorHandler.info(msg))
-            throw msg;
-
-    }
-
-    function reportWarning(errorHandler, msg) {
-
-        if (errorHandler && errorHandler.warn && errorHandler.warn(msg))
-            throw msg;
-
-    }
-
-    function reportError(errorHandler, msg) {
-
-        if (errorHandler && errorHandler.error && errorHandler.error(msg))
-            throw msg;
-
-    }
-
-    function reportFatal(errorHandler, msg) {
-
-        if (errorHandler && errorHandler.fatal)
-            errorHandler.fatal(msg);
-
-        throw msg;
-
-    }
-
-    /*
-     * Binary search utility function
-     * 
-     * @typedef {Object} BinarySearchResult
-     * @property {boolean} found Was an exact match found?
-     * @property {number} index Position of the exact match or insert position
-     * 
-     * @returns {BinarySearchResult}
-     */
-
-    function indexOf(arr, searchval) {
-
-        var min = 0;
-        var max = arr.length - 1;
-        var cur;
-
-        while (min <= max) {
-
-            cur = Math.floor((min + max) / 2);
-
-            var curval = arr[cur];
-
-            if (curval < searchval) {
-
-                min = cur + 1;
-
-            } else if (curval > searchval) {
-
-                max = cur - 1;
-
-            } else {
-
-                return {found: true, index: cur};
-
-            }
-
-        }
-
-        return {found: false, index: min};
-    }
-
-
-})(typeof exports === 'undefined' ? this.imscDoc = {} : exports,
-        typeof sax === 'undefined' ? require("sax") : sax,
-        typeof imscNames === 'undefined' ? require("./names") : imscNames,
-        typeof imscStyles === 'undefined' ? require("./styles") : imscStyles,
-        typeof imscUtils === 'undefined' ? require("./utils") : imscUtils);
+    return { found: false, index: min };
+}

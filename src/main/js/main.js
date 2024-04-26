@@ -24,6 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-exports.generateISD = require('./isd').generateISD;
-exports.fromXML = require('./doc').fromXML;
-exports.renderHTML = require('./html').render;
+export { fromXML } from './doc.js';
+export { renderHTML } from "./html.js";
+export { generateISD } from './isd.js';
