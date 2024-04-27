@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -35,7 +35,7 @@ class StylingAttributeDefinition {
     constructor(ns, name, initialValue, appliesTo, isInherit, isAnimatable, parseFunc, computeFunc) {
         this.name = name;
         this.ns = ns;
-        this.qname = ns + " " + name;
+        this.qname = ns + ' ' + name;
         this.inherit = isInherit;
         this.animatable = isAnimatable;
         this.initial = initialValue;
@@ -49,92 +49,92 @@ export const all = [
 
     new StylingAttributeDefinition(
         ns_tts,
-        "backgroundColor",
-        "transparent",
+        'backgroundColor',
+        'transparent',
         ['body', 'div', 'p', 'region', 'span'],
         false,
         true,
         parseColor,
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "color",
-        "white",
+        'color',
+        'white',
         ['span'],
         true,
         true,
         parseColor,
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "direction",
-        "ltr",
+        'direction',
+        'ltr',
         ['p', 'span'],
         true,
         true,
         function (str) {
             return str;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "display",
-        "auto",
+        'display',
+        'auto',
         ['body', 'div', 'p', 'region', 'span'],
         false,
         true,
         function (str) {
             return str;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "displayAlign",
-        "before",
+        'displayAlign',
+        'before',
         ['region'],
         false,
         true,
         function (str) {
             return str;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "extent",
-        "auto",
+        'extent',
+        'auto',
         ['tt', 'region'],
         false,
         true,
         function (str) {
 
-            if (str === "auto") {
+            if (str === 'auto') {
 
                 return str;
 
             } else {
 
-                var s = str.split(" ");
+                const s = str.split(' ');
                 if (s.length !== 2)
                     return null;
-                var w = parseLength(s[0]);
-                var h = parseLength(s[1]);
+                const w = parseLength(s[0]);
+                const h = parseLength(s[1]);
                 if (!h || !w)
                     return null;
                 return { 'h': h, 'w': w };
             }
 
         },
-        function (doc, parent, element, attr, context) {
+        function (doc, parent, element, attr) {
 
-            var h;
-            var w;
+            let h;
+            let w;
 
-            if (attr === "auto") {
+            if (attr === 'auto') {
 
                 h = new ComputedLength(0, 1);
 
@@ -146,9 +146,8 @@ export const all = [
                     null,
                     doc.dimensions.h,
                     null,
-                    doc.pxLength.h
+                    doc.pxLength.h,
                 );
-
 
                 if (h === null) {
 
@@ -157,7 +156,7 @@ export const all = [
                 }
             }
 
-            if (attr === "auto") {
+            if (attr === 'auto') {
 
                 w = new ComputedLength(1, 0);
 
@@ -169,7 +168,7 @@ export const all = [
                     null,
                     doc.dimensions.w,
                     null,
-                    doc.pxLength.w
+                    doc.pxLength.w,
                 );
 
                 if (w === null) {
@@ -181,29 +180,29 @@ export const all = [
             }
 
             return { 'h': h, 'w': w };
-        }
+        },
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "fontFamily",
-        "default",
+        'fontFamily',
+        'default',
         ['span', 'p'],
         true,
         true,
         function (str) {
-            var ffs = str.split(",");
-            var rslt = [];
+            const ffs = str.split(',');
+            const rslt = [];
 
-            for (var i = 0; i < ffs.length; i++) {
+            for (let i = 0; i < ffs.length; i++) {
                 ffs[i] = ffs[i].trim();
 
                 if (ffs[i].charAt(0) !== "'" && ffs[i].charAt(0) !== '"') {
 
-                    if (ffs[i] === "default") {
+                    if (ffs[i] === 'default') {
 
                         /* per IMSC1 */
 
-                        rslt.push("monospaceSerif");
+                        rslt.push('monospaceSerif');
 
                     } else {
 
@@ -221,21 +220,21 @@ export const all = [
 
             return rslt;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "shear",
-        "0%",
+        'shear',
+        '0%',
         ['p'],
         true,
         true,
         parseLength,
         function (doc, parent, element, attr) {
 
-            var fs;
+            let fs;
 
-            if (attr.unit === "%") {
+            if (attr.unit === '%') {
 
                 fs = Math.abs(attr.value) > 100 ? Math.sign(attr.value) * 100 : attr.value;
 
@@ -246,36 +245,33 @@ export const all = [
             }
 
             return fs;
-        }
+        },
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "fontSize",
-        "1c",
+        'fontSize',
+        '1c',
         ['span', 'p'],
         true,
         true,
         parseLength,
-        function (doc, parent, element, attr, context) {
-
-            var fs;
-
-            fs = toComputedLength(
+        function (doc, parent, element, attr) {
+            const fs = toComputedLength(
                 attr.value,
                 attr.unit,
                 parent !== null ? parent.styleAttrs[byName.fontSize.qname] : doc.cellLength.h,
                 parent !== null ? parent.styleAttrs[byName.fontSize.qname] : doc.cellLength.h,
                 doc.cellLength.h,
-                doc.pxLength.h
+                doc.pxLength.h,
             );
 
             return fs;
-        }
+        },
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "fontStyle",
-        "normal",
+        'fontStyle',
+        'normal',
         ['span', 'p'],
         true,
         true,
@@ -284,12 +280,12 @@ export const all = [
 
             return str;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "fontWeight",
-        "normal",
+        'fontWeight',
+        'normal',
         ['span', 'p'],
         true,
         true,
@@ -298,27 +294,27 @@ export const all = [
 
             return str;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "lineHeight",
-        "normal",
+        'lineHeight',
+        'normal',
         ['p'],
         true,
         true,
         function (str) {
-            if (str === "normal") {
+            if (str === 'normal') {
                 return str;
             } else {
                 return parseLength(str);
             }
         },
-        function (doc, parent, element, attr, context) {
+        function (doc, parent, element, attr) {
 
-            var lh;
+            let lh;
 
-            if (attr === "normal") {
+            if (attr === 'normal') {
 
                 /* inherit normal per https://github.com/w3c/ttml1/issues/220 */
 
@@ -332,7 +328,7 @@ export const all = [
                     element.styleAttrs[byName.fontSize.qname],
                     element.styleAttrs[byName.fontSize.qname],
                     doc.cellLength.h,
-                    doc.pxLength.h
+                    doc.pxLength.h,
                 );
 
                 if (lh === null) {
@@ -346,50 +342,50 @@ export const all = [
             /* TODO: create a Length constructor */
 
             return lh;
-        }
+        },
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "opacity",
+        'opacity',
         1.0,
         ['region'],
         false,
         true,
         parseFloat,
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "origin",
-        "auto",
+        'origin',
+        'auto',
         ['region'],
         false,
         true,
         function (str) {
 
-            if (str === "auto") {
+            if (str === 'auto') {
 
                 return str;
 
             } else {
 
-                var s = str.split(" ");
+                const s = str.split(' ');
                 if (s.length !== 2)
                     return null;
-                var w = parseLength(s[0]);
-                var h = parseLength(s[1]);
+                const w = parseLength(s[0]);
+                const h = parseLength(s[1]);
                 if (!h || !w)
                     return null;
                 return { 'h': h, 'w': w };
             }
 
         },
-        function (doc, parent, element, attr, context) {
+        function (doc, parent, element, attr) {
 
-            var h;
-            var w;
+            let h;
+            let w;
 
-            if (attr === "auto") {
+            if (attr === 'auto') {
 
                 h = new ComputedLength(0, 0);
 
@@ -401,7 +397,7 @@ export const all = [
                     null,
                     doc.dimensions.h,
                     null,
-                    doc.pxLength.h
+                    doc.pxLength.h,
                 );
 
                 if (h === null) {
@@ -412,7 +408,7 @@ export const all = [
 
             }
 
-            if (attr === "auto") {
+            if (attr === 'auto') {
 
                 w = new ComputedLength(0, 0);
 
@@ -424,7 +420,7 @@ export const all = [
                     null,
                     doc.dimensions.w,
                     null,
-                    doc.pxLength.w
+                    doc.pxLength.w,
                 );
 
                 if (w === null) {
@@ -436,36 +432,36 @@ export const all = [
             }
 
             return { 'h': h, 'w': w };
-        }
+        },
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "overflow",
-        "hidden",
+        'overflow',
+        'hidden',
         ['region'],
         false,
         true,
         function (str) {
             return str;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "padding",
-        "0px",
+        'padding',
+        '0px',
         ['region'],
         false,
         true,
         function (str) {
 
-            var s = str.split(" ");
+            const s = str.split(' ');
             if (s.length > 4)
                 return null;
-            var r = [];
-            for (var i = 0; i < s.length; i++) {
+            const r = [];
+            for (let i = 0; i < s.length; i++) {
 
-                var l = parseLength(s[i]);
+                const l = parseLength(s[i]);
                 if (!l)
                     return null;
                 r.push(l);
@@ -473,16 +469,16 @@ export const all = [
 
             return r;
         },
-        function (doc, parent, element, attr, context) {
+        function (doc, parent, element, attr) {
 
-            var padding;
+            let padding;
 
             /* TODO: make sure we are in region */
 
             /*
-             * expand padding shortcuts to 
+             * expand padding shortcuts to
              * [before, end, after, start]
-             * 
+             *
              */
 
             if (attr.length === 1) {
@@ -509,27 +505,27 @@ export const all = [
 
             /* TODO: take into account tts:direction */
 
-            /* 
-             * transform [before, end, after, start] according to writingMode to 
+            /*
+             * transform [before, end, after, start] according to writingMode to
              * [top,left,bottom,right]
-             * 
+             *
              */
 
-            var dir = element.styleAttrs[byName.writingMode.qname];
+            const dir = element.styleAttrs[byName.writingMode.qname];
 
-            if (dir === "lrtb" || dir === "lr") {
+            if (dir === 'lrtb' || dir === 'lr') {
 
                 padding = [padding[0], padding[3], padding[2], padding[1]];
 
-            } else if (dir === "rltb" || dir === "rl") {
+            } else if (dir === 'rltb' || dir === 'rl') {
 
                 padding = [padding[0], padding[1], padding[2], padding[3]];
 
-            } else if (dir === "tblr") {
+            } else if (dir === 'tblr') {
 
                 padding = [padding[3], padding[0], padding[1], padding[2]];
 
-            } else if (dir === "tbrl" || dir === "tb") {
+            } else if (dir === 'tbrl' || dir === 'tb') {
 
                 padding = [padding[3], padding[2], padding[1], padding[0]];
 
@@ -539,9 +535,9 @@ export const all = [
 
             }
 
-            var out = [];
+            const out = [];
 
-            for (var i = 0; i < padding.length; i++) {
+            for (let i = 0; i < padding.length; i++) {
 
                 if (padding[i].value === 0) {
 
@@ -555,7 +551,7 @@ export const all = [
                         element.styleAttrs[byName.fontSize.qname],
                         i === 0 || i === 2 ? element.styleAttrs[byName.extent.qname].h : element.styleAttrs[byName.extent.qname].w,
                         i === 0 || i === 2 ? doc.cellLength.h : doc.cellLength.w,
-                        i === 0 || i === 2 ? doc.pxLength.h : doc.pxLength.w
+                        i === 0 || i === 2 ? doc.pxLength.h : doc.pxLength.w,
                     );
 
                     if (out[i] === null) return null;
@@ -563,14 +559,13 @@ export const all = [
                 }
             }
 
-
             return out;
-        }
+        },
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "position",
-        "top left",
+        'position',
+        'top left',
         ['region'],
         false,
         true,
@@ -580,8 +575,8 @@ export const all = [
 
         },
         function (doc, parent, element, attr) {
-            var h;
-            var w;
+            let h;
+            let w;
 
             h = toComputedLength(
                 attr.v.offset.value,
@@ -589,20 +584,19 @@ export const all = [
                 null,
                 new ComputedLength(
                     - element.styleAttrs[byName.extent.qname].h.rw,
-                    doc.dimensions.h.rh - element.styleAttrs[byName.extent.qname].h.rh
+                    doc.dimensions.h.rh - element.styleAttrs[byName.extent.qname].h.rh,
                 ),
                 null,
-                doc.pxLength.h
+                doc.pxLength.h,
             );
 
             if (h === null) return null;
 
-
-            if (attr.v.edge === "bottom") {
+            if (attr.v.edge === 'bottom') {
 
                 h = new ComputedLength(
                     - h.rw - element.styleAttrs[byName.extent.qname].h.rw,
-                    doc.dimensions.h.rh - h.rh - element.styleAttrs[byName.extent.qname].h.rh
+                    doc.dimensions.h.rh - h.rh - element.styleAttrs[byName.extent.qname].h.rh,
                 );
 
             }
@@ -613,87 +607,87 @@ export const all = [
                 null,
                 new ComputedLength(
                     doc.dimensions.w.rw - element.styleAttrs[byName.extent.qname].w.rw,
-                    - element.styleAttrs[byName.extent.qname].w.rh
+                    - element.styleAttrs[byName.extent.qname].w.rh,
                 ),
                 null,
-                doc.pxLength.w
+                doc.pxLength.w,
             );
 
             if (h === null) return null;
 
-            if (attr.h.edge === "right") {
+            if (attr.h.edge === 'right') {
 
                 w = new ComputedLength(
                     doc.dimensions.w.rw - w.rw - element.styleAttrs[byName.extent.qname].w.rw,
-                    - w.rh - element.styleAttrs[byName.extent.qname].w.rh
+                    - w.rh - element.styleAttrs[byName.extent.qname].w.rh,
                 );
 
             }
 
             return { 'h': h, 'w': w };
-        }
+        },
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "ruby",
-        "none",
+        'ruby',
+        'none',
         ['span'],
         false,
         true,
         function (str) {
             return str;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "rubyAlign",
-        "center",
+        'rubyAlign',
+        'center',
         ['span'],
         true,
         true,
         function (str) {
 
-            if (!(str === "center" || str === "spaceAround")) {
+            if (!(str === 'center' || str === 'spaceAround')) {
                 return null;
             }
 
             return str;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "rubyPosition",
-        "outside",
+        'rubyPosition',
+        'outside',
         ['span'],
         true,
         true,
         function (str) {
             return str;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "rubyReserve",
-        "none",
+        'rubyReserve',
+        'none',
         ['p'],
         true,
         true,
         function (str) {
-            var s = str.split(" ");
+            const s = str.split(' ');
 
-            var r = [null, null];
+            const r = [null, null];
 
             if (s.length === 0 || s.length > 2)
                 return null;
 
-            if (s[0] === "none" ||
-                s[0] === "both" ||
-                s[0] === "after" ||
-                s[0] === "before" ||
-                s[0] === "outside") {
+            if (s[0] === 'none' ||
+                s[0] === 'both' ||
+                s[0] === 'after' ||
+                s[0] === 'before' ||
+                s[0] === 'outside') {
 
                 r[0] = s[0];
 
@@ -703,9 +697,9 @@ export const all = [
 
             }
 
-            if (s.length === 2 && s[0] !== "none") {
+            if (s.length === 2 && s[0] !== 'none') {
 
-                var l = parseLength(s[1]);
+                const l = parseLength(s[1]);
 
                 if (l) {
 
@@ -719,24 +713,23 @@ export const all = [
 
             }
 
-
             return r;
         },
-        function (doc, parent, element, attr, context) {
+        function (doc, parent, element, attr) {
 
-            if (attr[0] === "none") {
+            if (attr[0] === 'none') {
 
                 return attr;
 
             }
 
-            var fs = null;
+            let fs = null;
 
             if (attr[1] === null) {
 
                 fs = new ComputedLength(
                     element.styleAttrs[byName.fontSize.qname].rw * 0.5,
-                    element.styleAttrs[byName.fontSize.qname].rh * 0.5
+                    element.styleAttrs[byName.fontSize.qname].rh * 0.5,
                 );
 
             } else {
@@ -746,7 +739,7 @@ export const all = [
                     element.styleAttrs[byName.fontSize.qname],
                     element.styleAttrs[byName.fontSize.qname],
                     doc.cellLength.h,
-                    doc.pxLength.h
+                    doc.pxLength.h,
                 );
 
             }
@@ -754,111 +747,111 @@ export const all = [
             if (fs === null) return null;
 
             return [attr[0], fs];
-        }
+        },
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "showBackground",
-        "always",
+        'showBackground',
+        'always',
         ['region'],
         false,
         true,
         function (str) {
             return str;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "textAlign",
-        "start",
+        'textAlign',
+        'start',
         ['p'],
         true,
         true,
         function (str) {
             return str;
         },
-        function (doc, parent, element, attr, context) {
+        function (doc, parent, element, attr) {
             /* Section 7.16.9 of XSL */
 
-            if (attr === "left") {
+            if (attr === 'left') {
 
-                return "start";
+                return 'start';
 
-            } else if (attr === "right") {
+            } else if (attr === 'right') {
 
-                return "end";
+                return 'end';
 
             } else {
 
                 return attr;
 
             }
-        }
+        },
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "textCombine",
-        "none",
+        'textCombine',
+        'none',
         ['span'],
         true,
         true,
         function (str) {
-            if (str === "none" || str === "all") {
+            if (str === 'none' || str === 'all') {
 
                 return str;
             }
 
             return null;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "textDecoration",
-        "none",
+        'textDecoration',
+        'none',
         ['span'],
         true,
         true,
         function (str) {
-            return str.split(" ");
+            return str.split(' ');
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "textEmphasis",
-        "none",
+        'textEmphasis',
+        'none',
         ['span'],
         true,
         true,
         function (str) {
-            var e = str.split(" ");
+            const e = str.split(' ');
 
-            var rslt = { style: null, symbol: null, color: null, position: null };
+            const rslt = { style: null, symbol: null, color: null, position: null };
 
-            for (var i = 0; i < e.length; i++) {
+            for (let i = 0; i < e.length; i++) {
 
-                if (e[i] === "none" || e[i] === "auto") {
-
-                    rslt.style = e[i];
-
-                } else if (e[i] === "filled" ||
-                    e[i] === "open") {
+                if (e[i] === 'none' || e[i] === 'auto') {
 
                     rslt.style = e[i];
 
-                } else if (e[i] === "circle" ||
-                    e[i] === "dot" ||
-                    e[i] === "sesame") {
+                } else if (e[i] === 'filled' ||
+                    e[i] === 'open') {
+
+                    rslt.style = e[i];
+
+                } else if (e[i] === 'circle' ||
+                    e[i] === 'dot' ||
+                    e[i] === 'sesame') {
 
                     rslt.symbol = e[i];
 
-                } else if (e[i] === "current") {
+                } else if (e[i] === 'current') {
 
                     rslt.color = e[i];
 
-                } else if (e[i] === "outside" || e[i] === "before" || e[i] === "after") {
+                } else if (e[i] === 'outside' || e[i] === 'before' || e[i] === 'after') {
 
                     rslt.position = e[i];
 
@@ -874,26 +867,26 @@ export const all = [
 
             if (rslt.style == null && rslt.symbol == null) {
 
-                rslt.style = "auto";
+                rslt.style = 'auto';
 
             } else {
 
-                rslt.symbol = rslt.symbol || "circle";
-                rslt.style = rslt.style || "filled";
+                rslt.symbol = rslt.symbol || 'circle';
+                rslt.style = rslt.style || 'filled';
 
             }
 
-            rslt.position = rslt.position || "outside";
-            rslt.color = rslt.color || "current";
+            rslt.position = rslt.position || 'outside';
+            rslt.color = rslt.color || 'current';
 
             return rslt;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "textOutline",
-        "none",
+        'textOutline',
+        'none',
         ['span'],
         true,
         true,
@@ -901,20 +894,20 @@ export const all = [
 
             /*
              * returns {c: <color>?, thichness: <length>} | "none"
-             * 
+             *
              */
 
-            if (str === "none") {
+            if (str === 'none') {
 
                 return str;
 
             } else {
 
-                var r = {};
-                var s = str.split(" ");
+                const r = {};
+                const s = str.split(' ');
                 if (s.length === 0 || s.length > 2)
                     return null;
-                var c = parseColor(s[0]);
+                const c = parseColor(s[0]);
 
                 r.color = c;
 
@@ -924,7 +917,7 @@ export const all = [
                 if (s.length !== 1)
                     return null;
 
-                var l = parseLength(s[0]);
+                const l = parseLength(s[0]);
 
                 if (!l)
                     return null;
@@ -935,17 +928,17 @@ export const all = [
             }
 
         },
-        function (doc, parent, element, attr, context) {
+        function (doc, parent, element, attr) {
 
             /*
              * returns {color: <color>, thickness: <norm length>}
-             * 
+             *
              */
 
-            if (attr === "none")
+            if (attr === 'none')
                 return attr;
 
-            var rslt = {};
+            const rslt = {};
 
             if (attr.color === null) {
 
@@ -963,19 +956,19 @@ export const all = [
                 element.styleAttrs[byName.fontSize.qname],
                 element.styleAttrs[byName.fontSize.qname],
                 doc.cellLength.h,
-                doc.pxLength.h
+                doc.pxLength.h,
             );
 
             if (rslt.thickness === null)
                 return null;
 
             return rslt;
-        }
+        },
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "textShadow",
-        "none",
+        'textShadow',
+        'none',
         ['span'],
         true,
         true,
@@ -984,17 +977,17 @@ export const all = [
 
             /*
              * returns [{x_off: <length>, y_off: <length>, b_radius: <length>, color: <color>}*] or "none"
-             * 
+             *
              */
 
-            if (attr === "none")
+            if (attr === 'none')
                 return attr;
 
-            var r = [];
+            const r = [];
 
-            for (var i = 0; i < attr.length; i++) {
+            for (let i = 0; i < attr.length; i++) {
 
-                var shadow = {};
+                const shadow = {};
 
                 shadow.x_off = toComputedLength(
                     attr[i][0].value,
@@ -1002,7 +995,7 @@ export const all = [
                     null,
                     element.styleAttrs[byName.fontSize.qname],
                     null,
-                    doc.pxLength.w
+                    doc.pxLength.w,
                 );
 
                 if (shadow.x_off === null)
@@ -1014,7 +1007,7 @@ export const all = [
                     null,
                     element.styleAttrs[byName.fontSize.qname],
                     null,
-                    doc.pxLength.h
+                    doc.pxLength.h,
                 );
 
                 if (shadow.y_off === null)
@@ -1032,7 +1025,7 @@ export const all = [
                         null,
                         element.styleAttrs[byName.fontSize.qname],
                         null,
-                        doc.pxLength.h
+                        doc.pxLength.h,
                     );
 
                     if (shadow.b_radius === null)
@@ -1055,66 +1048,66 @@ export const all = [
             }
 
             return r;
-        }
+        },
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "unicodeBidi",
-        "normal",
+        'unicodeBidi',
+        'normal',
         ['span', 'p'],
         false,
         true,
         function (str) {
             return str;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "visibility",
-        "visible",
+        'visibility',
+        'visible',
         ['body', 'div', 'p', 'region', 'span'],
         true,
         true,
         function (str) {
             return str;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "wrapOption",
-        "wrap",
+        'wrapOption',
+        'wrap',
         ['span'],
         true,
         true,
         function (str) {
             return str;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "writingMode",
-        "lrtb",
+        'writingMode',
+        'lrtb',
         ['region'],
         false,
         true,
         function (str) {
             return str;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        "zIndex",
-        "auto",
+        'zIndex',
+        'auto',
         ['region'],
         false,
         true,
         function (str) {
 
-            var rslt;
+            let rslt;
 
             if (str === 'auto') {
 
@@ -1132,37 +1125,37 @@ export const all = [
 
             return rslt;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_ebutts,
-        "linePadding",
-        "0c",
+        'linePadding',
+        '0c',
         ['p'],
         true,
         false,
         parseLength,
-        function (doc, parent, element, attr, context) {
+        function (doc, parent, element, attr) {
 
             return toComputedLength(attr.value, attr.unit, null, null, doc.cellLength.w, null);
 
-        }
+        },
     ),
     new StylingAttributeDefinition(
         ns_ebutts,
-        "multiRowAlign",
-        "auto",
+        'multiRowAlign',
+        'auto',
         ['p'],
         true,
         false,
         function (str) {
             return str;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_smpte,
-        "backgroundImage",
+        'backgroundImage',
         null,
         ['div'],
         false,
@@ -1170,44 +1163,44 @@ export const all = [
         function (str) {
             return str;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_itts,
-        "forcedDisplay",
-        "false",
+        'forcedDisplay',
+        'false',
         ['body', 'div', 'p', 'region', 'span'],
         true,
         true,
         function (str) {
             return str === 'true' ? true : false;
         },
-        null
+        null,
     ),
     new StylingAttributeDefinition(
         ns_itts,
-        "fillLineGap",
-        "false",
+        'fillLineGap',
+        'false',
         ['p'],
         true,
         true,
         function (str) {
             return str === 'true' ? true : false;
         },
-        null
-    )
+        null,
+    ),
 ];
 
 /* TODO: allow null parse function */
 
 export const byQName = {};
-for (var i in all) {
+for (const i in all) {
 
     byQName[all[i].qname] = all[i];
 }
 
 export const byName = {};
-for (var j in all) {
+for (const j in all) {
 
     byName[all[j].name] = all[j];
 }

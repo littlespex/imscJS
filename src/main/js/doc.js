@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -26,14 +26,13 @@
 
 import sax from 'sax';
 import { reportError, reportFatal, reportWarning } from './error.js';
-import { ns_ebutts, ns_ittp, ns_itts, ns_tt, ns_ttp } from './names.js';
+import { ns_ebutts, ns_ittp, ns_itts, ns_tt, ns_ttp, ns_tts } from './names.js';
 import { byName, byQName } from './styles.js';
-import { ComputedLength, parseLength } from './utils.js';
+import { ComputedLength, hasOwnProperty, parseLength } from './utils.js';
 
 /**
  * @module imscDoc
  */
-
 
 /**
  * Allows a client to provide callbacks to handle children of the <metadata> element
@@ -68,24 +67,23 @@ import { ComputedLength, parseLength } from './utils.js';
  * a single method <pre>getMediaTimeEvents()</pre> that returns a list of time
  * offsets (in seconds) of the ISD, i.e. the points in time where the visual
  * representation of the document change. `metadataHandler` allows the caller to
- * be called back when nodes are present in <metadata> elements. 
- * 
+ * be called back when nodes are present in <metadata> elements.
+ *
  * @param {string} xmlstring XML document
  * @param {?module:imscUtils.ErrorHandler} errorHandler Error callback
  * @param {?MetadataHandler} metadataHandler Callback for <Metadata> elements
  * @returns {Object} Opaque in-memory representation of an IMSC1 document
  */
 
-export function fromXM(xmlstring, errorHandler, metadataHandler) {
-    var p = sax.parser(true, { xmlns: true });
-    var estack = [];
-    var xmllangstack = [];
-    var xmlspacestack = [];
-    var metadata_depth = 0;
-    var doc = null;
+export function fromXML(xmlstring, errorHandler, metadataHandler) {
+    const p = sax.parser(true, { xmlns: true });
+    const estack = [];
+    const xmllangstack = [];
+    const xmlspacestack = [];
+    let metadata_depth = 0;
+    let doc = null;
 
-    p.onclosetag = function (node) {
-
+    p.onclosetag = function () {
 
         if (estack[0] instanceof Region) {
 
@@ -101,9 +99,9 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
             /* flatten chained referential styling */
 
-            for (var sid in estack[0].styles) {
+            for (const sid in estack[0].styles) {
 
-                if (!estack[0].styles.hasOwnProperty(sid)) continue;
+                if (!hasOwnProperty(estack[0].styles, sid)) continue;
 
                 mergeChainedStyles(estack[0], estack[0].styles[sid], errorHandler);
 
@@ -115,9 +113,9 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
             if (estack[0].contents.length > 1) {
 
-                var cs = [estack[0].contents[0]];
+                const cs = [estack[0].contents[0]];
 
-                var c;
+                let c;
 
                 for (c = 1; c < estack[0].contents.length; c++) {
 
@@ -197,7 +195,7 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
             if (estack[0] instanceof Span) {
 
-                var ruby = estack[0].styleAttrs[byName.ruby.qname];
+                const ruby = estack[0].styleAttrs[byName.ruby.qname];
 
                 if (ruby === 'container' || ruby === 'textContainer' || ruby === 'baseContainer') {
 
@@ -209,7 +207,7 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
             /* create an anonymous span */
 
-            var s = new AnonymousSpan();
+            const s = new AnonymousSpan();
 
             s.initFromText(doc, estack[0], str, xmllangstack[0], xmlspacestack[0], errorHandler);
 
@@ -228,12 +226,11 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
     };
 
-
     p.onopentag = function (node) {
 
         // maintain the xml:space stack
 
-        var xmlspace = node.attributes["xml:space"];
+        const xmlspace = node.attributes['xml:space'];
 
         if (xmlspace) {
 
@@ -243,7 +240,7 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
             if (xmlspacestack.length === 0) {
 
-                xmlspacestack.unshift("default");
+                xmlspacestack.unshift('default');
 
             } else {
 
@@ -255,8 +252,7 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
         /* maintain the xml:lang stack */
 
-
-        var xmllang = node.attributes["xml:lang"];
+        const xmllang = node.attributes['xml:lang'];
 
         if (xmllang) {
 
@@ -266,7 +262,7 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
             if (xmllangstack.length === 0) {
 
-                xmllangstack.unshift("");
+                xmllangstack.unshift('');
 
             } else {
 
@@ -276,7 +272,6 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
         }
 
-
         /* process the element */
 
         if (node.uri === ns_tt) {
@@ -285,7 +280,7 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
                 if (doc !== null) {
 
-                    reportFatal(errorHandler, "Two <tt> elements at (" + this.line + "," + this.column + ")");
+                    reportFatal(errorHandler, 'Two <tt> elements at (' + this.line + ',' + this.column + ')');
 
                 }
 
@@ -298,7 +293,7 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
             } else if (node.local === 'head') {
 
                 if (!(estack[0] instanceof TT)) {
-                    reportFatal(errorHandler, "Parent of <head> element is not <tt> at (" + this.line + "," + this.column + ")");
+                    reportFatal(errorHandler, 'Parent of <head> element is not <tt> at (' + this.line + ',' + this.column + ')');
                 }
 
                 estack.unshift(doc.head);
@@ -306,14 +301,14 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
             } else if (node.local === 'styling') {
 
                 if (!(estack[0] instanceof Head)) {
-                    reportFatal(errorHandler, "Parent of <styling> element is not <head> at (" + this.line + "," + this.column + ")");
+                    reportFatal(errorHandler, 'Parent of <styling> element is not <head> at (' + this.line + ',' + this.column + ')');
                 }
 
                 estack.unshift(doc.head.styling);
 
             } else if (node.local === 'style') {
 
-                var s;
+                let s;
 
                 if (estack[0] instanceof Styling) {
 
@@ -325,7 +320,7 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
                     if (!s.id) {
 
-                        reportError(errorHandler, "<style> element missing @id attribute");
+                        reportError(errorHandler, '<style> element missing @id attribute');
 
                     } else {
 
@@ -352,13 +347,13 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
                 } else {
 
-                    reportFatal(errorHandler, "Parent of <style> element is not <styling> or <region> at (" + this.line + "," + this.column + ")");
+                    reportFatal(errorHandler, 'Parent of <style> element is not <styling> or <region> at (' + this.line + ',' + this.column + ')');
 
                 }
 
             } else if (node.local === 'initial') {
 
-                var ini;
+                let ini;
 
                 if (estack[0] instanceof Styling) {
 
@@ -366,9 +361,9 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
                     ini.initFromNode(node, errorHandler);
 
-                    for (var qn in ini.styleAttrs) {
+                    for (const qn in ini.styleAttrs) {
 
-                        if (!ini.styleAttrs.hasOwnProperty(qn)) continue;
+                        if (!hasOwnProperty(ini.styleAttrs, qn)) continue;
 
                         doc.head.styling.initials[qn] = ini.styleAttrs[qn];
 
@@ -378,7 +373,7 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
                 } else {
 
-                    reportFatal(errorHandler, "Parent of <initial> element is not <styling> at (" + this.line + "," + this.column + ")");
+                    reportFatal(errorHandler, 'Parent of <initial> element is not <styling> at (' + this.line + ',' + this.column + ')');
 
                 }
 
@@ -386,7 +381,7 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
                 if (!(estack[0] instanceof Head)) {
 
-                    reportFatal(errorHandler, "Parent of <layout> element is not <head> at " + this.line + "," + this.column + ")");
+                    reportFatal(errorHandler, 'Parent of <layout> element is not <head> at ' + this.line + ',' + this.column + ')');
 
                 }
 
@@ -395,16 +390,16 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
             } else if (node.local === 'region') {
 
                 if (!(estack[0] instanceof Layout)) {
-                    reportFatal(errorHandler, "Parent of <region> element is not <layout> at " + this.line + "," + this.column + ")");
+                    reportFatal(errorHandler, 'Parent of <region> element is not <layout> at ' + this.line + ',' + this.column + ')');
                 }
 
-                var r = new Region();
+                const r = new Region();
 
                 r.initFromNode(doc, node, xmllangstack[0], errorHandler);
 
                 if (!r.id || r.id in doc.head.layout.regions) {
 
-                    reportError(errorHandler, "Ignoring <region> with duplicate or missing @id at " + this.line + "," + this.column + ")");
+                    reportError(errorHandler, 'Ignoring <region> with duplicate or missing @id at ' + this.line + ',' + this.column + ')');
 
                 } else {
 
@@ -418,17 +413,17 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
                 if (!(estack[0] instanceof TT)) {
 
-                    reportFatal(errorHandler, "Parent of <body> element is not <tt> at " + this.line + "," + this.column + ")");
+                    reportFatal(errorHandler, 'Parent of <body> element is not <tt> at ' + this.line + ',' + this.column + ')');
 
                 }
 
                 if (doc.body !== null) {
 
-                    reportFatal(errorHandler, "Second <body> element at " + this.line + "," + this.column + ")");
+                    reportFatal(errorHandler, 'Second <body> element at ' + this.line + ',' + this.column + ')');
 
                 }
 
-                var b = new Body();
+                const b = new Body();
 
                 b.initFromNode(doc, node, xmllangstack[0], errorHandler);
 
@@ -440,17 +435,17 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
                 if (!(estack[0] instanceof Div || estack[0] instanceof Body)) {
 
-                    reportFatal(errorHandler, "Parent of <div> element is not <body> or <div> at " + this.line + "," + this.column + ")");
+                    reportFatal(errorHandler, 'Parent of <div> element is not <body> or <div> at ' + this.line + ',' + this.column + ')');
 
                 }
 
-                var d = new Div();
+                const d = new Div();
 
                 d.initFromNode(doc, estack[0], node, xmllangstack[0], errorHandler);
 
                 /* transform smpte:backgroundImage to TTML2 image element */
 
-                var bi = d.styleAttrs[byName.backgroundImage.qname];
+                const bi = d.styleAttrs[byName.backgroundImage.qname];
 
                 if (bi) {
                     d.contents.push(new Image(bi));
@@ -465,11 +460,11 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
                 if (!(estack[0] instanceof Div)) {
 
-                    reportFatal(errorHandler, "Parent of <image> element is not <div> at " + this.line + "," + this.column + ")");
+                    reportFatal(errorHandler, 'Parent of <image> element is not <div> at ' + this.line + ',' + this.column + ')');
 
                 }
 
-                var img = new Image();
+                const img = new Image();
 
                 img.initFromNode(doc, estack[0], node, xmllangstack[0], errorHandler);
 
@@ -481,11 +476,11 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
                 if (!(estack[0] instanceof Div)) {
 
-                    reportFatal(errorHandler, "Parent of <p> element is not <div> at " + this.line + "," + this.column + ")");
+                    reportFatal(errorHandler, 'Parent of <p> element is not <div> at ' + this.line + ',' + this.column + ')');
 
                 }
 
-                var p = new P();
+                const p = new P();
 
                 p.initFromNode(doc, estack[0], node, xmllangstack[0], errorHandler);
 
@@ -497,11 +492,11 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
                 if (!(estack[0] instanceof Span || estack[0] instanceof P)) {
 
-                    reportFatal(errorHandler, "Parent of <span> element is not <span> or <p> at " + this.line + "," + this.column + ")");
+                    reportFatal(errorHandler, 'Parent of <span> element is not <span> or <p> at ' + this.line + ',' + this.column + ')');
 
                 }
 
-                var ns = new Span();
+                const ns = new Span();
 
                 ns.initFromNode(doc, estack[0], node, xmllangstack[0], xmlspacestack[0], errorHandler);
 
@@ -513,11 +508,11 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
                 if (!(estack[0] instanceof Span || estack[0] instanceof P)) {
 
-                    reportFatal(errorHandler, "Parent of <br> element is not <span> or <p> at " + this.line + "," + this.column + ")");
+                    reportFatal(errorHandler, 'Parent of <br> element is not <span> or <p> at ' + this.line + ',' + this.column + ')');
 
                 }
 
-                var nb = new Br();
+                const nb = new Br();
 
                 nb.initFromNode(doc, estack[0], node, xmllangstack[0], errorHandler);
 
@@ -534,11 +529,11 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
                     estack[0] instanceof Region ||
                     estack[0] instanceof Br)) {
 
-                    reportFatal(errorHandler, "Parent of <set> element is not a content element or a region at " + this.line + "," + this.column + ")");
+                    reportFatal(errorHandler, 'Parent of <set> element is not a content element or a region at ' + this.line + ',' + this.column + ')');
 
                 }
 
-                var st = new Set();
+                const st = new Set();
 
                 st.initFromNode(doc, estack[0], node, errorHandler);
 
@@ -580,14 +575,14 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
                 /* start of child of metadata element */
 
-                var attrs = [];
+                const attrs = [];
 
-                for (var a in node.attributes) {
-                    attrs[node.attributes[a].uri + " " + node.attributes[a].local] =
+                for (const a in node.attributes) {
+                    attrs[node.attributes[a].uri + ' ' + node.attributes[a].local] =
                     {
                         uri: node.attributes[a].uri,
                         local: node.attributes[a].local,
-                        value: node.attributes[a].value
+                        value: node.attributes[a].value,
                     };
                 }
 
@@ -609,13 +604,14 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
     // create default region if no regions specified
 
-    var hasRegions = false;
+    const regions = doc.head.layout.regions;
+    let hasRegions = false;
 
     /* AFAIK the only way to determine whether an object has members */
 
-    for (var i in doc.head.layout.regions) {
+    for (const i in regions) {
 
-        if (doc.head.layout.regions.hasOwnProperty(i)) {
+        if (hasOwnProperty(regions, i)) {
             hasRegions = true;
             break;
         }
@@ -626,19 +622,19 @@ export function fromXM(xmlstring, errorHandler, metadataHandler) {
 
         /* create default region */
 
-        var dr = Region.createDefaultRegion(doc.lang);
+        const dr = Region.createDefaultRegion(doc.lang);
 
-        doc.head.layout.regions[dr.id] = dr;
+        regions[dr.id] = dr;
 
     }
 
     /* resolve desired timing for regions */
 
-    for (var region_i in doc.head.layout.regions) {
+    for (const region_i in regions) {
 
-        if (!doc.head.layout.regions.hasOwnProperty(region_i)) continue;
+        if (!hasOwnProperty(regions, region_i)) continue;
 
-        resolveTiming(doc, doc.head.layout.regions[region_i], null, null);
+        resolveTiming(doc, regions[region_i], null, null);
 
     }
 
@@ -661,11 +657,11 @@ function cleanRubyContainers(element) {
 
     if (!('contents' in element)) return;
 
-    var rubyval = 'styleAttrs' in element ? element.styleAttrs[byName.ruby.qname] : null;
+    const rubyval = 'styleAttrs' in element ? element.styleAttrs[byName.ruby.qname] : null;
 
-    var isrubycontainer = (element.kind === 'span' && (rubyval === "container" || rubyval === "textContainer" || rubyval === "baseContainer"));
+    const isrubycontainer = (element.kind === 'span' && (rubyval === 'container' || rubyval === 'textContainer' || rubyval === 'baseContainer'));
 
-    for (var i = element.contents.length - 1; i >= 0; i--) {
+    for (let i = element.contents.length - 1; i >= 0; i--) {
 
         if (isrubycontainer && !('styleAttrs' in element.contents[i] && byName.ruby.qname in element.contents[i].styleAttrs)) {
 
@@ -687,11 +683,11 @@ function resolveTiming(doc, element, prev_sibling, parent) {
 
     /* are we in a seq container? */
 
-    var isinseq = parent && parent.timeContainer === "seq";
+    const isinseq = parent && parent.timeContainer === 'seq';
 
     /* determine implicit begin */
 
-    var implicit_begin = 0; /* default */
+    let implicit_begin = 0; /* default */
 
     if (parent) {
 
@@ -702,7 +698,6 @@ function resolveTiming(doc, element, prev_sibling, parent) {
              */
 
             implicit_begin = prev_sibling.end;
-
 
         } else {
 
@@ -716,20 +711,19 @@ function resolveTiming(doc, element, prev_sibling, parent) {
 
     element.begin = element.explicit_begin ? element.explicit_begin + implicit_begin : implicit_begin;
 
-
     /* determine implicit end */
 
-    var implicit_end = element.begin;
+    let implicit_end = element.begin;
 
-    var s = null;
+    let s = null;
 
-    if ("sets" in element) {
+    if ('sets' in element) {
 
-        for (var set_i = 0; set_i < element.sets.length; set_i++) {
+        for (let set_i = 0; set_i < element.sets.length; set_i++) {
 
             resolveTiming(doc, element.sets[set_i], s, element);
 
-            if (element.timeContainer === "seq") {
+            if (element.timeContainer === 'seq') {
 
                 implicit_end = element.sets[set_i].end;
 
@@ -763,13 +757,13 @@ function resolveTiming(doc, element, prev_sibling, parent) {
 
         }
 
-    } else if ("contents" in element) {
+    } else if ('contents' in element) {
 
-        for (var content_i = 0; content_i < element.contents.length; content_i++) {
+        for (let content_i = 0; content_i < element.contents.length; content_i++) {
 
             resolveTiming(doc, element.contents[content_i], s, element);
 
-            if (element.timeContainer === "seq") {
+            if (element.timeContainer === 'seq') {
 
                 implicit_end = element.contents[content_i].end;
 
@@ -830,16 +824,16 @@ class TT {
 
         /* compute cell resolution */
 
-        var cr = extractCellResolution(node, errorHandler);
+        const cr = extractCellResolution(node, errorHandler);
 
         this.cellLength = {
             'h': new ComputedLength(0, 1 / cr.h),
-            'w': new ComputedLength(1 / cr.w, 0)
+            'w': new ComputedLength(1 / cr.w, 0),
         };
 
         /* extract frame rate and tick rate */
 
-        var frtr = extractFrameAndTickRate(node, errorHandler);
+        const frtr = extractFrameAndTickRate(node, errorHandler);
 
         this.effectiveFrameRate = frtr.effectiveFrameRate;
 
@@ -851,34 +845,34 @@ class TT {
 
         /* check timebase */
 
-        var attr = findAttribute(node, ns_ttp, "timeBase");
+        const attr = findAttribute(node, ns_ttp, 'timeBase');
 
-        if (attr !== null && attr !== "media") {
+        if (attr !== null && attr !== 'media') {
 
-            reportFatal(errorHandler, "Unsupported time base");
+            reportFatal(errorHandler, 'Unsupported time base');
 
         }
 
         /* retrieve extent */
 
-        var e = extractExtent(node, errorHandler);
+        const e = extractExtent(node, errorHandler);
 
         if (e === null) {
 
             this.pxLength = {
                 'h': null,
-                'w': null
+                'w': null,
             };
 
         } else {
 
-            if (e.h.unit !== "px" || e.w.unit !== "px") {
-                reportFatal(errorHandler, "Extent on TT must be in px or absent");
+            if (e.h.unit !== 'px' || e.w.unit !== 'px') {
+                reportFatal(errorHandler, 'Extent on TT must be in px or absent');
             }
 
             this.pxLength = {
                 'h': new ComputedLength(0, 1 / e.h.value),
-                'w': new ComputedLength(1 / e.w.value, 0)
+                'w': new ComputedLength(1 / e.w.value, 0),
             };
         }
 
@@ -888,7 +882,7 @@ class TT {
 
         this.dimensions = {
             'h': new ComputedLength(0, 1),
-            'w': new ComputedLength(1, 0)
+            'w': new ComputedLength(1, 0),
 
         };
 
@@ -908,7 +902,7 @@ class TT {
 
         /* index the begin time of the event */
 
-        var b_i = indexOf(this.events, elem.begin);
+        const b_i = indexOf(this.events, elem.begin);
 
         if (!b_i.found) {
             this.events.splice(b_i.index, 0, elem.begin);
@@ -918,7 +912,7 @@ class TT {
 
         if (elem.end !== Number.POSITIVE_INFINITY) {
 
-            var e_i = indexOf(this.events, elem.end);
+            const e_i = indexOf(this.events, elem.end);
 
             if (!e_i.found) {
                 this.events.splice(e_i.index, 0, elem.end);
@@ -930,9 +924,9 @@ class TT {
 
     /*
      * Retrieves the range of ISD times covered by the document
-     * 
+     *
      * @returns {Array} Array of two elements: min_begin_time and max_begin_time
-     * 
+     *
      */
     getMediaTimeRange() {
 
@@ -940,8 +934,8 @@ class TT {
     };
 
     /*
-     * Returns list of ISD begin times  
-     * 
+     * Returns list of ISD begin times
+     *
      * @returns {Array}
      */
     getMediaTimeEvents() {
@@ -949,7 +943,6 @@ class TT {
         return this.events;
     };
 }
-
 
 /*
  * Represents a TTML Head element
@@ -1000,17 +993,17 @@ class Initial {
         this.styleAttrs = null;
     }
 
-    initFromNode(node, errorHandler) {
+    initFromNode(node) {
 
         this.styleAttrs = {};
 
-        for (var i in node.attributes) {
+        for (const i in node.attributes) {
 
             if (node.attributes[i].uri === ns_itts ||
                 node.attributes[i].uri === ns_ebutts ||
                 node.attributes[i].uri === ns_tts) {
 
-                var qname = node.attributes[i].uri + " " + node.attributes[i].local;
+                const qname = node.attributes[i].uri + ' ' + node.attributes[i].local;
 
                 this.styleAttrs[qname] = node.attributes[i].value;
 
@@ -1022,7 +1015,7 @@ class Initial {
 
 /*
  * Represents a TTML Layout element
- * 
+ *
  */
 
 class Layout {
@@ -1046,13 +1039,13 @@ class Image {
         this.src = 'src' in node.attributes ? node.attributes.src.value : null;
 
         if (!this.src) {
-            reportError(errorHandler, "Invalid image@src attribute");
+            reportError(errorHandler, 'Invalid image@src attribute');
         }
 
         this.type = 'type' in node.attributes ? node.attributes.type.value : null;
 
         if (!this.type) {
-            reportError(errorHandler, "Invalid image@type attribute");
+            reportError(errorHandler, 'Invalid image@type attribute');
         }
 
         StyledElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
@@ -1066,7 +1059,7 @@ class Image {
 
 /*
  * TTML element utility functions
- * 
+ *
  */
 
 class ContentElement {
@@ -1080,7 +1073,7 @@ class IdentifiedElement {
         this.id = id;
     }
 
-    initFromNode(doc, parent, node, errorHandler) {
+    initFromNode(doc, parent, node) {
         this.id = elementGetXMLID(node);
     }
 }
@@ -1090,7 +1083,7 @@ class LayoutElement {
         this.regionID = id;
     }
 
-    initFromNode(doc, parent, node, errorHandler) {
+    initFromNode(doc, parent, node) {
         this.regionID = elementGetRegionID(node);
     }
 }
@@ -1116,7 +1109,7 @@ class AnimatedElement {
         this.sets = sets;
     }
 
-    initFromNode(doc, parent, node, errorHandler) {
+    initFromNode() {
         this.sets = [];
     }
 }
@@ -1126,7 +1119,7 @@ class ContainerElement {
         this.contents = contents;
     }
 
-    initFromNode(doc, parent, node, errorHandler) {
+    initFromNode() {
         this.contents = [];
     }
 }
@@ -1139,7 +1132,7 @@ class TimedElement {
     }
 
     initFromNode(doc, parent, node, errorHandler) {
-        var t = processTiming(doc, parent, node, errorHandler);
+        const t = processTiming(doc, parent, node, errorHandler);
         this.explicit_begin = t.explicit_begin;
         this.explicit_end = t.explicit_end;
         this.explicit_dur = t.explicit_dur;
@@ -1148,18 +1141,14 @@ class TimedElement {
     }
 }
 
-
 /*
  * Represents a TTML body element
  */
-
-
 
 class Body {
     constructor() {
         ContentElement.call(this, 'body');
     }
-
 
     initFromNode(doc, node, xmllang, errorHandler) {
         StyledElement.prototype.initFromNode.call(this, doc, null, node, errorHandler);
@@ -1270,7 +1259,7 @@ class Br {
 
 /*
  * Represents a TTML Region element
- * 
+ *
  */
 
 class Region {
@@ -1278,7 +1267,7 @@ class Region {
     }
 
     static createDefaultRegion(xmllang) {
-        var r = new Region();
+        const r = new Region();
 
         IdentifiedElement.call(r, '');
         StyledElement.call(r, {});
@@ -1309,10 +1298,9 @@ class Region {
     }
 }
 
-
 /*
  * Represents a TTML Set element
- * 
+ *
  */
 
 class Set {
@@ -1323,18 +1311,18 @@ class Set {
 
         TimedElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
 
-        var styles = elementGetStyles(node, errorHandler);
+        const styles = elementGetStyles(node, errorHandler);
 
         this.qname = null;
         this.value = null;
 
-        for (var qname in styles) {
+        for (const qname in styles) {
 
-            if (!styles.hasOwnProperty(qname)) continue;
+            if (!hasOwnProperty(styles, qname)) continue;
 
             if (this.qname) {
 
-                reportError(errorHandler, "More than one style specified on set");
+                reportError(errorHandler, 'More than one style specified on set');
                 break;
 
             }
@@ -1349,9 +1337,8 @@ class Set {
 
 /*
  * Utility functions
- * 
+ *
  */
-
 
 function elementGetXMLID(node) {
     return node && 'xml:id' in node.attributes ? node.attributes['xml:id'].value || null : null;
@@ -1363,21 +1350,21 @@ function elementGetRegionID(node) {
 
 function elementGetTimeContainer(node, errorHandler) {
 
-    var tc = node && 'timeContainer' in node.attributes ? node.attributes.timeContainer.value : null;
+    const tc = node && 'timeContainer' in node.attributes ? node.attributes.timeContainer.value : null;
 
-    if ((!tc) || tc === "par") {
+    if ((!tc) || tc === 'par') {
 
-        return "par";
+        return 'par';
 
-    } else if (tc === "seq") {
+    } else if (tc === 'seq') {
 
-        return "seq";
+        return 'seq';
 
     } else {
 
         reportError(errorHandler, "Illegal value of timeContainer (assuming 'par')");
 
-        return "par";
+        return 'par';
 
     }
 
@@ -1385,25 +1372,25 @@ function elementGetTimeContainer(node, errorHandler) {
 
 function elementGetStyleRefs(node) {
 
-    return node && 'style' in node.attributes ? node.attributes.style.value.split(" ") : [];
+    return node && 'style' in node.attributes ? node.attributes.style.value.split(' ') : [];
 
 }
 
 function elementGetStyles(node, errorHandler) {
 
-    var s = {};
+    const s = {};
 
     if (node !== null) {
 
-        for (var i in node.attributes) {
+        for (const i in node.attributes) {
 
-            var qname = node.attributes[i].uri + " " + node.attributes[i].local;
+            const qname = node.attributes[i].uri + ' ' + node.attributes[i].local;
 
-            var sa = byQName[qname];
+            const sa = byQName[qname];
 
             if (sa !== undefined) {
 
-                var val = sa.parse(node.attributes[i].value);
+                const val = sa.parse(node.attributes[i].value);
 
                 if (val !== null) {
 
@@ -1412,12 +1399,12 @@ function elementGetStyles(node, errorHandler) {
                     /* TODO: consider refactoring errorHandler into parse and compute routines */
 
                     if (sa === byName.zIndex) {
-                        reportWarning(errorHandler, "zIndex attribute present but not used by IMSC1 since regions do not overlap");
+                        reportWarning(errorHandler, 'zIndex attribute present but not used by IMSC1 since regions do not overlap');
                     }
 
                 } else {
 
-                    reportError(errorHandler, "Cannot parse styling attribute " + qname + " --> " + node.attributes[i].value);
+                    reportError(errorHandler, 'Cannot parse styling attribute ' + qname + ' --> ' + node.attributes[i].value);
 
                 }
 
@@ -1431,7 +1418,7 @@ function elementGetStyles(node, errorHandler) {
 }
 
 function findAttribute(node, ns, name) {
-    for (var i in node.attributes) {
+    for (const i in node.attributes) {
 
         if (node.attributes[i].uri === ns &&
             node.attributes[i].local === name) {
@@ -1445,27 +1432,27 @@ function findAttribute(node, ns, name) {
 
 function extractAspectRatio(node, errorHandler) {
 
-    var ar = findAttribute(node, ns_ittp, "aspectRatio");
+    let ar = findAttribute(node, ns_ittp, 'aspectRatio');
 
     if (ar === null) {
 
-        ar = findAttribute(node, ns_ttp, "displayAspectRatio");
+        ar = findAttribute(node, ns_ttp, 'displayAspectRatio');
 
     }
 
-    var rslt = null;
+    let rslt = null;
 
     if (ar !== null) {
 
-        var ASPECT_RATIO_RE = /(\d+)\s+(\d+)/;
+        const ASPECT_RATIO_RE = /(\d+)\s+(\d+)/;
 
-        var m = ASPECT_RATIO_RE.exec(ar);
+        const m = ASPECT_RATIO_RE.exec(ar);
 
         if (m !== null) {
 
-            var w = parseInt(m[1]);
+            const w = parseInt(m[1]);
 
-            var h = parseInt(m[2]);
+            const h = parseInt(m[2]);
 
             if (w !== 0 && h !== 0) {
 
@@ -1473,12 +1460,12 @@ function extractAspectRatio(node, errorHandler) {
 
             } else {
 
-                reportError(errorHandler, "Illegal aspectRatio values (ignoring)");
+                reportError(errorHandler, 'Illegal aspectRatio values (ignoring)');
             }
 
         } else {
 
-            reportError(errorHandler, "Malformed aspectRatio attribute (ignoring)");
+            reportError(errorHandler, 'Malformed aspectRatio attribute (ignoring)');
         }
 
     }
@@ -1489,22 +1476,22 @@ function extractAspectRatio(node, errorHandler) {
 
 /*
  * Returns the cellResolution attribute from a node
- * 
+ *
  */
 function extractCellResolution(node, errorHandler) {
 
-    var cr = findAttribute(node, ns_ttp, "cellResolution");
+    const cr = findAttribute(node, ns_ttp, 'cellResolution');
 
     // initial value
 
-    var h = 15;
-    var w = 32;
+    let h = 15;
+    let w = 32;
 
     if (cr !== null) {
 
-        var CELL_RESOLUTION_RE = /(\d+) (\d+)/;
+        const CELL_RESOLUTION_RE = /(\d+) (\d+)/;
 
-        var m = CELL_RESOLUTION_RE.exec(cr);
+        const m = CELL_RESOLUTION_RE.exec(cr);
 
         if (m !== null) {
 
@@ -1514,7 +1501,7 @@ function extractCellResolution(node, errorHandler) {
 
         } else {
 
-            reportWarning(errorHandler, "Malformed cellResolution value (using initial value instead)");
+            reportWarning(errorHandler, 'Malformed cellResolution value (using initial value instead)');
 
         }
 
@@ -1524,26 +1511,25 @@ function extractCellResolution(node, errorHandler) {
 
 }
 
-
 function extractFrameAndTickRate(node, errorHandler) {
 
     // subFrameRate is ignored per IMSC1 specification
 
     // extract frame rate
 
-    var fps_attr = findAttribute(node, ns_ttp, "frameRate");
+    const fps_attr = findAttribute(node, ns_ttp, 'frameRate');
 
     // initial value
 
-    var fps = 30;
+    let fps = 30;
 
     // match variable
 
-    var m;
+    let m;
 
     if (fps_attr !== null) {
 
-        var FRAME_RATE_RE = /(\d+)/;
+        const FRAME_RATE_RE = /(\d+)/;
 
         m = FRAME_RATE_RE.exec(fps_attr);
 
@@ -1553,22 +1539,22 @@ function extractFrameAndTickRate(node, errorHandler) {
 
         } else {
 
-            reportWarning(errorHandler, "Malformed frame rate attribute (using initial value instead)");
+            reportWarning(errorHandler, 'Malformed frame rate attribute (using initial value instead)');
         }
 
     }
 
     // extract frame rate multiplier
 
-    var frm_attr = findAttribute(node, ns_ttp, "frameRateMultiplier");
+    const frm_attr = findAttribute(node, ns_ttp, 'frameRateMultiplier');
 
     // initial value
 
-    var frm = 1;
+    let frm = 1;
 
     if (frm_attr !== null) {
 
-        var FRAME_RATE_MULT_RE = /(\d+) (\d+)/;
+        const FRAME_RATE_MULT_RE = /(\d+) (\d+)/;
 
         m = FRAME_RATE_MULT_RE.exec(frm_attr);
 
@@ -1578,18 +1564,18 @@ function extractFrameAndTickRate(node, errorHandler) {
 
         } else {
 
-            reportWarning(errorHandler, "Malformed frame rate multiplier attribute (using initial value instead)");
+            reportWarning(errorHandler, 'Malformed frame rate multiplier attribute (using initial value instead)');
         }
 
     }
 
-    var efps = frm * fps;
+    const efps = frm * fps;
 
     // extract tick rate
 
-    var tr = 1;
+    let tr = 1;
 
-    var trattr = findAttribute(node, ns_ttp, "tickRate");
+    const trattr = findAttribute(node, ns_ttp, 'tickRate');
 
     if (trattr === null) {
 
@@ -1598,7 +1584,7 @@ function extractFrameAndTickRate(node, errorHandler) {
 
     } else {
 
-        var TICK_RATE_RE = /(\d+)/;
+        const TICK_RATE_RE = /(\d+)/;
 
         m = TICK_RATE_RE.exec(trattr);
 
@@ -1608,7 +1594,7 @@ function extractFrameAndTickRate(node, errorHandler) {
 
         } else {
 
-            reportWarning(errorHandler, "Malformed tick rate attribute (using initial value instead)");
+            reportWarning(errorHandler, 'Malformed tick rate attribute (using initial value instead)');
         }
 
     }
@@ -1619,27 +1605,27 @@ function extractFrameAndTickRate(node, errorHandler) {
 
 function extractExtent(node, errorHandler) {
 
-    var attr = findAttribute(node, ns_tts, "extent");
+    const attr = findAttribute(node, ns_tts, 'extent');
 
     if (attr === null)
         return null;
 
-    var s = attr.split(" ");
+    const s = attr.split(' ');
 
     if (s.length !== 2) {
 
-        reportWarning(errorHandler, "Malformed extent (ignoring)");
+        reportWarning(errorHandler, 'Malformed extent (ignoring)');
 
         return null;
     }
 
-    var w = parseLength(s[0]);
+    const w = parseLength(s[0]);
 
-    var h = parseLength(s[1]);
+    const h = parseLength(s[1]);
 
     if (!h || !w) {
 
-        reportWarning(errorHandler, "Malformed extent values (ignoring)");
+        reportWarning(errorHandler, 'Malformed extent values (ignoring)');
 
         return null;
     }
@@ -1650,16 +1636,16 @@ function extractExtent(node, errorHandler) {
 
 function parseTimeExpression(tickRate, effectiveFrameRate, str) {
 
-    var CLOCK_TIME_FRACTION_RE = /^(\d{2,}):(\d\d):(\d\d(?:\.\d+)?)$/;
-    var CLOCK_TIME_FRAMES_RE = /^(\d{2,}):(\d\d):(\d\d)\:(\d{2,})$/;
-    var OFFSET_FRAME_RE = /^(\d+(?:\.\d+)?)f$/;
-    var OFFSET_TICK_RE = /^(\d+(?:\.\d+)?)t$/;
-    var OFFSET_MS_RE = /^(\d+(?:\.\d+)?)ms$/;
-    var OFFSET_S_RE = /^(\d+(?:\.\d+)?)s$/;
-    var OFFSET_H_RE = /^(\d+(?:\.\d+)?)h$/;
-    var OFFSET_M_RE = /^(\d+(?:\.\d+)?)m$/;
-    var m;
-    var r = null;
+    const CLOCK_TIME_FRACTION_RE = /^(\d{2,}):(\d\d):(\d\d(?:\.\d+)?)$/;
+    const CLOCK_TIME_FRAMES_RE = /^(\d{2,}):(\d\d):(\d\d):(\d{2,})$/;
+    const OFFSET_FRAME_RE = /^(\d+(?:\.\d+)?)f$/;
+    const OFFSET_TICK_RE = /^(\d+(?:\.\d+)?)t$/;
+    const OFFSET_MS_RE = /^(\d+(?:\.\d+)?)ms$/;
+    const OFFSET_S_RE = /^(\d+(?:\.\d+)?)s$/;
+    const OFFSET_H_RE = /^(\d+(?:\.\d+)?)h$/;
+    const OFFSET_M_RE = /^(\d+(?:\.\d+)?)m$/;
+    let m;
+    let r = null;
     if ((m = OFFSET_FRAME_RE.exec(str)) !== null) {
 
         if (effectiveFrameRate !== null) {
@@ -1717,7 +1703,7 @@ function processTiming(doc, parent, node, errorHandler) {
 
     /* determine explicit begin */
 
-    var explicit_begin = null;
+    let explicit_begin = null;
 
     if (node && 'begin' in node.attributes) {
 
@@ -1725,7 +1711,7 @@ function processTiming(doc, parent, node, errorHandler) {
 
         if (explicit_begin === null) {
 
-            reportWarning(errorHandler, "Malformed begin value " + node.attributes.begin.value + " (using 0)");
+            reportWarning(errorHandler, 'Malformed begin value ' + node.attributes.begin.value + ' (using 0)');
 
         }
 
@@ -1733,7 +1719,7 @@ function processTiming(doc, parent, node, errorHandler) {
 
     /* determine explicit duration */
 
-    var explicit_dur = null;
+    let explicit_dur = null;
 
     if (node && 'dur' in node.attributes) {
 
@@ -1741,7 +1727,7 @@ function processTiming(doc, parent, node, errorHandler) {
 
         if (explicit_dur === null) {
 
-            reportWarning(errorHandler, "Malformed dur value " + node.attributes.dur.value + " (ignoring)");
+            reportWarning(errorHandler, 'Malformed dur value ' + node.attributes.dur.value + ' (ignoring)');
 
         }
 
@@ -1749,7 +1735,7 @@ function processTiming(doc, parent, node, errorHandler) {
 
     /* determine explicit end */
 
-    var explicit_end = null;
+    let explicit_end = null;
 
     if (node && 'end' in node.attributes) {
 
@@ -1757,7 +1743,7 @@ function processTiming(doc, parent, node, errorHandler) {
 
         if (explicit_end === null) {
 
-            reportWarning(errorHandler, "Malformed end value (ignoring)");
+            reportWarning(errorHandler, 'Malformed end value (ignoring)');
 
         }
 
@@ -1766,21 +1752,19 @@ function processTiming(doc, parent, node, errorHandler) {
     return {
         explicit_begin: explicit_begin,
         explicit_end: explicit_end,
-        explicit_dur: explicit_dur
+        explicit_dur: explicit_dur,
     };
 
 }
-
-
 
 function mergeChainedStyles(styling, style, errorHandler) {
 
     while (style.styleRefs.length > 0) {
 
-        var sref = style.styleRefs.pop();
+        const sref = style.styleRefs.pop();
 
         if (!(sref in styling.styles)) {
-            reportError(errorHandler, "Non-existant style id referenced");
+            reportError(errorHandler, 'Non-existant style id referenced');
             continue;
         }
 
@@ -1794,12 +1778,12 @@ function mergeChainedStyles(styling, style, errorHandler) {
 
 function mergeReferencedStyles(styling, stylerefs, styleattrs, errorHandler) {
 
-    for (var i = stylerefs.length - 1; i >= 0; i--) {
+    for (let i = stylerefs.length - 1; i >= 0; i--) {
 
-        var sref = stylerefs[i];
+        const sref = stylerefs[i];
 
         if (!(sref in styling.styles)) {
-            reportError(errorHandler, "Non-existant style id referenced");
+            reportError(errorHandler, 'Non-existant style id referenced');
             continue;
         }
 
@@ -1811,9 +1795,9 @@ function mergeReferencedStyles(styling, stylerefs, styleattrs, errorHandler) {
 
 function mergeStylesIfNotPresent(from_styles, into_styles) {
 
-    for (var sname in from_styles) {
+    for (const sname in from_styles) {
 
-        if (!from_styles.hasOwnProperty(sname)) continue;
+        if (!hasOwnProperty(from_styles, sname)) continue;
 
         if (sname in into_styles)
             continue;
@@ -1826,28 +1810,27 @@ function mergeStylesIfNotPresent(from_styles, into_styles) {
 
 /* TODO: validate style format at parsing */
 
-
 /*
  * Binary search utility function
- * 
+ *
  * @typedef {Object} BinarySearchResult
  * @property {boolean} found Was an exact match found?
  * @property {number} index Position of the exact match or insert position
- * 
+ *
  * @returns {BinarySearchResult}
  */
 
 function indexOf(arr, searchval) {
 
-    var min = 0;
-    var max = arr.length - 1;
-    var cur;
+    let min = 0;
+    let max = arr.length - 1;
+    let cur;
 
     while (min <= max) {
 
         cur = Math.floor((min + max) / 2);
 
-        var curval = arr[cur];
+        const curval = arr[cur];
 
         if (curval < searchval) {
 

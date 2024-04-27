@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -31,8 +31,7 @@ import { byName } from './styles.js';
  * @module imscHTML
  */
 
-var browserIsFirefox = /firefox/i.test(navigator.userAgent);
-
+const browserIsFirefox = /firefox/i.test(navigator.userAgent);
 
 /**
  * Function that maps <pre>smpte:background</pre> URIs to URLs resolving to image resource
@@ -41,13 +40,12 @@ var browserIsFirefox = /firefox/i.test(navigator.userAgent);
  * @return {string} PNG resource URL
  */
 
-
 /**
- * Renders an ISD object (returned by <pre>generateISD()</pre>) into a 
+ * Renders an ISD object (returned by <pre>generateISD()</pre>) into a
  * parent element, that must be attached to the DOM. The ISD will be rendered
  * into a child <pre>div</pre>
  * with heigh and width equal to the clientHeight and clientWidth of the element,
- * unless explicitly specified otherwise by the caller. Images URIs specified 
+ * unless explicitly specified otherwise by the caller. Images URIs specified
  * by <pre>smpte:background</pre> attributes are mapped to image resource URLs
  * by an <pre>imgResolver</pre> function. The latter takes the value of <code>smpte:background</code>
  * attribute and an <code>img</code> DOM element as input, and is expected to
@@ -55,18 +53,18 @@ var browserIsFirefox = /firefox/i.test(navigator.userAgent);
  * <pre>displayForcedOnlyMode</pre> sets the (boolean)
  * value of the IMSC1 displayForcedOnlyMode parameter. The function returns
  * an opaque object that should passed in <code>previousISDState</code> when this function
- * is called for the next ISD, otherwise <code>previousISDState</code> should be set to 
+ * is called for the next ISD, otherwise <code>previousISDState</code> should be set to
  * <code>null</code>.
- * 
+ *
  * @param {Object} isd ISD to be rendered
  * @param {Object} element Element into which the ISD is rendered
  * @param {?IMGResolver} imgResolver Resolve <pre>smpte:background</pre> URIs into URLs.
- * @param {?number} eheight Height (in pixel) of the child <div>div</div> or null 
+ * @param {?number} eheight Height (in pixel) of the child <div>div</div> or null
  *                  to use clientHeight of the parent element
  * @param {?number} ewidth Width (in pixel) of the child <div>div</div> or null
  *                  to use clientWidth of the parent element
  * @param {?boolean} displayForcedOnlyMode Value of the IMSC1 displayForcedOnlyMode parameter,
- *                   or false if null         
+ *                   or false if null
  * @param {?module:imscUtils.ErrorHandler} errorHandler Error callback
  * @param {Object} previousISDState State saved during processing of the previous ISD, or null if initial call
  * @param {?boolean} enableRollUp Enables roll-up animations (see CEA 708)
@@ -81,17 +79,17 @@ export function renderHTML(isd,
     displayForcedOnlyMode,
     errorHandler,
     previousISDState,
-    enableRollUp
+    enableRollUp,
 ) {
 
     /* maintain aspect ratio if specified */
 
-    var height = eheight || element.clientHeight;
-    var width = ewidth || element.clientWidth;
+    let height = eheight || element.clientHeight;
+    let width = ewidth || element.clientWidth;
 
     if (isd.aspectRatio !== null) {
 
-        var twidth = height * isd.aspectRatio;
+        const twidth = height * isd.aspectRatio;
 
         if (twidth > width) {
 
@@ -105,19 +103,19 @@ export function renderHTML(isd,
 
     }
 
-    var rootcontainer = document.createElement("div");
+    const rootcontainer = document.createElement('div');
 
-    rootcontainer.style.position = "relative";
-    rootcontainer.style.width = width + "px";
-    rootcontainer.style.height = height + "px";
-    rootcontainer.style.margin = "auto";
+    rootcontainer.style.position = 'relative';
+    rootcontainer.style.width = width + 'px';
+    rootcontainer.style.height = height + 'px';
+    rootcontainer.style.margin = 'auto';
     rootcontainer.style.top = 0;
     rootcontainer.style.bottom = 0;
     rootcontainer.style.left = 0;
     rootcontainer.style.right = 0;
     rootcontainer.style.zIndex = 0;
 
-    var context = {
+    const context = {
         h: height,
         w: width,
         regionH: null,
@@ -136,14 +134,14 @@ export function renderHTML(isd,
         bpd: null, /* block progression direction (lr, rl, tb) */
         ruby: null, /* is ruby present in a <p> */
         textEmphasis: null, /* is textEmphasis present in a <p> */
-        rubyReserve: null /* is rubyReserve applicable to a <p> */
+        rubyReserve: null, /* is rubyReserve applicable to a <p> */
     };
 
     element.appendChild(rootcontainer);
 
-    if ("contents" in isd) {
+    if ('contents' in isd) {
 
-        for (var i = 0; i < isd.contents.length; i++) {
+        for (let i = 0; i < isd.contents.length; i++) {
 
             processElement(context, rootcontainer, isd.contents[i], isd);
 
@@ -157,28 +155,28 @@ export function renderHTML(isd,
 
 function processElement(context, dom_parent, isd_element, isd_parent) {
 
-    var e;
+    let e;
 
     if (isd_element.kind === 'region') {
 
-        e = document.createElement("div");
-        e.style.position = "absolute";
+        e = document.createElement('div');
+        e.style.position = 'absolute';
 
     } else if (isd_element.kind === 'body') {
 
-        e = document.createElement("div");
+        e = document.createElement('div');
 
     } else if (isd_element.kind === 'div') {
 
-        e = document.createElement("div");
+        e = document.createElement('div');
 
     } else if (isd_element.kind === 'image') {
 
-        e = document.createElement("img");
+        e = document.createElement('img');
 
         if (context.imgResolver !== null && isd_element.src !== null) {
 
-            var uri = context.imgResolver(isd_element.src, e);
+            const uri = context.imgResolver(isd_element.src, e);
 
             if (uri)
                 e.src = uri;
@@ -190,36 +188,33 @@ function processElement(context, dom_parent, isd_element, isd_parent) {
 
     } else if (isd_element.kind === 'p') {
 
-        e = document.createElement("p");
+        e = document.createElement('p');
 
     } else if (isd_element.kind === 'span') {
 
-        if (isd_element.styleAttrs[byName.ruby.qname] === "container") {
+        if (isd_element.styleAttrs[byName.ruby.qname] === 'container') {
 
-            e = document.createElement("ruby");
+            e = document.createElement('ruby');
 
             context.ruby = true;
 
-        } else if (isd_element.styleAttrs[byName.ruby.qname] === "base") {
+        } else if (isd_element.styleAttrs[byName.ruby.qname] === 'base') {
 
-            e = document.createElement("span"); // rb element is deprecated in HTML
+            e = document.createElement('span'); // rb element is deprecated in HTML
 
-        } else if (isd_element.styleAttrs[byName.ruby.qname] === "text") {
+        } else if (isd_element.styleAttrs[byName.ruby.qname] === 'text') {
 
-            e = document.createElement("rt");
+            e = document.createElement('rt');
 
+        } else if (isd_element.styleAttrs[byName.ruby.qname] === 'baseContainer') {
 
-        } else if (isd_element.styleAttrs[byName.ruby.qname] === "baseContainer") {
+            e = document.createElement('rbc');
 
-            e = document.createElement("rbc");
+        } else if (isd_element.styleAttrs[byName.ruby.qname] === 'textContainer') {
 
+            e = document.createElement('rtc');
 
-        } else if (isd_element.styleAttrs[byName.ruby.qname] === "textContainer") {
-
-            e = document.createElement("rtc");
-
-
-        } else if (isd_element.styleAttrs[byName.ruby.qname] === "delimiter") {
+        } else if (isd_element.styleAttrs[byName.ruby.qname] === 'delimiter') {
 
             /* ignore rp */
 
@@ -227,7 +222,7 @@ function processElement(context, dom_parent, isd_element, isd_parent) {
 
         } else {
 
-            e = document.createElement("span");
+            e = document.createElement('span');
 
         }
 
@@ -235,13 +230,13 @@ function processElement(context, dom_parent, isd_element, isd_parent) {
 
     } else if (isd_element.kind === 'br') {
 
-        e = document.createElement("br");
+        e = document.createElement('br');
 
     }
 
     if (!e) {
 
-        reportError(context.errorHandler, "Error processing ISD element kind: " + isd_element.kind);
+        reportError(context.errorHandler, 'Error processing ISD element kind: ' + isd_element.kind);
 
         return;
 
@@ -264,51 +259,51 @@ function processElement(context, dom_parent, isd_element, isd_parent) {
     /* override UA default margin */
     /* TODO: should apply to <p> only */
 
-    e.style.margin = "0";
+    e.style.margin = '0';
 
     /* determine ipd and bpd */
 
-    if (isd_element.kind === "region") {
+    if (isd_element.kind === 'region') {
 
-        var wdir = isd_element.styleAttrs[byName.writingMode.qname];
+        const wdir = isd_element.styleAttrs[byName.writingMode.qname];
 
-        if (wdir === "lrtb" || wdir === "lr") {
+        if (wdir === 'lrtb' || wdir === 'lr') {
 
-            context.ipd = "lr";
-            context.bpd = "tb";
+            context.ipd = 'lr';
+            context.bpd = 'tb';
 
-        } else if (wdir === "rltb" || wdir === "rl") {
+        } else if (wdir === 'rltb' || wdir === 'rl') {
 
-            context.ipd = "rl";
-            context.bpd = "tb";
+            context.ipd = 'rl';
+            context.bpd = 'tb';
 
-        } else if (wdir === "tblr") {
+        } else if (wdir === 'tblr') {
 
-            context.ipd = "tb";
-            context.bpd = "lr";
+            context.ipd = 'tb';
+            context.bpd = 'lr';
 
-        } else if (wdir === "tbrl" || wdir === "tb") {
+        } else if (wdir === 'tbrl' || wdir === 'tb') {
 
-            context.ipd = "tb";
-            context.bpd = "rl";
+            context.ipd = 'tb';
+            context.bpd = 'rl';
 
         }
 
-    } else if (isd_element.kind === "p" && context.bpd === "tb") {
+    } else if (isd_element.kind === 'p' && context.bpd === 'tb') {
 
-        var pdir = isd_element.styleAttrs[byName.direction.qname];
+        const pdir = isd_element.styleAttrs[byName.direction.qname];
 
-        context.ipd = pdir === "ltr" ? "lr" : "rl";
+        context.ipd = pdir === 'ltr' ? 'lr' : 'rl';
 
     }
 
     /* tranform TTML styles to CSS styles */
 
-    for (var i = 0; i < STYLING_MAP_DEFS.length; i++) {
+    for (let i = 0; i < STYLING_MAP_DEFS.length; i++) {
 
-        var sm = STYLING_MAP_DEFS[i];
+        const sm = STYLING_MAP_DEFS[i];
 
-        var attr = isd_element.styleAttrs[sm.qname];
+        const attr = isd_element.styleAttrs[sm.qname];
 
         if (attr !== undefined && sm.map !== null) {
 
@@ -318,24 +313,23 @@ function processElement(context, dom_parent, isd_element, isd_parent) {
 
     }
 
-    var proc_e = e;
+    let proc_e = e;
 
     /* do we have linePadding ? */
 
-    var lp = isd_element.styleAttrs[byName.linePadding.qname];
+    const lp = isd_element.styleAttrs[byName.linePadding.qname];
 
     if (lp && (!lp.isZero())) {
 
-        var plength = lp.toUsedLength(context.w, context.h);
-
+        const plength = lp.toUsedLength(context.w, context.h);
 
         if (plength > 0) {
 
             /* apply padding to the <p> so that line padding does not cause line wraps */
 
-            var padmeasure = Math.ceil(plength) + "px";
+            const padmeasure = Math.ceil(plength) + 'px';
 
-            if (context.bpd === "tb") {
+            if (context.bpd === 'tb') {
 
                 proc_e.style.paddingLeft = padmeasure;
                 proc_e.style.paddingRight = padmeasure;
@@ -353,15 +347,15 @@ function processElement(context, dom_parent, isd_element, isd_parent) {
 
     // do we have multiRowAlign?
 
-    var mra = isd_element.styleAttrs[byName.multiRowAlign.qname];
+    const mra = isd_element.styleAttrs[byName.multiRowAlign.qname];
 
-    if (mra && mra !== "auto") {
+    if (mra && mra !== 'auto') {
 
         /* create inline block to handle multirowAlign */
 
-        var s = document.createElement("span");
+        const s = document.createElement('span');
 
-        s.style.display = "inline-block";
+        s.style.display = 'inline-block';
 
         s.style.textAlign = mra;
 
@@ -375,12 +369,11 @@ function processElement(context, dom_parent, isd_element, isd_parent) {
 
     /* do we have rubyReserve? */
 
-    var rr = isd_element.styleAttrs[byName.rubyReserve.qname];
+    const rr = isd_element.styleAttrs[byName.rubyReserve.qname];
 
-    if (rr && rr[0] !== "none") {
+    if (rr && rr[0] !== 'none') {
         context.rubyReserve = rr;
     }
-
 
     /* remember we are filling line gaps */
 
@@ -388,19 +381,18 @@ function processElement(context, dom_parent, isd_element, isd_parent) {
         context.flg = true;
     }
 
+    if (isd_element.kind === 'span' && isd_element.text) {
 
-    if (isd_element.kind === "span" && isd_element.text) {
+        const te = isd_element.styleAttrs[byName.textEmphasis.qname];
 
-        var te = isd_element.styleAttrs[byName.textEmphasis.qname];
-
-        if (te && te.style !== "none") {
+        if (te && te.style !== 'none') {
 
             context.textEmphasis = true;
 
         }
 
         if (byName.textCombine.qname in isd_element.styleAttrs &&
-            isd_element.styleAttrs[byName.textCombine.qname] === "all") {
+            isd_element.styleAttrs[byName.textCombine.qname] === 'all') {
 
             /* ignore tate-chu-yoku since line break cannot happen within */
             e.textContent = isd_element.text;
@@ -416,19 +408,19 @@ function processElement(context, dom_parent, isd_element, isd_parent) {
 
             // wrap characters in spans to find the line wrap locations
 
-            var cbuf = '';
+            let cbuf = '';
 
-            for (var j = 0; j < isd_element.text.length; j++) {
+            for (let j = 0; j < isd_element.text.length; j++) {
 
                 cbuf += isd_element.text.charAt(j);
 
-                var cc = isd_element.text.charCodeAt(j);
+                const cc = isd_element.text.charCodeAt(j);
 
                 if (cc < 0xD800 || cc > 0xDBFF || j === isd_element.text.length - 1) {
 
                     /* wrap the character(s) in a span unless it is a high surrogate */
 
-                    var span = document.createElement("span");
+                    const span = document.createElement('span');
 
                     span.textContent = cbuf;
 
@@ -455,9 +447,9 @@ function processElement(context, dom_parent, isd_element, isd_parent) {
 
     /* process the children of the ISD element */
 
-    if ("contents" in isd_element) {
+    if ('contents' in isd_element) {
 
-        for (var k = 0; k < isd_element.contents.length; k++) {
+        for (let k = 0; k < isd_element.contents.length; k++) {
 
             processElement(context, proc_e, isd_element.contents[k], isd_element);
 
@@ -467,13 +459,12 @@ function processElement(context, dom_parent, isd_element, isd_parent) {
 
     /* list of lines */
 
-    var linelist = [];
-
+    const linelist = [];
 
     /* paragraph processing */
     /* TODO: linePadding only supported for horizontal scripts */
 
-    if (isd_element.kind === "p") {
+    if (isd_element.kind === 'p') {
 
         constructLineList(context, proc_e, linelist, null);
 
@@ -533,7 +524,7 @@ function processElement(context, dom_parent, isd_element, isd_parent) {
 
         if (context.flg) {
 
-            var par_edges = rect2edges(proc_e.getBoundingClientRect(), context);
+            const par_edges = rect2edges(proc_e.getBoundingClientRect(), context);
 
             applyFillLineGap(linelist, par_edges.before, par_edges.after, context, proc_e);
 
@@ -543,13 +534,12 @@ function processElement(context, dom_parent, isd_element, isd_parent) {
 
     }
 
-
     /* region processing */
 
-    if (isd_element.kind === "region") {
+    if (isd_element.kind === 'region') {
 
         /* perform roll up if needed */
-        if ((context.bpd === "tb") &&
+        if ((context.bpd === 'tb') &&
             context.enableRollUp &&
             isd_element.contents.length > 0 &&
             isd_element.styleAttrs[byName.displayAlign.qname] === 'after') {
@@ -559,9 +549,9 @@ function processElement(context, dom_parent, isd_element, isd_parent) {
 
             /* horrible hack, perhaps default region id should be underscore everywhere? */
 
-            var rid = isd_element.id === '' ? '_' : isd_element.id;
+            const rid = isd_element.id === '' ? '_' : isd_element.id;
 
-            var rb = new RegionPBuffer(rid, linelist);
+            const rb = new RegionPBuffer(rid, linelist);
 
             context.currentISDState[rb.id] = rb;
 
@@ -572,14 +562,14 @@ function processElement(context, dom_parent, isd_element, isd_parent) {
                 rb.plist[rb.plist.length - 2].text ===
                 context.previousISDState[rb.id].plist[context.previousISDState[rb.id].plist.length - 1].text) {
 
-                var body_elem = e.firstElementChild;
+                const body_elem = e.firstElementChild;
 
-                var h = rb.plist[rb.plist.length - 1].after - rb.plist[rb.plist.length - 1].before;
+                const h = rb.plist[rb.plist.length - 1].after - rb.plist[rb.plist.length - 1].before;
 
-                body_elem.style.bottom = "-" + h + "px";
-                body_elem.style.transition = "transform 0.4s";
-                body_elem.style.position = "relative";
-                body_elem.style.transform = "translateY(-" + h + "px)";
+                body_elem.style.bottom = '-' + h + 'px';
+                body_elem.style.transition = 'transform 0.4s';
+                body_elem.style.position = 'relative';
+                body_elem.style.transform = 'translateY(-' + h + 'px)';
 
             }
 
@@ -589,14 +579,14 @@ function processElement(context, dom_parent, isd_element, isd_parent) {
 
 function mergeSpans(lineList, context) {
 
-    for (var i = 0; i < lineList.length; i++) {
+    for (let i = 0; i < lineList.length; i++) {
 
-        var line = lineList[i];
+        const line = lineList[i];
 
-        for (var j = 1; j < line.elements.length;) {
+        for (let j = 1; j < line.elements.length;) {
 
-            var previous = line.elements[j - 1];
-            var span = line.elements[j];
+            const previous = line.elements[j - 1];
+            const span = line.elements[j];
 
             if (spanMerge(previous.node, span.node, context)) {
 
@@ -614,12 +604,12 @@ function mergeSpans(lineList, context) {
     }
 
     // Copy backgroundColor to each span so that fillLineGap will apply padding to elements with the right background
-    var thisNode, ancestorBackgroundColor;
-    var clearTheseBackgrounds = [];
+    let thisNode, ancestorBackgroundColor;
+    const clearTheseBackgrounds = [];
 
-    for (var l = 0; l < lineList.length; l++) {
+    for (let l = 0; l < lineList.length; l++) {
 
-        for (var el = 0; el < lineList[l].elements.length; el++) {
+        for (let el = 0; el < lineList[l].elements.length; el++) {
 
             thisNode = lineList[l].elements[el].node;
             ancestorBackgroundColor = getSpanAncestorColor(thisNode, clearTheseBackgrounds, false);
@@ -632,9 +622,9 @@ function mergeSpans(lineList, context) {
         }
     }
 
-    for (var bi = 0; bi < clearTheseBackgrounds.length; bi++) {
+    for (let bi = 0; bi < clearTheseBackgrounds.length; bi++) {
 
-        clearTheseBackgrounds[bi].style.backgroundColor = "";
+        clearTheseBackgrounds[bi].style.backgroundColor = '';
 
     }
 }
@@ -652,11 +642,11 @@ function getSpanAncestorColor(element, ancestorList, isAncestor) {
 
     } else {
 
-        if (element.parentElement.nodeName === "SPAN" ||
-            element.parentElement.nodeName === "RUBY" ||
-            element.parentElement.nodeName === "RBC" ||
-            element.parentElement.nodeName === "RTC" ||
-            element.parentElement.nodeName === "RT") {
+        if (element.parentElement.nodeName === 'SPAN' ||
+            element.parentElement.nodeName === 'RUBY' ||
+            element.parentElement.nodeName === 'RBC' ||
+            element.parentElement.nodeName === 'RTC' ||
+            element.parentElement.nodeName === 'RT') {
 
             return getSpanAncestorColor(element.parentElement, ancestorList, true);
 
@@ -669,23 +659,23 @@ function getSpanAncestorColor(element, ancestorList, isAncestor) {
 
 function spanMerge(first, second, context) {
 
-    if (first.tagName === "SPAN" &&
-        second.tagName === "SPAN" &&
+    if (first.tagName === 'SPAN' &&
+        second.tagName === 'SPAN' &&
         first._isd_element === second._isd_element) {
         if (!first._isd_element) {
             /* we should never get here since every span should have a source ISD element */
-            reportError(context.errorHandler, "Internal error: HTML span is not linked to a source element; cannot merge spans.");
+            reportError(context.errorHandler, 'Internal error: HTML span is not linked to a source element; cannot merge spans.');
             return false;
         }
 
         first.textContent += second.textContent;
 
-        for (var i = 0; i < second.style.length; i++) {
+        for (let i = 0; i < second.style.length; i++) {
 
-            var styleName = second.style[i];
-            if (styleName.indexOf("border") >= 0 ||
-                styleName.indexOf("padding") >= 0 ||
-                styleName.indexOf("margin") >= 0) {
+            const styleName = second.style[i];
+            if (styleName.indexOf('border') >= 0 ||
+                styleName.indexOf('padding') >= 0 ||
+                styleName.indexOf('margin') >= 0) {
 
                 first.style[styleName] = second.style[styleName];
 
@@ -704,24 +694,24 @@ function applyLinePadding(lineList, lp, context) {
 
     if (lineList === null) return;
 
-    for (var i = 0; i < lineList.length; i++) {
+    for (let i = 0; i < lineList.length; i++) {
 
-        var l = lineList[i].elements.length;
+        const l = lineList[i].elements.length;
 
-        var pospadpxlen = Math.ceil(lp) + "px";
+        const pospadpxlen = Math.ceil(lp) + 'px';
 
-        var negpadpxlen = "-" + Math.ceil(lp) + "px";
+        const negpadpxlen = '-' + Math.ceil(lp) + 'px';
 
         if (l !== 0) {
 
-            var se = lineList[i].elements[lineList[i].start_elem];
+            const se = lineList[i].elements[lineList[i].start_elem];
 
-            var ee = lineList[i].elements[lineList[i].end_elem];
+            const ee = lineList[i].elements[lineList[i].end_elem];
 
             if (se === ee) {
 
                 // Check to see if there's any background at all
-                var elementBoundingRect = se.node.getBoundingClientRect();
+                const elementBoundingRect = se.node.getBoundingClientRect();
 
                 if (elementBoundingRect.width == 0 || elementBoundingRect.height == 0) {
 
@@ -733,17 +723,17 @@ function applyLinePadding(lineList, lp, context) {
             }
 
             // Start element
-            if (context.ipd === "lr") {
+            if (context.ipd === 'lr') {
 
                 se.node.style.marginLeft = negpadpxlen;
                 se.node.style.paddingLeft = pospadpxlen;
 
-            } else if (context.ipd === "rl") {
+            } else if (context.ipd === 'rl') {
 
                 se.node.style.paddingRight = pospadpxlen;
                 se.node.style.marginRight = negpadpxlen;
 
-            } else if (context.ipd === "tb") {
+            } else if (context.ipd === 'tb') {
 
                 se.node.style.paddingTop = pospadpxlen;
                 se.node.style.marginTop = negpadpxlen;
@@ -751,7 +741,7 @@ function applyLinePadding(lineList, lp, context) {
             }
 
             // End element
-            if (context.ipd === "lr") {
+            if (context.ipd === 'lr') {
 
                 // Firefox has a problem with line-breaking when a negative margin is applied.
                 // The positioning will be wrong but don't apply when on firefox.
@@ -761,14 +751,14 @@ function applyLinePadding(lineList, lp, context) {
                 }
                 ee.node.style.paddingRight = pospadpxlen;
 
-            } else if (context.ipd === "rl") {
+            } else if (context.ipd === 'rl') {
 
                 ee.node.style.paddingLeft = pospadpxlen;
                 if (!browserIsFirefox) {
                     ee.node.style.marginLeft = negpadpxlen;
                 }
 
-            } else if (context.ipd === "tb") {
+            } else if (context.ipd === 'tb') {
 
                 ee.node.style.paddingBottom = pospadpxlen;
                 ee.node.style.marginBottom = negpadpxlen;
@@ -785,14 +775,14 @@ function applyMultiRowAlign(lineList) {
 
     /* apply an explicit br to all but the last line */
 
-    for (var i = 0; i < lineList.length - 1; i++) {
+    for (let i = 0; i < lineList.length - 1; i++) {
 
-        var l = lineList[i].elements.length;
+        const l = lineList[i].elements.length;
 
         if (l !== 0 && lineList[i].br === false) {
-            var br = document.createElement("br");
+            const br = document.createElement('br');
 
-            var lastnode = lineList[i].elements[l - 1].node;
+            const lastnode = lineList[i].elements[l - 1].node;
 
             lastnode.parentElement.insertBefore(br, lastnode.nextSibling);
         }
@@ -805,32 +795,31 @@ function applyTextEmphasisOutside(lineList, context) {
 
     /* supports "outside" only */
 
-    for (var i = 0; i < lineList.length; i++) {
+    for (let i = 0; i < lineList.length; i++) {
 
-        for (var j = 0; j < lineList[i].te.length; j++) {
+        for (let j = 0; j < lineList[i].te.length; j++) {
 
             /* skip if position already set */
 
             if (lineList[i].te[j].style[TEXTEMPHASISPOSITION_PROP] &&
-                lineList[i].te[j].style[TEXTEMPHASISPOSITION_PROP] !== "none")
+                lineList[i].te[j].style[TEXTEMPHASISPOSITION_PROP] !== 'none')
                 continue;
 
-            var pos;
+            let pos;
 
-            if (context.bpd === "tb") {
+            if (context.bpd === 'tb') {
 
-                pos = (i === 0) ? "left over" : "left under";
-
+                pos = (i === 0) ? 'left over' : 'left under';
 
             } else {
 
-                if (context.bpd === "rl") {
+                if (context.bpd === 'rl') {
 
-                    pos = (i === 0) ? "right under" : "left under";
+                    pos = (i === 0) ? 'right under' : 'left under';
 
                 } else {
 
-                    pos = (i === 0) ? "left under" : "right under";
+                    pos = (i === 0) ? 'left under' : 'right under';
 
                 }
 
@@ -846,37 +835,36 @@ function applyTextEmphasisOutside(lineList, context) {
 
 function applyRubyPosition(lineList, context) {
 
-    for (var i = 0; i < lineList.length; i++) {
+    for (let i = 0; i < lineList.length; i++) {
 
-        for (var j = 0; j < lineList[i].rbc.length; j++) {
+        for (let j = 0; j < lineList[i].rbc.length; j++) {
 
             /* skip if ruby-position already set */
 
             if (lineList[i].rbc[j].style[RUBYPOSITION_PROP])
                 continue;
 
-            var pos;
+            let pos;
 
             if (RUBYPOSITION_ISWK) {
 
                 /* WebKit exception */
 
-                pos = (i === 0) ? "before" : "after";
+                pos = (i === 0) ? 'before' : 'after';
 
-            } else if (context.bpd === "tb") {
+            } else if (context.bpd === 'tb') {
 
-                pos = (i === 0) ? "over" : "under";
-
+                pos = (i === 0) ? 'over' : 'under';
 
             } else {
 
-                if (context.bpd === "rl") {
+                if (context.bpd === 'rl') {
 
-                    pos = (i === 0) ? "over" : "under";
+                    pos = (i === 0) ? 'over' : 'under';
 
                 } else {
 
-                    pos = (i === 0) ? "under" : "over";
+                    pos = (i === 0) ? 'under' : 'over';
 
                 }
 
@@ -892,30 +880,30 @@ function applyRubyPosition(lineList, context) {
 
 function applyRubyReserve(lineList, context) {
 
-    for (var i = 0; i < lineList.length; i++) {
+    for (let i = 0; i < lineList.length; i++) {
 
-        var ruby = document.createElement("ruby");
+        const ruby = document.createElement('ruby');
 
-        var rb = document.createElement("span");  // rb element is deprecated in HTML
-        rb.textContent = "\u200B";
+        const rb = document.createElement('span');  // rb element is deprecated in HTML
+        rb.textContent = '\u200B';
 
         ruby.appendChild(rb);
 
-        var rt1;
-        var rt2;
+        let rt1;
+        let rt2;
 
-        var fs = context.rubyReserve[1].toUsedLength(context.w, context.h) + "px";
+        const fs = context.rubyReserve[1].toUsedLength(context.w, context.h) + 'px';
 
-        if (context.rubyReserve[0] === "both" || (context.rubyReserve[0] === "outside" && lineList.length == 1)) {
+        if (context.rubyReserve[0] === 'both' || (context.rubyReserve[0] === 'outside' && lineList.length == 1)) {
 
-            rt1 = document.createElement("rtc");
-            rt1.style[RUBYPOSITION_PROP] = RUBYPOSITION_ISWK ? "after" : "under";
-            rt1.textContent = "\u200B";
+            rt1 = document.createElement('rtc');
+            rt1.style[RUBYPOSITION_PROP] = RUBYPOSITION_ISWK ? 'after' : 'under';
+            rt1.textContent = '\u200B';
             rt1.style.fontSize = fs;
 
-            rt2 = document.createElement("rtc");
-            rt2.style[RUBYPOSITION_PROP] = RUBYPOSITION_ISWK ? "before" : "over";
-            rt2.textContent = "\u200B";
+            rt2 = document.createElement('rtc');
+            rt2.style[RUBYPOSITION_PROP] = RUBYPOSITION_ISWK ? 'before' : 'over';
+            rt2.textContent = '\u200B';
             rt2.style.fontSize = fs;
 
             ruby.appendChild(rt1);
@@ -923,19 +911,19 @@ function applyRubyReserve(lineList, context) {
 
         } else {
 
-            rt1 = document.createElement("rtc");
-            rt1.textContent = "\u200B";
+            rt1 = document.createElement('rtc');
+            rt1.textContent = '\u200B';
             rt1.style.fontSize = fs;
 
-            var pos;
+            let pos;
 
-            if (context.rubyReserve[0] === "after" || (context.rubyReserve[0] === "outside" && i > 0)) {
+            if (context.rubyReserve[0] === 'after' || (context.rubyReserve[0] === 'outside' && i > 0)) {
 
-                pos = RUBYPOSITION_ISWK ? "after" : ((context.bpd === "tb" || context.bpd === "rl") ? "under" : "over");
+                pos = RUBYPOSITION_ISWK ? 'after' : ((context.bpd === 'tb' || context.bpd === 'rl') ? 'under' : 'over');
 
             } else {
 
-                pos = RUBYPOSITION_ISWK ? "before" : ((context.bpd === "tb" || context.bpd === "rl") ? "over" : "under");
+                pos = RUBYPOSITION_ISWK ? 'before' : ((context.bpd === 'tb' || context.bpd === 'rl') ? 'over' : 'under');
 
             }
 
@@ -947,9 +935,9 @@ function applyRubyReserve(lineList, context) {
 
         /* add in front of the first ruby element of the line, if it exists */
 
-        var sib = null;
+        let sib = null;
 
-        for (var j = 0; j < lineList[i].rbc.length; j++) {
+        for (let j = 0; j < lineList[i].rbc.length; j++) {
 
             if (lineList[i].rbc[j].localName === 'ruby') {
 
@@ -957,7 +945,7 @@ function applyRubyReserve(lineList, context) {
 
                 /* copy specified style properties from the sibling ruby container */
 
-                for (var k = 0; k < sib.style.length; k++) {
+                for (let k = 0; k < sib.style.length; k++) {
 
                     ruby.style.setProperty(sib.style.item(k), sib.style.getPropertyValue(sib.style.item(k)));
 
@@ -978,16 +966,16 @@ function applyRubyReserve(lineList, context) {
 
 }
 
-function applyFillLineGap(lineList, par_before, par_after, context, element) {
+function applyFillLineGap(lineList, par_before, par_after, context) {
 
     /* positive for BPD = lr and tb, negative for BPD = rl */
-    var s = Math.sign(par_after - par_before);
+    const s = Math.sign(par_after - par_before);
 
-    for (var i = 0; i <= lineList.length; i++) {
+    for (let i = 0; i <= lineList.length; i++) {
 
         /* compute frontier between lines */
 
-        var frontier;
+        let frontier;
 
         if (i === 0) {
 
@@ -1003,8 +991,9 @@ function applyFillLineGap(lineList, par_before, par_after, context, element) {
 
         }
 
-        var padding;
-        var l, thisNode;
+        let padding;
+        let l;
+        let thisNode;
 
         /* before line */
         if (i > 0) {
@@ -1014,17 +1003,17 @@ function applyFillLineGap(lineList, par_before, par_after, context, element) {
                 for (l = 0; l < lineList[i - 1].elements.length; l++) {
 
                     thisNode = lineList[i - 1].elements[l];
-                    padding = s * (frontier - thisNode.after) + "px";
+                    padding = s * (frontier - thisNode.after) + 'px';
 
-                    if (context.bpd === "lr") {
+                    if (context.bpd === 'lr') {
 
                         thisNode.node.style.paddingRight = padding;
 
-                    } else if (context.bpd === "rl") {
+                    } else if (context.bpd === 'rl') {
 
                         thisNode.node.style.paddingLeft = padding;
 
-                    } else if (context.bpd === "tb") {
+                    } else if (context.bpd === 'tb') {
 
                         thisNode.node.style.paddingBottom = padding;
 
@@ -1042,17 +1031,17 @@ function applyFillLineGap(lineList, par_before, par_after, context, element) {
             for (l = 0; l < lineList[i].elements.length; l++) {
 
                 thisNode = lineList[i].elements[l];
-                padding = s * (thisNode.before - frontier) + "px";
+                padding = s * (thisNode.before - frontier) + 'px';
 
-                if (context.bpd === "lr") {
+                if (context.bpd === 'lr') {
 
                     thisNode.node.style.paddingLeft = padding;
 
-                } else if (context.bpd === "rl") {
+                } else if (context.bpd === 'rl') {
 
                     thisNode.node.style.paddingRight = padding;
 
-                } else if (context.bpd === "tb") {
+                } else if (context.bpd === 'tb') {
 
                     thisNode.node.style.paddingTop = padding;
 
@@ -1077,14 +1066,14 @@ class RegionPBuffer {
 
 function rect2edges(rect, context) {
 
-    var edges = { before: null, after: null, start: null, end: null };
+    const edges = { before: null, after: null, start: null, end: null };
 
-    if (context.bpd === "tb") {
+    if (context.bpd === 'tb') {
 
         edges.before = rect.top;
         edges.after = rect.bottom;
 
-        if (context.ipd === "lr") {
+        if (context.ipd === 'lr') {
 
             edges.start = rect.left;
             edges.end = rect.right;
@@ -1095,14 +1084,14 @@ function rect2edges(rect, context) {
             edges.end = rect.left;
         }
 
-    } else if (context.bpd === "lr") {
+    } else if (context.bpd === 'lr') {
 
         edges.before = rect.left;
         edges.after = rect.right;
         edges.start = rect.top;
         edges.end = rect.bottom;
 
-    } else if (context.bpd === "rl") {
+    } else if (context.bpd === 'rl') {
 
         edges.before = rect.right;
         edges.after = rect.left;
@@ -1117,7 +1106,7 @@ function rect2edges(rect, context) {
 
 function constructLineList(context, element, llist, bgcolor) {
 
-    if (element.localName === "rt" || element.localName === "rtc") {
+    if (element.localName === 'rt' || element.localName === 'rtc') {
 
         /* skip ruby annotations */
 
@@ -1125,15 +1114,15 @@ function constructLineList(context, element, llist, bgcolor) {
 
     }
 
-    var curbgcolor = element.style.backgroundColor || bgcolor;
+    const curbgcolor = element.style.backgroundColor || bgcolor;
 
     if (element.childElementCount === 0) {
 
         if (element.localName === 'span' || element.localName === 'rb') {
 
-            var r = element.getBoundingClientRect();
+            const r = element.getBoundingClientRect();
 
-            var edges = rect2edges(r, context);
+            const edges = rect2edges(r, context);
 
             if (llist.length === 0 ||
                 (!isSameLine(edges.before, edges.after, llist[llist.length - 1].before, llist[llist.length - 1].after))
@@ -1148,17 +1137,17 @@ function constructLineList(context, element, llist, bgcolor) {
                     elements: [],
                     rbc: [],
                     te: [],
-                    text: "",
-                    br: false
+                    text: '',
+                    br: false,
                 });
 
             } else {
 
                 /* positive for BPD = lr and tb, negative for BPD = rl */
-                var bpd_dir = Math.sign(edges.after - edges.before);
+                const bpd_dir = Math.sign(edges.after - edges.before);
 
                 /* positive for IPD = lr and tb, negative for IPD = rl */
-                var ipd_dir = Math.sign(edges.end - edges.start);
+                const ipd_dir = Math.sign(edges.end - edges.start);
 
                 /* check if the line height has increased */
 
@@ -1189,8 +1178,8 @@ function constructLineList(context, element, llist, bgcolor) {
                     node: element,
                     bgcolor: curbgcolor,
                     before: edges.before,
-                    after: edges.after
-                }
+                    after: edges.after,
+                },
             );
 
         } else if (element.localName === 'br' && llist.length !== 0) {
@@ -1201,7 +1190,7 @@ function constructLineList(context, element, llist, bgcolor) {
 
     } else {
 
-        var child = element.firstChild;
+        let child = element.firstChild;
 
         while (child) {
 
@@ -1221,7 +1210,7 @@ function constructLineList(context, element, llist, bgcolor) {
 
                 } else if (child.localName === 'span' &&
                     child.style[TEXTEMPHASISSTYLE_PROP] &&
-                    child.style[TEXTEMPHASISSTYLE_PROP] !== "none") {
+                    child.style[TEXTEMPHASISSTYLE_PROP] !== 'none') {
 
                     /* remember non-empty span elements with textEmphasis */
 
@@ -1232,7 +1221,6 @@ function constructLineList(context, element, llist, bgcolor) {
                     }
 
                 }
-
 
             }
 
@@ -1252,41 +1240,40 @@ function applyTextEmphasis(context, dom_element, isd_element, attr) {
 
     /* ignore color (not used in IMSC 1.1) */
 
-    if (attr.style === "none") {
+    if (attr.style === 'none') {
 
         /* text-emphasis is not inherited and the default is none, so nothing to do */
 
         return;
 
-    } else if (attr.style === "auto") {
+    } else if (attr.style === 'auto') {
 
-        dom_element.style[TEXTEMPHASISSTYLE_PROP] = "filled";
+        dom_element.style[TEXTEMPHASISSTYLE_PROP] = 'filled';
 
     } else {
 
-        dom_element.style[TEXTEMPHASISSTYLE_PROP] = attr.style + " " + attr.symbol;
+        dom_element.style[TEXTEMPHASISSTYLE_PROP] = attr.style + ' ' + attr.symbol;
     }
 
     /* ignore "outside" position (set in postprocessing) */
 
-    if (attr.position === "before" || attr.position === "after") {
+    if (attr.position === 'before' || attr.position === 'after') {
 
-        var pos;
+        let pos;
 
-        if (context.bpd === "tb") {
+        if (context.bpd === 'tb') {
 
-            pos = (attr.position === "before") ? "left over" : "left under";
-
+            pos = (attr.position === 'before') ? 'left over' : 'left under';
 
         } else {
 
-            if (context.bpd === "rl") {
+            if (context.bpd === 'rl') {
 
-                pos = (attr.position === "before") ? "right under" : "left under";
+                pos = (attr.position === 'before') ? 'right under' : 'left under';
 
             } else {
 
-                pos = (attr.position === "before") ? "left under" : "right under";
+                pos = (attr.position === 'before') ? 'left under' : 'right under';
 
             }
 
@@ -1303,91 +1290,90 @@ class HTMLStylingMapDefinition {
     }
 }
 
-var STYLING_MAP_DEFS = [
+const STYLING_MAP_DEFS = [
 
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling backgroundColor",
+        'http://www.w3.org/ns/ttml#styling backgroundColor',
         function (context, dom_element, isd_element, attr) {
 
             /* skip if transparent */
             if (attr[3] === 0)
                 return;
 
-            dom_element.style.backgroundColor = "rgba(" +
-                attr[0].toString() + "," +
-                attr[1].toString() + "," +
-                attr[2].toString() + "," +
+            dom_element.style.backgroundColor = 'rgba(' +
+                attr[0].toString() + ',' +
+                attr[1].toString() + ',' +
+                attr[2].toString() + ',' +
                 (attr[3] / 255).toString() +
-                ")";
-        }
+                ')';
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling color",
+        'http://www.w3.org/ns/ttml#styling color',
         function (context, dom_element, isd_element, attr) {
-            dom_element.style.color = "rgba(" +
-                attr[0].toString() + "," +
-                attr[1].toString() + "," +
-                attr[2].toString() + "," +
+            dom_element.style.color = 'rgba(' +
+                attr[0].toString() + ',' +
+                attr[1].toString() + ',' +
+                attr[2].toString() + ',' +
                 (attr[3] / 255).toString() +
-                ")";
-        }
+                ')';
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling direction",
+        'http://www.w3.org/ns/ttml#styling direction',
         function (context, dom_element, isd_element, attr) {
 
             dom_element.style.direction = attr;
 
-        }
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling display",
-        function (context, dom_element, isd_element, attr) { }
+        'http://www.w3.org/ns/ttml#styling display',
+        function () { },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling displayAlign",
+        'http://www.w3.org/ns/ttml#styling displayAlign',
         function (context, dom_element, isd_element, attr) {
 
             /* see https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
 
             /* TODO: is this affected by writing direction? */
 
-            dom_element.style.display = "flex";
-            dom_element.style.flexDirection = "column";
+            dom_element.style.display = 'flex';
+            dom_element.style.flexDirection = 'column';
 
+            if (attr === 'before') {
 
-            if (attr === "before") {
+                dom_element.style.justifyContent = 'flex-start';
 
-                dom_element.style.justifyContent = "flex-start";
+            } else if (attr === 'center') {
 
-            } else if (attr === "center") {
+                dom_element.style.justifyContent = 'center';
 
-                dom_element.style.justifyContent = "center";
+            } else if (attr === 'after') {
 
-            } else if (attr === "after") {
-
-                dom_element.style.justifyContent = "flex-end";
+                dom_element.style.justifyContent = 'flex-end';
             }
 
-        }
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling extent",
+        'http://www.w3.org/ns/ttml#styling extent',
         function (context, dom_element, isd_element, attr) {
             /* TODO: this is super ugly */
 
             context.regionH = attr.h.toUsedLength(context.w, context.h);
             context.regionW = attr.w.toUsedLength(context.w, context.h);
 
-            /* 
+            /*
              * CSS height/width are measured against the content rectangle,
              * whereas TTML height/width include padding
              */
 
-            var hdelta = 0;
-            var wdelta = 0;
+            let hdelta = 0;
+            let wdelta = 0;
 
-            var p = isd_element.styleAttrs["http://www.w3.org/ns/ttml#styling padding"];
+            const p = isd_element.styleAttrs['http://www.w3.org/ns/ttml#styling padding'];
 
             if (!p) {
 
@@ -1400,56 +1386,56 @@ var STYLING_MAP_DEFS = [
 
             }
 
-            dom_element.style.height = (context.regionH - hdelta) + "px";
-            dom_element.style.width = (context.regionW - wdelta) + "px";
+            dom_element.style.height = (context.regionH - hdelta) + 'px';
+            dom_element.style.width = (context.regionW - wdelta) + 'px';
 
-        }
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling fontFamily",
+        'http://www.w3.org/ns/ttml#styling fontFamily',
         function (context, dom_element, isd_element, attr) {
 
-            var rslt = [];
+            let rslt = [];
 
             /* per IMSC1 */
 
-            for (var i = 0; i < attr.length; i++) {
+            for (let i = 0; i < attr.length; i++) {
                 attr[i] = attr[i].trim();
 
-                if (attr[i] === "monospaceSerif") {
+                if (attr[i] === 'monospaceSerif') {
 
-                    rslt.push("Courier New");
+                    rslt.push('Courier New');
                     rslt.push('"Liberation Mono"');
-                    rslt.push("Courier");
-                    rslt.push("monospace");
+                    rslt.push('Courier');
+                    rslt.push('monospace');
 
-                } else if (attr[i] === "proportionalSansSerif") {
+                } else if (attr[i] === 'proportionalSansSerif') {
 
-                    rslt.push("Arial");
-                    rslt.push("Helvetica");
+                    rslt.push('Arial');
+                    rslt.push('Helvetica');
                     rslt.push('"Liberation Sans"');
-                    rslt.push("sans-serif");
+                    rslt.push('sans-serif');
 
-                } else if (attr[i] === "monospace") {
+                } else if (attr[i] === 'monospace') {
 
-                    rslt.push("monospace");
+                    rslt.push('monospace');
 
-                } else if (attr[i] === "sansSerif") {
+                } else if (attr[i] === 'sansSerif') {
 
-                    rslt.push("sans-serif");
+                    rslt.push('sans-serif');
 
-                } else if (attr[i] === "serif") {
+                } else if (attr[i] === 'serif') {
 
-                    rslt.push("serif");
+                    rslt.push('serif');
 
-                } else if (attr[i] === "monospaceSansSerif") {
+                } else if (attr[i] === 'monospaceSansSerif') {
 
-                    rslt.push("Consolas");
-                    rslt.push("monospace");
+                    rslt.push('Consolas');
+                    rslt.push('monospace');
 
-                } else if (attr[i] === "proportionalSerif") {
+                } else if (attr[i] === 'proportionalSerif') {
 
-                    rslt.push("serif");
+                    rslt.push('serif');
 
                 } else {
 
@@ -1459,12 +1445,12 @@ var STYLING_MAP_DEFS = [
 
             }
 
-            // prune later duplicates we may have inserted 
+            // prune later duplicates we may have inserted
             if (rslt.length > 0) {
 
-                var unique = [rslt[0]];
+                const unique = [rslt[0]];
 
-                for (var fi = 1; fi < rslt.length; fi++) {
+                for (let fi = 1; fi < rslt.length; fi++) {
 
                     if (unique.indexOf(rslt[fi]) == -1) {
 
@@ -1476,12 +1462,12 @@ var STYLING_MAP_DEFS = [
                 rslt = unique;
             }
 
-            dom_element.style.fontFamily = rslt.join(",");
-        }
+            dom_element.style.fontFamily = rslt.join(',');
+        },
     ),
 
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling shear",
+        'http://www.w3.org/ns/ttml#styling shear',
         function (context, dom_element, isd_element, attr) {
 
             /* return immediately if tts:shear is 0% since CSS transforms are not inherited*/
@@ -1489,114 +1475,114 @@ var STYLING_MAP_DEFS = [
             if (attr === 0)
                 return;
 
-            var angle = attr * -0.9;
+            const angle = attr * -0.9;
 
             /* context.bpd is needed since writing mode is not inherited and sets the inline progression */
 
-            if (context.bpd === "tb") {
+            if (context.bpd === 'tb') {
 
-                dom_element.style.transform = "skewX(" + angle + "deg)";
+                dom_element.style.transform = 'skewX(' + angle + 'deg)';
 
             } else {
 
-                dom_element.style.transform = "skewY(" + angle + "deg)";
+                dom_element.style.transform = 'skewY(' + angle + 'deg)';
 
             }
 
-        }
+        },
     ),
 
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling fontSize",
+        'http://www.w3.org/ns/ttml#styling fontSize',
         function (context, dom_element, isd_element, attr) {
-            dom_element.style.fontSize = attr.toUsedLength(context.w, context.h) + "px";
-        }
+            dom_element.style.fontSize = attr.toUsedLength(context.w, context.h) + 'px';
+        },
     ),
 
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling fontStyle",
+        'http://www.w3.org/ns/ttml#styling fontStyle',
         function (context, dom_element, isd_element, attr) {
             dom_element.style.fontStyle = attr;
-        }
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling fontWeight",
+        'http://www.w3.org/ns/ttml#styling fontWeight',
         function (context, dom_element, isd_element, attr) {
             dom_element.style.fontWeight = attr;
-        }
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling lineHeight",
+        'http://www.w3.org/ns/ttml#styling lineHeight',
         function (context, dom_element, isd_element, attr) {
-            if (attr === "normal") {
+            if (attr === 'normal') {
 
-                dom_element.style.lineHeight = "normal";
+                dom_element.style.lineHeight = 'normal';
 
             } else {
 
-                dom_element.style.lineHeight = attr.toUsedLength(context.w, context.h) + "px";
+                dom_element.style.lineHeight = attr.toUsedLength(context.w, context.h) + 'px';
             }
-        }
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling opacity",
+        'http://www.w3.org/ns/ttml#styling opacity',
         function (context, dom_element, isd_element, attr) {
             dom_element.style.opacity = attr;
-        }
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling origin",
+        'http://www.w3.org/ns/ttml#styling origin',
         function (context, dom_element, isd_element, attr) {
-            dom_element.style.top = attr.h.toUsedLength(context.w, context.h) + "px";
-            dom_element.style.left = attr.w.toUsedLength(context.w, context.h) + "px";
-        }
+            dom_element.style.top = attr.h.toUsedLength(context.w, context.h) + 'px';
+            dom_element.style.left = attr.w.toUsedLength(context.w, context.h) + 'px';
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling overflow",
+        'http://www.w3.org/ns/ttml#styling overflow',
         function (context, dom_element, isd_element, attr) {
             dom_element.style.overflow = attr;
-        }
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling padding",
+        'http://www.w3.org/ns/ttml#styling padding',
         function (context, dom_element, isd_element, attr) {
 
             /* attr: top,left,bottom,right*/
 
             /* style: top right bottom left*/
 
-            var rslt = [];
+            const rslt = [];
 
-            rslt[0] = attr[0].toUsedLength(context.w, context.h) + "px";
-            rslt[1] = attr[3].toUsedLength(context.w, context.h) + "px";
-            rslt[2] = attr[2].toUsedLength(context.w, context.h) + "px";
-            rslt[3] = attr[1].toUsedLength(context.w, context.h) + "px";
+            rslt[0] = attr[0].toUsedLength(context.w, context.h) + 'px';
+            rslt[1] = attr[3].toUsedLength(context.w, context.h) + 'px';
+            rslt[2] = attr[2].toUsedLength(context.w, context.h) + 'px';
+            rslt[3] = attr[1].toUsedLength(context.w, context.h) + 'px';
 
-            dom_element.style.padding = rslt.join(" ");
-        }
+            dom_element.style.padding = rslt.join(' ');
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling position",
+        'http://www.w3.org/ns/ttml#styling position',
         function (context, dom_element, isd_element, attr) {
-            dom_element.style.top = attr.h.toUsedLength(context.w, context.h) + "px";
-            dom_element.style.left = attr.w.toUsedLength(context.w, context.h) + "px";
-        }
+            dom_element.style.top = attr.h.toUsedLength(context.w, context.h) + 'px';
+            dom_element.style.left = attr.w.toUsedLength(context.w, context.h) + 'px';
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling rubyAlign",
+        'http://www.w3.org/ns/ttml#styling rubyAlign',
         function (context, dom_element, isd_element, attr) {
-            dom_element.style.rubyAlign = attr === "spaceAround" ? "space-around" : "center";
-        }
+            dom_element.style.rubyAlign = attr === 'spaceAround' ? 'space-around' : 'center';
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling rubyPosition",
+        'http://www.w3.org/ns/ttml#styling rubyPosition',
         function (context, dom_element, isd_element, attr) {
 
             /* skip if "outside", which is handled by applyRubyPosition() */
 
-            if (attr === "before" || attr === "after") {
+            if (attr === 'before' || attr === 'after') {
 
-                var pos;
+                let pos;
 
                 if (RUBYPOSITION_ISWK) {
 
@@ -1604,20 +1590,19 @@ var STYLING_MAP_DEFS = [
 
                     pos = attr;
 
-                } else if (context.bpd === "tb") {
+                } else if (context.bpd === 'tb') {
 
-                    pos = (attr === "before") ? "over" : "under";
-
+                    pos = (attr === 'before') ? 'over' : 'under';
 
                 } else {
 
-                    if (context.bpd === "rl") {
+                    if (context.bpd === 'rl') {
 
-                        pos = (attr === "before") ? "over" : "under";
+                        pos = (attr === 'before') ? 'over' : 'under';
 
                     } else {
 
-                        pos = (attr === "before") ? "under" : "over";
+                        pos = (attr === 'before') ? 'under' : 'over';
 
                     }
 
@@ -1627,27 +1612,27 @@ var STYLING_MAP_DEFS = [
 
                 dom_element.parentElement.style[RUBYPOSITION_PROP] = pos;
             }
-        }
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling showBackground",
-        null
+        'http://www.w3.org/ns/ttml#styling showBackground',
+        null,
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling textAlign",
+        'http://www.w3.org/ns/ttml#styling textAlign',
         function (context, dom_element, isd_element, attr) {
 
-            var ta;
+            let ta;
 
             /* handle UAs that do not understand start or end */
 
-            if (attr === "start") {
+            if (attr === 'start') {
 
-                ta = (context.ipd === "rl") ? "right" : "left";
+                ta = (context.ipd === 'rl') ? 'right' : 'left';
 
-            } else if (attr === "end") {
+            } else if (attr === 'end') {
 
-                ta = (context.ipd === "rl") ? "left" : "right";
+                ta = (context.ipd === 'rl') ? 'left' : 'right';
 
             } else {
 
@@ -1657,200 +1642,197 @@ var STYLING_MAP_DEFS = [
 
             dom_element.style.textAlign = ta;
 
-        }
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling textDecoration",
+        'http://www.w3.org/ns/ttml#styling textDecoration',
         function (context, dom_element, isd_element, attr) {
-            dom_element.style.textDecoration = attr.join(" ").replace("lineThrough", "line-through");
-        }
+            dom_element.style.textDecoration = attr.join(' ').replace('lineThrough', 'line-through');
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling textOutline",
-        function (context, dom_element, isd_element, attr) {
+        'http://www.w3.org/ns/ttml#styling textOutline',
+        function () {
 
             /* defer to tts:textShadow */
-        }
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling textShadow",
+        'http://www.w3.org/ns/ttml#styling textShadow',
         function (context, dom_element, isd_element, attr) {
 
-            var txto = isd_element.styleAttrs[byName.textOutline.qname];
+            const txto = isd_element.styleAttrs[byName.textOutline.qname];
 
-            if (attr === "none" && txto === "none") {
+            if (attr === 'none' && txto === 'none') {
 
-                dom_element.style.textShadow = "";
+                dom_element.style.textShadow = '';
 
             } else {
 
-                var s = [];
+                const s = [];
 
-                if (txto !== "none") {
+                if (txto !== 'none') {
 
                     /* emulate text outline */
 
-                    var to_color = "rgba(" +
-                        txto.color[0].toString() + "," +
-                        txto.color[1].toString() + "," +
-                        txto.color[2].toString() + "," +
+                    const to_color = 'rgba(' +
+                        txto.color[0].toString() + ',' +
+                        txto.color[1].toString() + ',' +
+                        txto.color[2].toString() + ',' +
                         (txto.color[3] / 255).toString() +
-                        ")";
+                        ')';
 
-                    s.push("1px 1px 1px " + to_color);
-                    s.push("-1px 1px 1px " + to_color);
-                    s.push("1px -1px 1px " + to_color);
-                    s.push("-1px -1px 1px " + to_color);
+                    s.push('1px 1px 1px ' + to_color);
+                    s.push('-1px 1px 1px ' + to_color);
+                    s.push('1px -1px 1px ' + to_color);
+                    s.push('-1px -1px 1px ' + to_color);
 
                 }
 
                 /* add text shadow */
 
-                if (attr !== "none") {
+                if (attr !== 'none') {
 
-                    for (var i = 0; i < attr.length; i++) {
+                    for (let i = 0; i < attr.length; i++) {
 
-
-                        s.push(attr[i].x_off.toUsedLength(context.w, context.h) + "px " +
-                            attr[i].y_off.toUsedLength(context.w, context.h) + "px " +
-                            attr[i].b_radius.toUsedLength(context.w, context.h) + "px " +
-                            "rgba(" +
-                            attr[i].color[0].toString() + "," +
-                            attr[i].color[1].toString() + "," +
-                            attr[i].color[2].toString() + "," +
+                        s.push(attr[i].x_off.toUsedLength(context.w, context.h) + 'px ' +
+                            attr[i].y_off.toUsedLength(context.w, context.h) + 'px ' +
+                            attr[i].b_radius.toUsedLength(context.w, context.h) + 'px ' +
+                            'rgba(' +
+                            attr[i].color[0].toString() + ',' +
+                            attr[i].color[1].toString() + ',' +
+                            attr[i].color[2].toString() + ',' +
                             (attr[i].color[3] / 255).toString() +
-                            ")"
+                            ')',
                         );
 
                     }
 
                 }
 
-                dom_element.style.textShadow = s.join(",");
+                dom_element.style.textShadow = s.join(',');
 
             }
-        }
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling textCombine",
+        'http://www.w3.org/ns/ttml#styling textCombine',
         function (context, dom_element, isd_element, attr) {
 
             dom_element.style.textCombineUpright = attr;
 
-        }
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling textEmphasis",
-        function (context, dom_element, isd_element, attr) {
+        'http://www.w3.org/ns/ttml#styling textEmphasis',
+        function () {
 
             /* applied as part of HTML document construction */
 
-        }
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling unicodeBidi",
+        'http://www.w3.org/ns/ttml#styling unicodeBidi',
         function (context, dom_element, isd_element, attr) {
 
-            var ub;
+            let ub;
 
             if (attr === 'bidiOverride') {
-                ub = "bidi-override";
+                ub = 'bidi-override';
             } else {
                 ub = attr;
             }
 
             dom_element.style.unicodeBidi = ub;
-        }
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling visibility",
+        'http://www.w3.org/ns/ttml#styling visibility',
         function (context, dom_element, isd_element, attr) {
             dom_element.style.visibility = attr;
-        }
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling wrapOption",
+        'http://www.w3.org/ns/ttml#styling wrapOption',
         function (context, dom_element, isd_element, attr) {
 
-            if (attr === "wrap") {
+            if (attr === 'wrap') {
 
-                if (isd_element.space === "preserve") {
-                    dom_element.style.whiteSpace = "pre-wrap";
+                if (isd_element.space === 'preserve') {
+                    dom_element.style.whiteSpace = 'pre-wrap';
                 } else {
-                    dom_element.style.whiteSpace = "normal";
+                    dom_element.style.whiteSpace = 'normal';
                 }
 
             } else {
 
-                if (isd_element.space === "preserve") {
+                if (isd_element.space === 'preserve') {
 
-                    dom_element.style.whiteSpace = "pre";
+                    dom_element.style.whiteSpace = 'pre';
 
                 } else {
-                    dom_element.style.whiteSpace = "noWrap";
+                    dom_element.style.whiteSpace = 'noWrap';
                 }
 
             }
 
-        }
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling writingMode",
+        'http://www.w3.org/ns/ttml#styling writingMode',
         function (context, dom_element, isd_element, attr) {
 
-            var wm;
+            if (attr === 'lrtb' || attr === 'lr') {
 
-            if (attr === "lrtb" || attr === "lr") {
+                dom_element.style.writingMode = 'horizontal-tb';
 
-                dom_element.style.writingMode = "horizontal-tb";
+            } else if (attr === 'rltb' || attr === 'rl') {
 
-            } else if (attr === "rltb" || attr === "rl") {
+                dom_element.style.writingMode = 'horizontal-tb';
 
-                dom_element.style.writingMode = "horizontal-tb";
+            } else if (attr === 'tblr') {
 
-            } else if (attr === "tblr") {
+                dom_element.style.writingMode = 'vertical-lr';
 
-                dom_element.style.writingMode = "vertical-lr";
+            } else if (attr === 'tbrl' || attr === 'tb') {
 
-            } else if (attr === "tbrl" || attr === "tb") {
-
-                dom_element.style.writingMode = "vertical-rl";
+                dom_element.style.writingMode = 'vertical-rl';
 
             }
 
-        }
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml#styling zIndex",
+        'http://www.w3.org/ns/ttml#styling zIndex',
         function (context, dom_element, isd_element, attr) {
             dom_element.style.zIndex = attr;
-        }
+        },
     ),
     new HTMLStylingMapDefinition(
-        "http://www.w3.org/ns/ttml/profile/imsc1#styling forcedDisplay",
+        'http://www.w3.org/ns/ttml/profile/imsc1#styling forcedDisplay',
         function (context, dom_element, isd_element, attr) {
 
             if (context.displayForcedOnlyMode && attr === false) {
-                dom_element.style.visibility = "hidden";
+                dom_element.style.visibility = 'hidden';
             }
 
-        }
-    )
+        },
+    ),
 ];
 
-var STYLMAP_BY_QNAME = {};
+const STYLMAP_BY_QNAME = {};
 
-for (var i = 0; i < STYLING_MAP_DEFS.length; i++) {
+for (let i = 0; i < STYLING_MAP_DEFS.length; i++) {
 
     STYLMAP_BY_QNAME[STYLING_MAP_DEFS[i].qname] = STYLING_MAP_DEFS[i];
 }
 
 /* CSS property names */
 
-var RUBYPOSITION_ISWK = "webkitRubyPosition" in window.getComputedStyle(document.documentElement);
+const RUBYPOSITION_ISWK = 'webkitRubyPosition' in window.getComputedStyle(document.documentElement);
 
-var RUBYPOSITION_PROP = RUBYPOSITION_ISWK ? "webkitRubyPosition" : "rubyPosition";
+const RUBYPOSITION_PROP = RUBYPOSITION_ISWK ? 'webkitRubyPosition' : 'rubyPosition';
 
-var TEXTEMPHASISSTYLE_PROP = "webkitTextEmphasisStyle" in window.getComputedStyle(document.documentElement) ? "webkitTextEmphasisStyle" : "textEmphasisStyle";
+const TEXTEMPHASISSTYLE_PROP = 'webkitTextEmphasisStyle' in window.getComputedStyle(document.documentElement) ? 'webkitTextEmphasisStyle' : 'textEmphasisStyle';
 
-var TEXTEMPHASISPOSITION_PROP = "webkitTextEmphasisPosition" in window.getComputedStyle(document.documentElement) ? "webkitTextEmphasisPosition" : "textEmphasisPosition";
+const TEXTEMPHASISPOSITION_PROP = 'webkitTextEmphasisPosition' in window.getComputedStyle(document.documentElement) ? 'webkitTextEmphasisPosition' : 'textEmphasisPosition';

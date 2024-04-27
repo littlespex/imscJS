@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -25,5 +25,5 @@
  */
 
 export { fromXML } from './doc.js';
-export { renderHTML } from "./html.js";
+export { renderHTML } from './html.js';
 export { generateISD } from './isd.js';

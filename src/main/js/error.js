@@ -1,6 +1,6 @@
 /*
  * ERROR HANDLING UTILITY FUNCTIONS
- * 
+ *
  */
 
 export function reportWarning(errorHandler, msg) {

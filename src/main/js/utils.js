@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2016, Pierre-Anthony Lemieux <pal@sandflow.com>
  * All rights reserved.
  *
@@ -28,7 +28,6 @@
  * @module imscUtils
  */
 
-
 /* Documents the error handler interface */
 
 /**
@@ -46,16 +45,15 @@
  * @class
  */
 
-
 /*
  * Parses a TTML color expression
- * 
+ *
  */
 
-var HEX_COLOR_RE = /#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})?/;
-var DEC_COLOR_RE = /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/;
-var DEC_COLORA_RE = /rgba\(\s*(\d+),\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/;
-var NAMED_COLOR = {
+const HEX_COLOR_RE = /#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})?/;
+const DEC_COLOR_RE = /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/;
+const DEC_COLORA_RE = /rgba\(\s*(\d+),\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/;
+const NAMED_COLOR = {
     transparent: [0, 0, 0, 0],
     black: [0, 0, 0, 255],
     silver: [192, 192, 192, 255],
@@ -74,16 +72,16 @@ var NAMED_COLOR = {
     blue: [0, 0, 255, 255],
     teal: [0, 128, 128, 255],
     aqua: [0, 255, 255, 255],
-    cyan: [0, 255, 255, 255]
+    cyan: [0, 255, 255, 255],
 };
 
 export function parseColor(str) {
 
-    var m;
+    let m;
 
-    var r = null;
+    let r = null;
 
-    var nc = NAMED_COLOR[str.toLowerCase()];
+    const nc = NAMED_COLOR[str.toLowerCase()];
 
     if (nc !== undefined) {
 
@@ -115,13 +113,13 @@ export function parseColor(str) {
     return r;
 };
 
-var LENGTH_RE = /^((?:\+|\-)?\d*(?:\.\d+)?)(px|em|c|%|rh|rw)$/;
+const LENGTH_RE = /^((?:\+|-)?\d*(?:\.\d+)?)(px|em|c|%|rh|rw)$/;
 
 export function parseLength(str) {
 
-    var m;
+    let m;
 
-    var r = null;
+    let r = null;
 
     if ((m = LENGTH_RE.exec(str)) !== null) {
 
@@ -133,25 +131,25 @@ export function parseLength(str) {
 
 export function parseTextShadow(str) {
 
-    var shadows = str.match(/([^\(,\)]|\([^\)]+\))+/g);
+    const shadows = str.match(/([^(,)]|\([^)]+\))+/g);
 
-    var r = [];
+    const r = [];
 
-    for (var i = 0; i < shadows.length; i++) {
+    for (let i = 0; i < shadows.length; i++) {
 
-        var shadow = shadows[i].split(" ");
+        const shadow = shadows[i].split(' ');
 
-        if (shadow.length === 1 && shadow[0] === "none") {
+        if (shadow.length === 1 && shadow[0] === 'none') {
 
-            return "none";
+            return 'none';
 
         } else if (shadow.length > 1 && shadow.length < 5) {
 
-            var out_shadow = [null, null, null, null];
+            const out_shadow = [null, null, null, null];
 
             /* x offset */
 
-            var l = parseLength(shadow.shift());
+            let l = parseLength(shadow.shift());
 
             if (l === null)
                 return null;
@@ -189,7 +187,7 @@ export function parseTextShadow(str) {
                 continue;
             }
 
-            var c = parseColor(shadow[0]);
+            const c = parseColor(shadow[0]);
 
             if (c === null)
                 return null;
@@ -204,20 +202,19 @@ export function parseTextShadow(str) {
     return r;
 };
 
-
 export function parsePosition(str) {
 
     /* see https://www.w3.org/TR/ttml2/#style-value-position */
 
-    var s = str.split(" ");
+    const s = str.split(' ');
 
-    var isKeyword = function (str) {
+    const isKeyword = function (str) {
 
-        return str === "center" ||
-            str === "left" ||
-            str === "top" ||
-            str === "bottom" ||
-            str === "right";
+        return str === 'center' ||
+            str === 'left' ||
+            str === 'top' ||
+            str === 'bottom' ||
+            str === 'right';
 
     };
 
@@ -229,11 +226,11 @@ export function parsePosition(str) {
 
     /* initial clean-up pass */
 
-    for (var j = 0; j < s.length; j++) {
+    for (let j = 0; j < s.length; j++) {
 
         if (!isKeyword(s[j])) {
 
-            var l = parseLength(s[j]);
+            const l = parseLength(s[j]);
 
             if (l === null)
                 return null;
@@ -245,24 +242,24 @@ export function parsePosition(str) {
 
     /* position default */
 
-    var pos = {
-        h: { edge: "left", offset: { value: 50, unit: "%" } },
-        v: { edge: "top", offset: { value: 50, unit: "%" } }
+    const pos = {
+        h: { edge: 'left', offset: { value: 50, unit: '%' } },
+        v: { edge: 'top', offset: { value: 50, unit: '%' } },
     };
 
     /* update position */
 
-    for (var i = 0; i < s.length;) {
+    for (let i = 0; i < s.length;) {
 
         /* extract the current component */
 
-        var comp = s[i++];
+        const comp = s[i++];
 
         if (isKeyword(comp)) {
 
             /* we have a keyword */
 
-            var offset = { value: 0, unit: "%" };
+            let offset = { value: 0, unit: '%' };
 
             /* peek at the next component */
 
@@ -276,29 +273,25 @@ export function parsePosition(str) {
 
             /* skip if center */
 
-            if (comp === "right") {
+            if (comp === 'right') {
 
                 pos.h.edge = comp;
 
                 pos.h.offset = offset;
 
-            } else if (comp === "bottom") {
+            } else if (comp === 'bottom') {
 
                 pos.v.edge = comp;
 
-
                 pos.v.offset = offset;
 
-
-            } else if (comp === "left") {
+            } else if (comp === 'left') {
 
                 pos.h.offset = offset;
 
-
-            } else if (comp === "top") {
+            } else if (comp === 'top') {
 
                 pos.v.offset = offset;
-
 
             }
 
@@ -333,7 +326,6 @@ export function parsePosition(str) {
     return pos;
 };
 
-
 export class ComputedLength {
     constructor(rw, rh) {
         this.rw = rw;
@@ -352,7 +344,7 @@ export class ComputedLength {
 
 /**
  * Computes a specified length to a root container relative length
- * 
+ *
  * @param {number} lengthVal Length value to be computed
  * @param {string} lengthUnit Units of the length value
  * @param {number} emScale length of 1em, or null if em is not allowed
@@ -364,46 +356,46 @@ export class ComputedLength {
  */
 export function toComputedLength(lengthVal, lengthUnit, emLength, percentLength, cellLength, pxLength) {
 
-    if (lengthUnit === "%" && percentLength) {
+    if (lengthUnit === '%' && percentLength) {
 
         return new ComputedLength(
             percentLength.rw * lengthVal / 100,
-            percentLength.rh * lengthVal / 100
+            percentLength.rh * lengthVal / 100,
         );
 
-    } else if (lengthUnit === "em" && emLength) {
+    } else if (lengthUnit === 'em' && emLength) {
 
         return new ComputedLength(
             emLength.rw * lengthVal,
-            emLength.rh * lengthVal
+            emLength.rh * lengthVal,
         );
 
-    } else if (lengthUnit === "c" && cellLength) {
+    } else if (lengthUnit === 'c' && cellLength) {
 
         return new ComputedLength(
             lengthVal * cellLength.rw,
-            lengthVal * cellLength.rh
+            lengthVal * cellLength.rh,
         );
 
-    } else if (lengthUnit === "px" && pxLength) {
+    } else if (lengthUnit === 'px' && pxLength) {
 
         return new ComputedLength(
             lengthVal * pxLength.rw,
-            lengthVal * pxLength.rh
+            lengthVal * pxLength.rh,
         );
 
-    } else if (lengthUnit === "rh") {
+    } else if (lengthUnit === 'rh') {
 
         return new ComputedLength(
             0,
-            lengthVal / 100
+            lengthVal / 100,
         );
 
-    } else if (lengthUnit === "rw") {
+    } else if (lengthUnit === 'rw') {
 
         return new ComputedLength(
             lengthVal / 100,
-            0
+            0,
         );
 
     } else {
@@ -412,4 +404,8 @@ export function toComputedLength(lengthVal, lengthUnit, emLength, percentLength,
 
     }
 
-};
+}
+
+export function hasOwnProperty(obj, prop) {
+    return Object.prototype.hasOwnProperty.call(obj, prop);
+}
