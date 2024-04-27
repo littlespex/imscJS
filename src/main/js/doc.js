@@ -622,7 +622,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         /* create default region */
 
-        const dr = Region.createDefaultRegion(doc.lang);
+        const dr = Region.prototype.createDefaultRegion(doc.lang);
 
         regions[dr.id] = dr;
 
@@ -1024,13 +1024,19 @@ class Layout {
     }
 }
 
+class ContentElement {
+    constructor(kind) {
+        this.kind = kind;
+    }
+}
+
 /*
  * Represents a TTML image element
  */
 
-class Image {
+class Image extends ContentElement {
     constructor(src, type) {
-        ContentElement.call(this, 'image');
+        super('image');
         this.src = src;
         this.type = type;
     }
@@ -1061,12 +1067,6 @@ class Image {
  * TTML element utility functions
  *
  */
-
-class ContentElement {
-    constructor(kind) {
-        this.kind = kind;
-    }
-}
 
 class IdentifiedElement {
     constructor(id) {
@@ -1145,9 +1145,9 @@ class TimedElement {
  * Represents a TTML body element
  */
 
-class Body {
+class Body extends ContentElement {
     constructor() {
-        ContentElement.call(this, 'body');
+        super('body');
     }
 
     initFromNode(doc, node, xmllang, errorHandler) {
@@ -1165,9 +1165,9 @@ class Body {
  * Represents a TTML div element
  */
 
-class Div {
+class Div extends ContentElement {
     constructor() {
-        ContentElement.call(this, 'div');
+        super('div');
     }
 
     initFromNode(doc, parent, node, xmllang, errorHandler) {
@@ -1185,9 +1185,9 @@ class Div {
  * Represents a TTML p element
  */
 
-class P {
+class P extends ContentElement {
     constructor() {
-        ContentElement.call(this, 'p');
+        super('p');
     }
 
     initFromNode(doc, parent, node, xmllang, errorHandler) {
@@ -1205,9 +1205,9 @@ class P {
  * Represents a TTML span element
  */
 
-class Span {
+class Span extends ContentElement {
     constructor() {
-        ContentElement.call(this, 'span');
+        super('span');
     }
 
     initFromNode(doc, parent, node, xmllang, xmlspace, errorHandler) {
@@ -1226,9 +1226,9 @@ class Span {
  * Represents a TTML anonymous span element
  */
 
-class AnonymousSpan {
+class AnonymousSpan extends ContentElement {
     constructor() {
-        ContentElement.call(this, 'span');
+        super('span');
     }
 
     initFromText(doc, parent, text, xmllang, xmlspace, errorHandler) {
@@ -1244,9 +1244,9 @@ class AnonymousSpan {
  * Represents a TTML br element
  */
 
-class Br {
+class Br extends ContentElement {
     constructor() {
-        ContentElement.call(this, 'br');
+        super('br');
     }
 
     initFromNode(doc, parent, node, xmllang, errorHandler) {
@@ -1263,16 +1263,17 @@ class Br {
  */
 
 class Region {
-    constructor() {
-    }
+    constructor() { }
 
-    static createDefaultRegion(xmllang) {
+    createDefaultRegion(xmllang) {
         const r = new Region();
 
-        IdentifiedElement.call(r, '');
-        StyledElement.call(r, {});
-        AnimatedElement.call(r, []);
-        TimedElement.call(r, 0, Number.POSITIVE_INFINITY, null);
+        r.id = '';
+        r.styleAttrs = {};
+        r.sets = [];
+        r.explicit_begin = 0;
+        r.explicit_end = Number.POSITIVE_INFINITY;
+        r.explicit_dur = null;
 
         this.lang = xmllang;
 
