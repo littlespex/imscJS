@@ -6,6 +6,7 @@
     "homepage": "https://github.com/sandflow/imscJS",
     "bugs": "https://github.com/sandflow/imscJS/issues",
     "repository": "github:sandflow/imscJS",
+    "type": "module",
     "files": [
         "src/main/js",
         "README.txt",
@@ -24,28 +25,37 @@
         "imsc"
     ],
     "author": "Pierre-Anthony Lemieux <pal@sandflow.com>",
-    "main": "src/main/js/main.js",
+    "main": "dist/main/js/main.js",
+    "types": "dist/main/js/main.d.ts",
     "unpkg": "dist/imsc.min.js",
     "scripts": {
-        "prepublishOnly": "grunt build:release"
+        "prepublishOnly": "grunt build:release",
+        "dev": "npx http-server build/public_html",
+        "fix": "eslint --fix src"
     },
     "dependencies": {
         "sax": "1.2.1"
     },
     "devDependencies": {
-        "browserify": "^16.2.3",
+        "@eslint/js": "^9.1.1",
+        "@rollup/plugin-commonjs": "^25.0.7",
+        "@rollup/plugin-node-resolve": "^15.2.3",
+        "@rollup/plugin-terser": "^0.4.4",
+        "eslint": "^9.1.1",
         "filesaver.js-npm": "latest",
-        "google-closure-compiler": "^20180910.1.0",
+        "globals": "^15.0.0",
         "grunt": "latest",
-        "grunt-browserify": "latest",
         "grunt-contrib-clean": "latest",
-        "grunt-contrib-jshint": "latest",
         "grunt-exec": "^3.0.0",
         "grunt-npmcopy": "latest",
         "grunt-sync": "latest",
         "jszip": "latest",
         "node-qunit": "^1.0.0",
         "qunit-assert-close": "latest",
-        "qunitjs": "latest"
+        "qunitjs": "latest",
+        "rollup": "^4.14.3",
+        "rollup-plugin-polyfill-node": "^0.13.0",
+        "tslib": "^2.6.2",
+        "typescript": "^5.4.5"
     }
 }
