@@ -51,7 +51,7 @@ module.exports = function (grunt) {
 
         exec: {
             compile: {
-                cmd: "tsc",
+                cmd: "npx tsc",
             },
 
             lint: {
