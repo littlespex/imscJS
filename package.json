@@ -31,7 +31,10 @@
     "scripts": {
         "prepublishOnly": "grunt build:release",
         "dev": "npx http-server build/public_html",
-        "fix": "eslint --fix src"
+        "lint": "eslint .",
+        "fix": "eslint --fix src",
+        "build": "grunt build",
+        "test": "node --test ./test/*.test.js"
     },
     "dependencies": {
         "sax": "1.2.1"
