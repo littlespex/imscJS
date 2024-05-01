@@ -55,7 +55,7 @@ module.exports = function (grunt) {
             },
 
             lint: {
-                cmd: 'eslint src',
+                cmd: 'npx eslint src',
             },
 
             bundle: {
