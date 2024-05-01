@@ -63,5 +63,5 @@ test("Metadata Callbacks", async () => {
     },
   };
 
-  await getIMSC1Document("./src/test/resources/unit-tests/metadataHandler.ttml", mh);
+  await getIMSC1Document("./test/resources/metadataHandler.ttml", mh);
 });

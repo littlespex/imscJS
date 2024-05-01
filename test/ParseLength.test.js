@@ -3,7 +3,7 @@ import { test } from "node:test";
 import { getIMSC1Document } from "./utils/getIMSC1Document.js";
 
 test("Parse Length Expressions", async () => {
-  const doc = await getIMSC1Document("./src/test/resources/unit-tests/lengthExpressions.ttml");
+  const doc = await getIMSC1Document("./test/resources/lengthExpressions.ttml");
 
   deepEqual(
     doc.body.contents[0].contents[0].styleAttrs["http://www.w3.org/ns/ttml#styling fontSize"],

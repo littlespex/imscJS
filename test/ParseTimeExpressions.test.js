@@ -4,7 +4,7 @@ import { close } from "./utils/close.js";
 import { getIMSC1Document } from "./utils/getIMSC1Document.js";
 
 test("Parse Time Expressions", async () => {
-  const doc = await getIMSC1Document("./src/test/resources/unit-tests/timeExpressions.ttml");
+  const doc = await getIMSC1Document("./test/resources/timeExpressions.ttml");
   close(doc.body.contents[0].contents[0].begin, 1.2, 1e-10);
   close(doc.body.contents[0].contents[1].begin, 72, 1e-10);
   close(doc.body.contents[0].contents[2].begin, 4320, 1e-10);
