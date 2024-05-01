@@ -1,6 +1,6 @@
-import { parseTextShadow } from '../../main/js/utils.js';
+import { parseTextShadow } from "../../main/js/utils.js";
 
-QUnit.test('ParseTextShadow',
+QUnit.test("ParseTextShadow",
     function (assert) {
 
         function shadow(ioff_val, ioff_unit, boff_val, boff_unit, blur_val, blur_unit, color) {
@@ -16,8 +16,8 @@ QUnit.test('ParseTextShadow',
 
             /* four components */
 
-            ['10% -20% 5% lime', [shadow(10, '%', -20, '%', 5, '%', [0, 255, 0, 255])]],
-            ['+10% 0% -1% rgba(233,30,99,255)', [shadow(10, '%', 0, '%', -1, '%', [233, 30, 99, 255])]],
+            ["10% -20% 5% lime", [shadow(10, "%", -20, "%", 5, "%", [0, 255, 0, 255])]],
+            ["+10% 0% -1% rgba(233,30,99,255)", [shadow(10, "%", 0, "%", -1, "%", [233, 30, 99, 255])]],
 
         ];
 

@@ -24,8 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import { ns_ebutts, ns_itts, ns_smpte, ns_tts } from './names.js';
-import { ComputedLength, parseColor, parseFloat, parseInt, parseLength, parsePosition, parseTextShadow, toComputedLength } from './utils.js';
+import { ns_ebutts, ns_itts, ns_smpte, ns_tts } from "./names.js";
+import { ComputedLength, parseColor, parseInt, parseLength, parsePosition, parseTextShadow, toComputedLength } from "./utils.js";
 
 /**
  * @module imscStyles
@@ -35,7 +35,7 @@ class StylingAttributeDefinition {
     constructor(ns, name, initialValue, appliesTo, isInherit, isAnimatable, parseFunc, computeFunc) {
         this.name = name;
         this.ns = ns;
-        this.qname = ns + ' ' + name;
+        this.qname = ns + " " + name;
         this.inherit = isInherit;
         this.animatable = isAnimatable;
         this.initial = initialValue;
@@ -49,9 +49,9 @@ export const all = [
 
     new StylingAttributeDefinition(
         ns_tts,
-        'backgroundColor',
-        'transparent',
-        ['body', 'div', 'p', 'region', 'span'],
+        "backgroundColor",
+        "transparent",
+        ["body", "div", "p", "region", "span"],
         false,
         true,
         parseColor,
@@ -59,9 +59,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'color',
-        'white',
-        ['span'],
+        "color",
+        "white",
+        ["span"],
         true,
         true,
         parseColor,
@@ -69,9 +69,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'direction',
-        'ltr',
-        ['p', 'span'],
+        "direction",
+        "ltr",
+        ["p", "span"],
         true,
         true,
         function (str) {
@@ -81,9 +81,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'display',
-        'auto',
-        ['body', 'div', 'p', 'region', 'span'],
+        "display",
+        "auto",
+        ["body", "div", "p", "region", "span"],
         false,
         true,
         function (str) {
@@ -93,9 +93,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'displayAlign',
-        'before',
-        ['region'],
+        "displayAlign",
+        "before",
+        ["region"],
         false,
         true,
         function (str) {
@@ -105,27 +105,27 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'extent',
-        'auto',
-        ['tt', 'region'],
+        "extent",
+        "auto",
+        ["tt", "region"],
         false,
         true,
         function (str) {
 
-            if (str === 'auto') {
+            if (str === "auto") {
 
                 return str;
 
             } else {
 
-                const s = str.split(' ');
+                const s = str.split(" ");
                 if (s.length !== 2)
                     return null;
                 const w = parseLength(s[0]);
                 const h = parseLength(s[1]);
                 if (!h || !w)
                     return null;
-                return { 'h': h, 'w': w };
+                return { "h": h, "w": w };
             }
 
         },
@@ -134,7 +134,7 @@ export const all = [
             let h;
             let w;
 
-            if (attr === 'auto') {
+            if (attr === "auto") {
 
                 h = new ComputedLength(0, 1);
 
@@ -156,7 +156,7 @@ export const all = [
                 }
             }
 
-            if (attr === 'auto') {
+            if (attr === "auto") {
 
                 w = new ComputedLength(1, 0);
 
@@ -179,18 +179,18 @@ export const all = [
 
             }
 
-            return { 'h': h, 'w': w };
+            return { "h": h, "w": w };
         },
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'fontFamily',
-        'default',
-        ['span', 'p'],
+        "fontFamily",
+        "default",
+        ["span", "p"],
         true,
         true,
         function (str) {
-            const ffs = str.split(',');
+            const ffs = str.split(",");
             const rslt = [];
 
             for (let i = 0; i < ffs.length; i++) {
@@ -198,11 +198,11 @@ export const all = [
 
                 if (ffs[i].charAt(0) !== "'" && ffs[i].charAt(0) !== '"') {
 
-                    if (ffs[i] === 'default') {
+                    if (ffs[i] === "default") {
 
                         /* per IMSC1 */
 
-                        rslt.push('monospaceSerif');
+                        rslt.push("monospaceSerif");
 
                     } else {
 
@@ -224,9 +224,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'shear',
-        '0%',
-        ['p'],
+        "shear",
+        "0%",
+        ["p"],
         true,
         true,
         parseLength,
@@ -234,7 +234,7 @@ export const all = [
 
             let fs;
 
-            if (attr.unit === '%') {
+            if (attr.unit === "%") {
 
                 fs = Math.abs(attr.value) > 100 ? Math.sign(attr.value) * 100 : attr.value;
 
@@ -249,9 +249,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'fontSize',
-        '1c',
-        ['span', 'p'],
+        "fontSize",
+        "1c",
+        ["span", "p"],
         true,
         true,
         parseLength,
@@ -270,9 +270,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'fontStyle',
-        'normal',
-        ['span', 'p'],
+        "fontStyle",
+        "normal",
+        ["span", "p"],
         true,
         true,
         function (str) {
@@ -284,9 +284,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'fontWeight',
-        'normal',
-        ['span', 'p'],
+        "fontWeight",
+        "normal",
+        ["span", "p"],
         true,
         true,
         function (str) {
@@ -298,13 +298,13 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'lineHeight',
-        'normal',
-        ['p'],
+        "lineHeight",
+        "normal",
+        ["p"],
         true,
         true,
         function (str) {
-            if (str === 'normal') {
+            if (str === "normal") {
                 return str;
             } else {
                 return parseLength(str);
@@ -314,7 +314,7 @@ export const all = [
 
             let lh;
 
-            if (attr === 'normal') {
+            if (attr === "normal") {
 
                 /* inherit normal per https://github.com/w3c/ttml1/issues/220 */
 
@@ -346,9 +346,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'opacity',
+        "opacity",
         1.0,
-        ['region'],
+        ["region"],
         false,
         true,
         parseFloat,
@@ -356,27 +356,27 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'origin',
-        'auto',
-        ['region'],
+        "origin",
+        "auto",
+        ["region"],
         false,
         true,
         function (str) {
 
-            if (str === 'auto') {
+            if (str === "auto") {
 
                 return str;
 
             } else {
 
-                const s = str.split(' ');
+                const s = str.split(" ");
                 if (s.length !== 2)
                     return null;
                 const w = parseLength(s[0]);
                 const h = parseLength(s[1]);
                 if (!h || !w)
                     return null;
-                return { 'h': h, 'w': w };
+                return { "h": h, "w": w };
             }
 
         },
@@ -385,7 +385,7 @@ export const all = [
             let h;
             let w;
 
-            if (attr === 'auto') {
+            if (attr === "auto") {
 
                 h = new ComputedLength(0, 0);
 
@@ -408,7 +408,7 @@ export const all = [
 
             }
 
-            if (attr === 'auto') {
+            if (attr === "auto") {
 
                 w = new ComputedLength(0, 0);
 
@@ -431,14 +431,14 @@ export const all = [
 
             }
 
-            return { 'h': h, 'w': w };
+            return { "h": h, "w": w };
         },
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'overflow',
-        'hidden',
-        ['region'],
+        "overflow",
+        "hidden",
+        ["region"],
         false,
         true,
         function (str) {
@@ -448,14 +448,14 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'padding',
-        '0px',
-        ['region'],
+        "padding",
+        "0px",
+        ["region"],
         false,
         true,
         function (str) {
 
-            const s = str.split(' ');
+            const s = str.split(" ");
             if (s.length > 4)
                 return null;
             const r = [];
@@ -513,19 +513,19 @@ export const all = [
 
             const dir = element.styleAttrs[byName.writingMode.qname];
 
-            if (dir === 'lrtb' || dir === 'lr') {
+            if (dir === "lrtb" || dir === "lr") {
 
                 padding = [padding[0], padding[3], padding[2], padding[1]];
 
-            } else if (dir === 'rltb' || dir === 'rl') {
+            } else if (dir === "rltb" || dir === "rl") {
 
                 padding = [padding[0], padding[1], padding[2], padding[3]];
 
-            } else if (dir === 'tblr') {
+            } else if (dir === "tblr") {
 
                 padding = [padding[3], padding[0], padding[1], padding[2]];
 
-            } else if (dir === 'tbrl' || dir === 'tb') {
+            } else if (dir === "tbrl" || dir === "tb") {
 
                 padding = [padding[3], padding[2], padding[1], padding[0]];
 
@@ -564,9 +564,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'position',
-        'top left',
-        ['region'],
+        "position",
+        "top left",
+        ["region"],
         false,
         true,
         function (str) {
@@ -592,7 +592,7 @@ export const all = [
 
             if (h === null) return null;
 
-            if (attr.v.edge === 'bottom') {
+            if (attr.v.edge === "bottom") {
 
                 h = new ComputedLength(
                     - h.rw - element.styleAttrs[byName.extent.qname].h.rw,
@@ -615,7 +615,7 @@ export const all = [
 
             if (h === null) return null;
 
-            if (attr.h.edge === 'right') {
+            if (attr.h.edge === "right") {
 
                 w = new ComputedLength(
                     doc.dimensions.w.rw - w.rw - element.styleAttrs[byName.extent.qname].w.rw,
@@ -624,14 +624,14 @@ export const all = [
 
             }
 
-            return { 'h': h, 'w': w };
+            return { "h": h, "w": w };
         },
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'ruby',
-        'none',
-        ['span'],
+        "ruby",
+        "none",
+        ["span"],
         false,
         true,
         function (str) {
@@ -641,14 +641,14 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'rubyAlign',
-        'center',
-        ['span'],
+        "rubyAlign",
+        "center",
+        ["span"],
         true,
         true,
         function (str) {
 
-            if (!(str === 'center' || str === 'spaceAround')) {
+            if (!(str === "center" || str === "spaceAround")) {
                 return null;
             }
 
@@ -658,9 +658,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'rubyPosition',
-        'outside',
-        ['span'],
+        "rubyPosition",
+        "outside",
+        ["span"],
         true,
         true,
         function (str) {
@@ -670,24 +670,24 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'rubyReserve',
-        'none',
-        ['p'],
+        "rubyReserve",
+        "none",
+        ["p"],
         true,
         true,
         function (str) {
-            const s = str.split(' ');
+            const s = str.split(" ");
 
             const r = [null, null];
 
             if (s.length === 0 || s.length > 2)
                 return null;
 
-            if (s[0] === 'none' ||
-                s[0] === 'both' ||
-                s[0] === 'after' ||
-                s[0] === 'before' ||
-                s[0] === 'outside') {
+            if (s[0] === "none" ||
+                s[0] === "both" ||
+                s[0] === "after" ||
+                s[0] === "before" ||
+                s[0] === "outside") {
 
                 r[0] = s[0];
 
@@ -697,7 +697,7 @@ export const all = [
 
             }
 
-            if (s.length === 2 && s[0] !== 'none') {
+            if (s.length === 2 && s[0] !== "none") {
 
                 const l = parseLength(s[1]);
 
@@ -717,7 +717,7 @@ export const all = [
         },
         function (doc, parent, element, attr) {
 
-            if (attr[0] === 'none') {
+            if (attr[0] === "none") {
 
                 return attr;
 
@@ -751,9 +751,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'showBackground',
-        'always',
-        ['region'],
+        "showBackground",
+        "always",
+        ["region"],
         false,
         true,
         function (str) {
@@ -763,9 +763,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'textAlign',
-        'start',
-        ['p'],
+        "textAlign",
+        "start",
+        ["p"],
         true,
         true,
         function (str) {
@@ -774,13 +774,13 @@ export const all = [
         function (doc, parent, element, attr) {
             /* Section 7.16.9 of XSL */
 
-            if (attr === 'left') {
+            if (attr === "left") {
 
-                return 'start';
+                return "start";
 
-            } else if (attr === 'right') {
+            } else if (attr === "right") {
 
-                return 'end';
+                return "end";
 
             } else {
 
@@ -791,13 +791,13 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'textCombine',
-        'none',
-        ['span'],
+        "textCombine",
+        "none",
+        ["span"],
         true,
         true,
         function (str) {
-            if (str === 'none' || str === 'all') {
+            if (str === "none" || str === "all") {
 
                 return str;
             }
@@ -808,50 +808,50 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'textDecoration',
-        'none',
-        ['span'],
+        "textDecoration",
+        "none",
+        ["span"],
         true,
         true,
         function (str) {
-            return str.split(' ');
+            return str.split(" ");
         },
         null,
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'textEmphasis',
-        'none',
-        ['span'],
+        "textEmphasis",
+        "none",
+        ["span"],
         true,
         true,
         function (str) {
-            const e = str.split(' ');
+            const e = str.split(" ");
 
             const rslt = { style: null, symbol: null, color: null, position: null };
 
             for (let i = 0; i < e.length; i++) {
 
-                if (e[i] === 'none' || e[i] === 'auto') {
+                if (e[i] === "none" || e[i] === "auto") {
 
                     rslt.style = e[i];
 
-                } else if (e[i] === 'filled' ||
-                    e[i] === 'open') {
+                } else if (e[i] === "filled" ||
+                    e[i] === "open") {
 
                     rslt.style = e[i];
 
-                } else if (e[i] === 'circle' ||
-                    e[i] === 'dot' ||
-                    e[i] === 'sesame') {
+                } else if (e[i] === "circle" ||
+                    e[i] === "dot" ||
+                    e[i] === "sesame") {
 
                     rslt.symbol = e[i];
 
-                } else if (e[i] === 'current') {
+                } else if (e[i] === "current") {
 
                     rslt.color = e[i];
 
-                } else if (e[i] === 'outside' || e[i] === 'before' || e[i] === 'after') {
+                } else if (e[i] === "outside" || e[i] === "before" || e[i] === "after") {
 
                     rslt.position = e[i];
 
@@ -867,17 +867,17 @@ export const all = [
 
             if (rslt.style == null && rslt.symbol == null) {
 
-                rslt.style = 'auto';
+                rslt.style = "auto";
 
             } else {
 
-                rslt.symbol = rslt.symbol || 'circle';
-                rslt.style = rslt.style || 'filled';
+                rslt.symbol = rslt.symbol || "circle";
+                rslt.style = rslt.style || "filled";
 
             }
 
-            rslt.position = rslt.position || 'outside';
-            rslt.color = rslt.color || 'current';
+            rslt.position = rslt.position || "outside";
+            rslt.color = rslt.color || "current";
 
             return rslt;
         },
@@ -885,9 +885,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'textOutline',
-        'none',
-        ['span'],
+        "textOutline",
+        "none",
+        ["span"],
         true,
         true,
         function (str) {
@@ -897,14 +897,14 @@ export const all = [
              *
              */
 
-            if (str === 'none') {
+            if (str === "none") {
 
                 return str;
 
             } else {
 
                 const r = {};
-                const s = str.split(' ');
+                const s = str.split(" ");
                 if (s.length === 0 || s.length > 2)
                     return null;
                 const c = parseColor(s[0]);
@@ -935,7 +935,7 @@ export const all = [
              *
              */
 
-            if (attr === 'none')
+            if (attr === "none")
                 return attr;
 
             const rslt = {};
@@ -967,9 +967,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'textShadow',
-        'none',
-        ['span'],
+        "textShadow",
+        "none",
+        ["span"],
         true,
         true,
         parseTextShadow,
@@ -980,7 +980,7 @@ export const all = [
              *
              */
 
-            if (attr === 'none')
+            if (attr === "none")
                 return attr;
 
             const r = [];
@@ -1052,9 +1052,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'unicodeBidi',
-        'normal',
-        ['span', 'p'],
+        "unicodeBidi",
+        "normal",
+        ["span", "p"],
         false,
         true,
         function (str) {
@@ -1064,9 +1064,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'visibility',
-        'visible',
-        ['body', 'div', 'p', 'region', 'span'],
+        "visibility",
+        "visible",
+        ["body", "div", "p", "region", "span"],
         true,
         true,
         function (str) {
@@ -1076,9 +1076,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'wrapOption',
-        'wrap',
-        ['span'],
+        "wrapOption",
+        "wrap",
+        ["span"],
         true,
         true,
         function (str) {
@@ -1088,9 +1088,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'writingMode',
-        'lrtb',
-        ['region'],
+        "writingMode",
+        "lrtb",
+        ["region"],
         false,
         true,
         function (str) {
@@ -1100,16 +1100,16 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_tts,
-        'zIndex',
-        'auto',
-        ['region'],
+        "zIndex",
+        "auto",
+        ["region"],
         false,
         true,
         function (str) {
 
             let rslt;
 
-            if (str === 'auto') {
+            if (str === "auto") {
 
                 rslt = str;
 
@@ -1129,9 +1129,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_ebutts,
-        'linePadding',
-        '0c',
-        ['p'],
+        "linePadding",
+        "0c",
+        ["p"],
         true,
         false,
         parseLength,
@@ -1143,9 +1143,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_ebutts,
-        'multiRowAlign',
-        'auto',
-        ['p'],
+        "multiRowAlign",
+        "auto",
+        ["p"],
         true,
         false,
         function (str) {
@@ -1155,9 +1155,9 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_smpte,
-        'backgroundImage',
+        "backgroundImage",
         null,
-        ['div'],
+        ["div"],
         false,
         false,
         function (str) {
@@ -1167,25 +1167,25 @@ export const all = [
     ),
     new StylingAttributeDefinition(
         ns_itts,
-        'forcedDisplay',
-        'false',
-        ['body', 'div', 'p', 'region', 'span'],
+        "forcedDisplay",
+        "false",
+        ["body", "div", "p", "region", "span"],
         true,
         true,
         function (str) {
-            return str === 'true' ? true : false;
+            return str === "true" ? true : false;
         },
         null,
     ),
     new StylingAttributeDefinition(
         ns_itts,
-        'fillLineGap',
-        'false',
-        ['p'],
+        "fillLineGap",
+        "false",
+        ["p"],
         true,
         true,
         function (str) {
-            return str === 'true' ? true : false;
+            return str === "true" ? true : false;
         },
         null,
     ),

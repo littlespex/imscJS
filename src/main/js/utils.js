@@ -137,11 +137,11 @@ export function parseTextShadow(str) {
 
     for (let i = 0; i < shadows.length; i++) {
 
-        const shadow = shadows[i].split(' ');
+        const shadow = shadows[i].split(" ");
 
-        if (shadow.length === 1 && shadow[0] === 'none') {
+        if (shadow.length === 1 && shadow[0] === "none") {
 
-            return 'none';
+            return "none";
 
         } else if (shadow.length > 1 && shadow.length < 5) {
 
@@ -206,15 +206,15 @@ export function parsePosition(str) {
 
     /* see https://www.w3.org/TR/ttml2/#style-value-position */
 
-    const s = str.split(' ');
+    const s = str.split(" ");
 
     const isKeyword = function (str) {
 
-        return str === 'center' ||
-            str === 'left' ||
-            str === 'top' ||
-            str === 'bottom' ||
-            str === 'right';
+        return str === "center" ||
+            str === "left" ||
+            str === "top" ||
+            str === "bottom" ||
+            str === "right";
 
     };
 
@@ -243,8 +243,8 @@ export function parsePosition(str) {
     /* position default */
 
     const pos = {
-        h: { edge: 'left', offset: { value: 50, unit: '%' } },
-        v: { edge: 'top', offset: { value: 50, unit: '%' } },
+        h: { edge: "left", offset: { value: 50, unit: "%" } },
+        v: { edge: "top", offset: { value: 50, unit: "%" } },
     };
 
     /* update position */
@@ -259,7 +259,7 @@ export function parsePosition(str) {
 
             /* we have a keyword */
 
-            let offset = { value: 0, unit: '%' };
+            let offset = { value: 0, unit: "%" };
 
             /* peek at the next component */
 
@@ -273,23 +273,23 @@ export function parsePosition(str) {
 
             /* skip if center */
 
-            if (comp === 'right') {
+            if (comp === "right") {
 
                 pos.h.edge = comp;
 
                 pos.h.offset = offset;
 
-            } else if (comp === 'bottom') {
+            } else if (comp === "bottom") {
 
                 pos.v.edge = comp;
 
                 pos.v.offset = offset;
 
-            } else if (comp === 'left') {
+            } else if (comp === "left") {
 
                 pos.h.offset = offset;
 
-            } else if (comp === 'top') {
+            } else if (comp === "top") {
 
                 pos.v.offset = offset;
 
@@ -356,42 +356,42 @@ export class ComputedLength {
  */
 export function toComputedLength(lengthVal, lengthUnit, emLength, percentLength, cellLength, pxLength) {
 
-    if (lengthUnit === '%' && percentLength) {
+    if (lengthUnit === "%" && percentLength) {
 
         return new ComputedLength(
             percentLength.rw * lengthVal / 100,
             percentLength.rh * lengthVal / 100,
         );
 
-    } else if (lengthUnit === 'em' && emLength) {
+    } else if (lengthUnit === "em" && emLength) {
 
         return new ComputedLength(
             emLength.rw * lengthVal,
             emLength.rh * lengthVal,
         );
 
-    } else if (lengthUnit === 'c' && cellLength) {
+    } else if (lengthUnit === "c" && cellLength) {
 
         return new ComputedLength(
             lengthVal * cellLength.rw,
             lengthVal * cellLength.rh,
         );
 
-    } else if (lengthUnit === 'px' && pxLength) {
+    } else if (lengthUnit === "px" && pxLength) {
 
         return new ComputedLength(
             lengthVal * pxLength.rw,
             lengthVal * pxLength.rh,
         );
 
-    } else if (lengthUnit === 'rh') {
+    } else if (lengthUnit === "rh") {
 
         return new ComputedLength(
             0,
             lengthVal / 100,
         );
 
-    } else if (lengthUnit === 'rw') {
+    } else if (lengthUnit === "rw") {
 
         return new ComputedLength(
             lengthVal / 100,

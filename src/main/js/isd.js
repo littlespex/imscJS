@@ -24,9 +24,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import { reportError } from './error.js';
-import { all, byName, byQName } from './styles.js';
-import { ComputedLength, hasOwnProperty } from './utils.js';
+import { reportError } from "./error.js";
+import { all, byName, byQName } from "./styles.js";
+import { ComputedLength, hasOwnProperty } from "./utils.js";
 
 /**
  * @module imscISD
@@ -73,7 +73,7 @@ export function generateISD(tt, offset, errorHandler) {
             const showBackground = region.styleAttrs[byName.showBackground.qname] || initialShowBackground;
             const backgroundColor = region.styleAttrs[byName.backgroundColor.qname] || initialbackgroundColor;
             activeRegions[region.id] = (
-                (showBackground === 'always' || showBackground === undefined) &&
+                (showBackground === "always" || showBackground === undefined) &&
                 backgroundColor !== undefined &&
                 !(offset < region.begin || offset >= region.end)
             );
@@ -123,8 +123,8 @@ export function generateISD(tt, offset, errorHandler) {
     }
 
     /* rewritten TTML will always have a default - this covers it. because the region is defaulted to "" */
-    if (activeRegions[''] !== undefined) {
-        activeRegions[''] = true;
+    if (activeRegions[""] !== undefined) {
+        activeRegions[""] = true;
     }
 
     /* process regions */
@@ -132,7 +132,7 @@ export function generateISD(tt, offset, errorHandler) {
         if (activeRegions[regionID]) {
             /* post-order traversal of the body tree per [construct intermediate document] */
 
-            const c = isdProcessContentElement(tt, offset, tt.head.layout.regions[regionID], body, null, '', tt.head.layout.regions[regionID], errorHandler, context);
+            const c = isdProcessContentElement(tt, offset, tt.head.layout.regions[regionID], body, null, "", tt.head.layout.regions[regionID], errorHandler, context);
 
             if (c !== null) {
 
@@ -170,7 +170,7 @@ function isdProcessContentElement(doc, offset, region, body, parent, inherited_r
      * inherited associated region otherwise
      */
 
-    const associated_region_id = 'regionID' in elem && elem.regionID !== '' ? elem.regionID : inherited_region_id;
+    const associated_region_id = "regionID" in elem && elem.regionID !== "" ? elem.regionID : inherited_region_id;
 
     /* prune the element if either:
      * - the element is not terminal and the associated region is neither the default
@@ -184,9 +184,9 @@ function isdProcessContentElement(doc, offset, region, body, parent, inherited_r
     if (parent !== null /* are we in the region element */ &&
         associated_region_id !== region.id &&
         (
-            (!('contents' in elem)) ||
-            ('contents' in elem && elem.contents.length === 0) ||
-            associated_region_id !== ''
+            (!("contents" in elem)) ||
+            ("contents" in elem && elem.contents.length === 0) ||
+            associated_region_id !== ""
         )
     )
         return null;
@@ -198,7 +198,7 @@ function isdProcessContentElement(doc, offset, region, body, parent, inherited_r
 
     /* apply set (animation) styling */
 
-    if ('sets' in elem) {
+    if ("sets" in elem) {
         for (let i = 0; i < elem.sets.length; i++) {
 
             if (offset < elem.sets[i].begin || offset >= elem.sets[i].end)
@@ -227,19 +227,19 @@ function isdProcessContentElement(doc, offset, region, body, parent, inherited_r
          * if writingMode sets inline-direction to LTR or RTL
          */
 
-        if (isd_element.kind === 'region' &&
+        if (isd_element.kind === "region" &&
             qname === byName.writingMode.qname &&
             !(byName.direction.qname in styleAttrs)) {
 
             const wm = styleAttrs[qname];
 
-            if (wm === 'lrtb' || wm === 'lr') {
+            if (wm === "lrtb" || wm === "lr") {
 
-                styleAttrs[byName.direction.qname] = 'ltr';
+                styleAttrs[byName.direction.qname] = "ltr";
 
-            } else if (wm === 'rltb' || wm === 'rl') {
+            } else if (wm === "rltb" || wm === "rl") {
 
-                styleAttrs[byName.direction.qname] = 'rtl';
+                styleAttrs[byName.direction.qname] = "rtl";
 
             }
 
@@ -268,35 +268,35 @@ function isdProcessContentElement(doc, offset, region, body, parent, inherited_r
 
                     outs = ps;
 
-                } else if (es.indexOf('none') === -1) {
+                } else if (es.indexOf("none") === -1) {
 
-                    if ((es.indexOf('noUnderline') === -1 &&
-                        ps.indexOf('underline') !== -1) ||
-                        es.indexOf('underline') !== -1) {
+                    if ((es.indexOf("noUnderline") === -1 &&
+                        ps.indexOf("underline") !== -1) ||
+                        es.indexOf("underline") !== -1) {
 
-                        outs.push('underline');
-
-                    }
-
-                    if ((es.indexOf('noLineThrough') === -1 &&
-                        ps.indexOf('lineThrough') !== -1) ||
-                        es.indexOf('lineThrough') !== -1) {
-
-                        outs.push('lineThrough');
+                        outs.push("underline");
 
                     }
 
-                    if ((es.indexOf('noOverline') === -1 &&
-                        ps.indexOf('overline') !== -1) ||
-                        es.indexOf('overline') !== -1) {
+                    if ((es.indexOf("noLineThrough") === -1 &&
+                        ps.indexOf("lineThrough") !== -1) ||
+                        es.indexOf("lineThrough") !== -1) {
 
-                        outs.push('overline');
+                        outs.push("lineThrough");
+
+                    }
+
+                    if ((es.indexOf("noOverline") === -1 &&
+                        ps.indexOf("overline") !== -1) ||
+                        es.indexOf("overline") !== -1) {
+
+                        outs.push("overline");
 
                     }
 
                 } else {
 
-                    outs.push('none');
+                    outs.push("none");
 
                 }
 
@@ -304,8 +304,8 @@ function isdProcessContentElement(doc, offset, region, body, parent, inherited_r
 
             } else if (sa.qname === byName.fontSize.qname &&
                 !(sa.qname in styleAttrs) &&
-                isd_element.kind === 'span' &&
-                styleAttrs[byName.ruby.qname] === 'textContainer') {
+                isd_element.kind === "span" &&
+                styleAttrs[byName.ruby.qname] === "textContainer") {
 
                 /* special inheritance rule for ruby text container font size */
 
@@ -317,14 +317,14 @@ function isdProcessContentElement(doc, offset, region, body, parent, inherited_r
 
             } else if (sa.qname === byName.fontSize.qname &&
                 !(sa.qname in styleAttrs) &&
-                isd_element.kind === 'span' &&
-                styleAttrs[byName.ruby.qname] === 'text') {
+                isd_element.kind === "span" &&
+                styleAttrs[byName.ruby.qname] === "text") {
 
                 /* special inheritance rule for ruby text font size */
 
                 const parent_fs = parent.styleAttrs[byName.fontSize.qname];
 
-                if (parent.styleAttrs[byName.ruby.qname] === 'textContainer') {
+                if (parent.styleAttrs[byName.ruby.qname] === "textContainer") {
 
                     styleAttrs[sa.qname] = parent_fs;
 
@@ -381,7 +381,7 @@ function isdProcessContentElement(doc, offset, region, body, parent, inherited_r
 
         /* apply initial value to elements other than region only if non-inherited */
 
-        if (isd_element.kind === 'region' || (ivs.inherit === false && iv !== null)) {
+        if (isd_element.kind === "region" || (ivs.inherit === false && iv !== null)) {
 
             const piv = ivs.parse(iv);
 
@@ -447,7 +447,7 @@ function isdProcessContentElement(doc, offset, region, body, parent, inherited_r
 
     /* prune if tts:display is none */
 
-    if (styleAttrs[byName.display.qname] === 'none')
+    if (styleAttrs[byName.display.qname] === "none")
         return null;
 
     /* process contents of the element */
@@ -472,7 +472,7 @@ function isdProcessContentElement(doc, offset, region, body, parent, inherited_r
 
         }
 
-    } else if ('contents' in elem) {
+    } else if ("contents" in elem) {
 
         contents = elem.contents;
 
@@ -507,23 +507,23 @@ function isdProcessContentElement(doc, offset, region, body, parent, inherited_r
         /* special applicability of certain style properties to ruby container spans */
         /* TODO: in the future ruby elements should be translated to elements instead of kept as spans */
 
-        if (isd_element.kind === 'span') {
+        if (isd_element.kind === "span") {
 
             const rsp = styleAttrs[byName.ruby.qname];
 
-            na = (rsp === 'container' || rsp === 'textContainer' || rsp === 'baseContainer') &&
+            na = (rsp === "container" || rsp === "textContainer" || rsp === "baseContainer") &&
                 _rcs_na_styles.indexOf(qnameb) !== -1;
 
             if (!na) {
 
-                na = rsp !== 'container' &&
+                na = rsp !== "container" &&
                     qnameb === byName.rubyAlign.qname;
 
             }
 
             if (!na) {
 
-                na = (!(rsp === 'textContainer' || rsp === 'text')) &&
+                na = (!(rsp === "textContainer" || rsp === "text")) &&
                     qnameb === byName.rubyPosition.qname;
 
             }
@@ -536,7 +536,7 @@ function isdProcessContentElement(doc, offset, region, body, parent, inherited_r
 
             const da = byQName[qnameb];
 
-            if ('applies' in da) {
+            if ("applies" in da) {
 
                 na = da.applies.indexOf(isd_element.kind) === -1;
 
@@ -554,8 +554,8 @@ function isdProcessContentElement(doc, offset, region, body, parent, inherited_r
 
     const ruby = styleAttrs[byName.ruby.qname];
 
-    if (isd_element.kind === 'p' ||
-        (isd_element.kind === 'span' && (ruby === 'textContainer' || ruby === 'text'))
+    if (isd_element.kind === "p" ||
+        (isd_element.kind === "span" && (ruby === "textContainer" || ruby === "text"))
     ) {
 
         const elist = [];
@@ -577,13 +577,13 @@ function isdProcessContentElement(doc, offset, region, body, parent, inherited_r
      * * if region and showBackground = always
      */
 
-    if ((isd_element.kind === 'div' && byName.backgroundImage.qname in styleAttrs) ||
-        isd_element.kind === 'br' ||
-        isd_element.kind === 'image' ||
-        ('contents' in isd_element && isd_element.contents.length > 0) ||
-        (isd_element.kind === 'span' && isd_element.text !== null) ||
-        (isd_element.kind === 'region' &&
-            styleAttrs[byName.showBackground.qname] === 'always')) {
+    if ((isd_element.kind === "div" && byName.backgroundImage.qname in styleAttrs) ||
+        isd_element.kind === "br" ||
+        isd_element.kind === "image" ||
+        ("contents" in isd_element && isd_element.contents.length > 0) ||
+        (isd_element.kind === "span" && isd_element.text !== null) ||
+        (isd_element.kind === "region" &&
+            styleAttrs[byName.showBackground.qname] === "always")) {
 
         return {
             region_id: associated_region_id,
@@ -597,11 +597,11 @@ function isdProcessContentElement(doc, offset, region, body, parent, inherited_r
 function collapseLWSP(elist) {
 
     function isPrevCharLWSP(prev_element) {
-        return prev_element.kind === 'br' || /[\r\n\t ]$/.test(prev_element.text);
+        return prev_element.kind === "br" || /[\r\n\t ]$/.test(prev_element.text);
     }
 
     function isNextCharLWSP(next_element) {
-        return next_element.kind === 'br' || (next_element.space === 'preserve' && /^[\r\n]/.test(next_element.text));
+        return next_element.kind === "br" || (next_element.space === "preserve" && /^[\r\n]/.test(next_element.text));
     }
 
     /* collapse spaces and remove leading LWSPs */
@@ -612,12 +612,12 @@ function collapseLWSP(elist) {
 
         element = elist[i];
 
-        if (element.kind === 'br' || element.space === 'preserve') {
+        if (element.kind === "br" || element.space === "preserve") {
             i++;
             continue;
         }
 
-        let trimmed_text = element.text.replace(/[\t\r\n ]+/g, ' ');
+        let trimmed_text = element.text.replace(/[\t\r\n ]+/g, " ");
 
         if (/^[ ]/.test(trimmed_text)) {
 
@@ -643,7 +643,7 @@ function collapseLWSP(elist) {
 
         element = elist[i];
 
-        if (element.kind === 'br' || element.space === 'preserve') {
+        if (element.kind === "br" || element.space === "preserve") {
             i++;
             continue;
         }
@@ -662,7 +662,7 @@ function collapseLWSP(elist) {
 
 function constructSpanList(element, elist) {
 
-    if (!('contents' in element)) {
+    if (!("contents" in element)) {
         return;
     }
 
@@ -671,17 +671,17 @@ function constructSpanList(element, elist) {
         const child = element.contents[i];
         const ruby = child.styleAttrs[byName.ruby.qname];
 
-        if (child.kind === 'span' && (ruby === 'textContainer' || ruby === 'text')) {
+        if (child.kind === "span" && (ruby === "textContainer" || ruby === "text")) {
 
             /* skip ruby text and text containers, which are handled on their own */
 
             continue;
 
-        } else if ('contents' in child) {
+        } else if ("contents" in child) {
 
             constructSpanList(child, elist);
 
-        } else if ((child.kind === 'span' && child.text.length !== 0) || child.kind === 'br') {
+        } else if ((child.kind === "span" && child.text.length !== 0) || child.kind === "br") {
 
             /* skip empty spans */
 
@@ -695,15 +695,15 @@ function constructSpanList(element, elist) {
 
 function pruneEmptySpans(element) {
 
-    if (element.kind === 'br') {
+    if (element.kind === "br") {
 
         return false;
 
-    } else if ('text' in element) {
+    } else if ("text" in element) {
 
         return element.text.length === 0;
 
-    } else if ('contents' in element) {
+    } else if ("contents" in element) {
 
         let i = element.contents.length;
 
@@ -733,7 +733,7 @@ class ISDContentElement {
 
         /* assume the element is a region if it does not have a kind */
 
-        this.kind = ttelem.kind || 'region';
+        this.kind = ttelem.kind || "region";
 
         /* copy lang */
 
@@ -758,13 +758,13 @@ class ISDContentElement {
 
         /* copy src and type if image */
 
-        if ('src' in ttelem) {
+        if ("src" in ttelem) {
 
             this.src = ttelem.src;
 
         }
 
-        if ('type' in ttelem) {
+        if ("type" in ttelem) {
 
             this.type = ttelem.type;
 
@@ -773,16 +773,16 @@ class ISDContentElement {
         /* TODO: clean this!
          * TODO: ISDElement and document element should be better tied together */
 
-        if ('text' in ttelem) {
+        if ("text" in ttelem) {
 
             this.text = ttelem.text;
 
-        } else if (this.kind === 'region' || 'contents' in ttelem) {
+        } else if (this.kind === "region" || "contents" in ttelem) {
 
             this.contents = [];
         }
 
-        if ('space' in ttelem) {
+        if ("space" in ttelem) {
 
             this.space = ttelem.space;
         }

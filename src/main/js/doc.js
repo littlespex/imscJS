@@ -24,11 +24,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import sax from 'sax';
-import { reportError, reportFatal, reportWarning } from './error.js';
-import { ns_ebutts, ns_ittp, ns_itts, ns_tt, ns_ttp, ns_tts } from './names.js';
-import { byName, byQName } from './styles.js';
-import { ComputedLength, hasOwnProperty, parseLength } from './utils.js';
+import sax from "sax";
+import { reportError, reportFatal, reportWarning } from "./error.js";
+import { ns_ebutts, ns_ittp, ns_itts, ns_tt, ns_ttp, ns_tts } from "./names.js";
+import { byName, byQName } from "./styles.js";
+import { ComputedLength, hasOwnProperty, parseLength } from "./utils.js";
 
 /**
  * @module imscDoc
@@ -150,7 +150,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
         } else if (estack[0] instanceof ForeignElement) {
 
             if (estack[0].node.uri === ns_tt &&
-                estack[0].node.local === 'metadata') {
+                estack[0].node.local === "metadata") {
 
                 /* leave the metadata element */
 
@@ -158,7 +158,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
             } else if (metadata_depth > 0 &&
                 metadataHandler &&
-                'onCloseTag' in metadataHandler) {
+                "onCloseTag" in metadataHandler) {
 
                 /* end of child of metadata element */
 
@@ -197,7 +197,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
                 const ruby = estack[0].styleAttrs[byName.ruby.qname];
 
-                if (ruby === 'container' || ruby === 'textContainer' || ruby === 'baseContainer') {
+                if (ruby === "container" || ruby === "textContainer" || ruby === "baseContainer") {
 
                     return;
 
@@ -216,7 +216,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
         } else if (estack[0] instanceof ForeignElement &&
             metadata_depth > 0 &&
             metadataHandler &&
-            'onText' in metadataHandler) {
+            "onText" in metadataHandler) {
 
             /* text node within a child of metadata element */
 
@@ -230,7 +230,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         // maintain the xml:space stack
 
-        const xmlspace = node.attributes['xml:space'];
+        const xmlspace = node.attributes["xml:space"];
 
         if (xmlspace) {
 
@@ -240,7 +240,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
             if (xmlspacestack.length === 0) {
 
-                xmlspacestack.unshift('default');
+                xmlspacestack.unshift("default");
 
             } else {
 
@@ -252,7 +252,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         /* maintain the xml:lang stack */
 
-        const xmllang = node.attributes['xml:lang'];
+        const xmllang = node.attributes["xml:lang"];
 
         if (xmllang) {
 
@@ -262,7 +262,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
             if (xmllangstack.length === 0) {
 
-                xmllangstack.unshift('');
+                xmllangstack.unshift("");
 
             } else {
 
@@ -276,11 +276,11 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
         if (node.uri === ns_tt) {
 
-            if (node.local === 'tt') {
+            if (node.local === "tt") {
 
                 if (doc !== null) {
 
-                    reportFatal(errorHandler, 'Two <tt> elements at (' + this.line + ',' + this.column + ')');
+                    reportFatal(errorHandler, "Two <tt> elements at (" + this.line + "," + this.column + ")");
 
                 }
 
@@ -290,23 +290,23 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
                 estack.unshift(doc);
 
-            } else if (node.local === 'head') {
+            } else if (node.local === "head") {
 
                 if (!(estack[0] instanceof TT)) {
-                    reportFatal(errorHandler, 'Parent of <head> element is not <tt> at (' + this.line + ',' + this.column + ')');
+                    reportFatal(errorHandler, "Parent of <head> element is not <tt> at (" + this.line + "," + this.column + ")");
                 }
 
                 estack.unshift(doc.head);
 
-            } else if (node.local === 'styling') {
+            } else if (node.local === "styling") {
 
                 if (!(estack[0] instanceof Head)) {
-                    reportFatal(errorHandler, 'Parent of <styling> element is not <head> at (' + this.line + ',' + this.column + ')');
+                    reportFatal(errorHandler, "Parent of <styling> element is not <head> at (" + this.line + "," + this.column + ")");
                 }
 
                 estack.unshift(doc.head.styling);
 
-            } else if (node.local === 'style') {
+            } else if (node.local === "style") {
 
                 let s;
 
@@ -320,7 +320,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
                     if (!s.id) {
 
-                        reportError(errorHandler, '<style> element missing @id attribute');
+                        reportError(errorHandler, "<style> element missing @id attribute");
 
                     } else {
 
@@ -347,11 +347,11 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
                 } else {
 
-                    reportFatal(errorHandler, 'Parent of <style> element is not <styling> or <region> at (' + this.line + ',' + this.column + ')');
+                    reportFatal(errorHandler, "Parent of <style> element is not <styling> or <region> at (" + this.line + "," + this.column + ")");
 
                 }
 
-            } else if (node.local === 'initial') {
+            } else if (node.local === "initial") {
 
                 let ini;
 
@@ -373,24 +373,24 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
                 } else {
 
-                    reportFatal(errorHandler, 'Parent of <initial> element is not <styling> at (' + this.line + ',' + this.column + ')');
+                    reportFatal(errorHandler, "Parent of <initial> element is not <styling> at (" + this.line + "," + this.column + ")");
 
                 }
 
-            } else if (node.local === 'layout') {
+            } else if (node.local === "layout") {
 
                 if (!(estack[0] instanceof Head)) {
 
-                    reportFatal(errorHandler, 'Parent of <layout> element is not <head> at ' + this.line + ',' + this.column + ')');
+                    reportFatal(errorHandler, "Parent of <layout> element is not <head> at " + this.line + "," + this.column + ")");
 
                 }
 
                 estack.unshift(doc.head.layout);
 
-            } else if (node.local === 'region') {
+            } else if (node.local === "region") {
 
                 if (!(estack[0] instanceof Layout)) {
-                    reportFatal(errorHandler, 'Parent of <region> element is not <layout> at ' + this.line + ',' + this.column + ')');
+                    reportFatal(errorHandler, "Parent of <region> element is not <layout> at " + this.line + "," + this.column + ")");
                 }
 
                 const r = new Region();
@@ -399,7 +399,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
                 if (!r.id || r.id in doc.head.layout.regions) {
 
-                    reportError(errorHandler, 'Ignoring <region> with duplicate or missing @id at ' + this.line + ',' + this.column + ')');
+                    reportError(errorHandler, "Ignoring <region> with duplicate or missing @id at " + this.line + "," + this.column + ")");
 
                 } else {
 
@@ -409,17 +409,17 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
                 estack.unshift(r);
 
-            } else if (node.local === 'body') {
+            } else if (node.local === "body") {
 
                 if (!(estack[0] instanceof TT)) {
 
-                    reportFatal(errorHandler, 'Parent of <body> element is not <tt> at ' + this.line + ',' + this.column + ')');
+                    reportFatal(errorHandler, "Parent of <body> element is not <tt> at " + this.line + "," + this.column + ")");
 
                 }
 
                 if (doc.body !== null) {
 
-                    reportFatal(errorHandler, 'Second <body> element at ' + this.line + ',' + this.column + ')');
+                    reportFatal(errorHandler, "Second <body> element at " + this.line + "," + this.column + ")");
 
                 }
 
@@ -431,11 +431,11 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
                 estack.unshift(b);
 
-            } else if (node.local === 'div') {
+            } else if (node.local === "div") {
 
                 if (!(estack[0] instanceof Div || estack[0] instanceof Body)) {
 
-                    reportFatal(errorHandler, 'Parent of <div> element is not <body> or <div> at ' + this.line + ',' + this.column + ')');
+                    reportFatal(errorHandler, "Parent of <div> element is not <body> or <div> at " + this.line + "," + this.column + ")");
 
                 }
 
@@ -456,11 +456,11 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
                 estack.unshift(d);
 
-            } else if (node.local === 'image') {
+            } else if (node.local === "image") {
 
                 if (!(estack[0] instanceof Div)) {
 
-                    reportFatal(errorHandler, 'Parent of <image> element is not <div> at ' + this.line + ',' + this.column + ')');
+                    reportFatal(errorHandler, "Parent of <image> element is not <div> at " + this.line + "," + this.column + ")");
 
                 }
 
@@ -472,11 +472,11 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
                 estack.unshift(img);
 
-            } else if (node.local === 'p') {
+            } else if (node.local === "p") {
 
                 if (!(estack[0] instanceof Div)) {
 
-                    reportFatal(errorHandler, 'Parent of <p> element is not <div> at ' + this.line + ',' + this.column + ')');
+                    reportFatal(errorHandler, "Parent of <p> element is not <div> at " + this.line + "," + this.column + ")");
 
                 }
 
@@ -488,11 +488,11 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
                 estack.unshift(p);
 
-            } else if (node.local === 'span') {
+            } else if (node.local === "span") {
 
                 if (!(estack[0] instanceof Span || estack[0] instanceof P)) {
 
-                    reportFatal(errorHandler, 'Parent of <span> element is not <span> or <p> at ' + this.line + ',' + this.column + ')');
+                    reportFatal(errorHandler, "Parent of <span> element is not <span> or <p> at " + this.line + "," + this.column + ")");
 
                 }
 
@@ -504,11 +504,11 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
                 estack.unshift(ns);
 
-            } else if (node.local === 'br') {
+            } else if (node.local === "br") {
 
                 if (!(estack[0] instanceof Span || estack[0] instanceof P)) {
 
-                    reportFatal(errorHandler, 'Parent of <br> element is not <span> or <p> at ' + this.line + ',' + this.column + ')');
+                    reportFatal(errorHandler, "Parent of <br> element is not <span> or <p> at " + this.line + "," + this.column + ")");
 
                 }
 
@@ -520,7 +520,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
                 estack.unshift(nb);
 
-            } else if (node.local === 'set') {
+            } else if (node.local === "set") {
 
                 if (!(estack[0] instanceof Span ||
                     estack[0] instanceof P ||
@@ -529,7 +529,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
                     estack[0] instanceof Region ||
                     estack[0] instanceof Br)) {
 
-                    reportFatal(errorHandler, 'Parent of <set> element is not a content element or a region at ' + this.line + ',' + this.column + ')');
+                    reportFatal(errorHandler, "Parent of <set> element is not a content element or a region at " + this.line + "," + this.column + ")");
 
                 }
 
@@ -561,7 +561,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
         if (estack[0] instanceof ForeignElement) {
 
             if (node.uri === ns_tt &&
-                node.local === 'metadata') {
+                node.local === "metadata") {
 
                 /* enter the metadata element */
 
@@ -570,7 +570,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
             } else if (
                 metadata_depth > 0 &&
                 metadataHandler &&
-                'onOpenTag' in metadataHandler
+                "onOpenTag" in metadataHandler
             ) {
 
                 /* start of child of metadata element */
@@ -578,7 +578,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
                 const attrs = [];
 
                 for (const a in node.attributes) {
-                    attrs[node.attributes[a].uri + ' ' + node.attributes[a].local] =
+                    attrs[node.attributes[a].uri + " " + node.attributes[a].local] =
                     {
                         uri: node.attributes[a].uri,
                         local: node.attributes[a].local,
@@ -655,15 +655,15 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
 function cleanRubyContainers(element) {
 
-    if (!('contents' in element)) return;
+    if (!("contents" in element)) return;
 
-    const rubyval = 'styleAttrs' in element ? element.styleAttrs[byName.ruby.qname] : null;
+    const rubyval = "styleAttrs" in element ? element.styleAttrs[byName.ruby.qname] : null;
 
-    const isrubycontainer = (element.kind === 'span' && (rubyval === 'container' || rubyval === 'textContainer' || rubyval === 'baseContainer'));
+    const isrubycontainer = (element.kind === "span" && (rubyval === "container" || rubyval === "textContainer" || rubyval === "baseContainer"));
 
     for (let i = element.contents.length - 1; i >= 0; i--) {
 
-        if (isrubycontainer && !('styleAttrs' in element.contents[i] && byName.ruby.qname in element.contents[i].styleAttrs)) {
+        if (isrubycontainer && !("styleAttrs" in element.contents[i] && byName.ruby.qname in element.contents[i].styleAttrs)) {
 
             /* prune undefined <span> in ruby containers */
 
@@ -683,7 +683,7 @@ function resolveTiming(doc, element, prev_sibling, parent) {
 
     /* are we in a seq container? */
 
-    const isinseq = parent && parent.timeContainer === 'seq';
+    const isinseq = parent && parent.timeContainer === "seq";
 
     /* determine implicit begin */
 
@@ -717,13 +717,13 @@ function resolveTiming(doc, element, prev_sibling, parent) {
 
     let s = null;
 
-    if ('sets' in element) {
+    if ("sets" in element) {
 
         for (let set_i = 0; set_i < element.sets.length; set_i++) {
 
             resolveTiming(doc, element.sets[set_i], s, element);
 
-            if (element.timeContainer === 'seq') {
+            if (element.timeContainer === "seq") {
 
                 implicit_end = element.sets[set_i].end;
 
@@ -739,7 +739,7 @@ function resolveTiming(doc, element, prev_sibling, parent) {
 
     }
 
-    if (!('contents' in element)) {
+    if (!("contents" in element)) {
 
         /* anonymous spans and regions and <set> and <br>s and spans with only children text nodes */
 
@@ -757,13 +757,13 @@ function resolveTiming(doc, element, prev_sibling, parent) {
 
         }
 
-    } else if ('contents' in element) {
+    } else if ("contents" in element) {
 
         for (let content_i = 0; content_i < element.contents.length; content_i++) {
 
             resolveTiming(doc, element.contents[content_i], s, element);
 
-            if (element.timeContainer === 'seq') {
+            if (element.timeContainer === "seq") {
 
                 implicit_end = element.contents[content_i].end;
 
@@ -827,8 +827,8 @@ class TT {
         const cr = extractCellResolution(node, errorHandler);
 
         this.cellLength = {
-            'h': new ComputedLength(0, 1 / cr.h),
-            'w': new ComputedLength(1 / cr.w, 0),
+            "h": new ComputedLength(0, 1 / cr.h),
+            "w": new ComputedLength(1 / cr.w, 0),
         };
 
         /* extract frame rate and tick rate */
@@ -845,11 +845,11 @@ class TT {
 
         /* check timebase */
 
-        const attr = findAttribute(node, ns_ttp, 'timeBase');
+        const attr = findAttribute(node, ns_ttp, "timeBase");
 
-        if (attr !== null && attr !== 'media') {
+        if (attr !== null && attr !== "media") {
 
-            reportFatal(errorHandler, 'Unsupported time base');
+            reportFatal(errorHandler, "Unsupported time base");
 
         }
 
@@ -860,19 +860,19 @@ class TT {
         if (e === null) {
 
             this.pxLength = {
-                'h': null,
-                'w': null,
+                "h": null,
+                "w": null,
             };
 
         } else {
 
-            if (e.h.unit !== 'px' || e.w.unit !== 'px') {
-                reportFatal(errorHandler, 'Extent on TT must be in px or absent');
+            if (e.h.unit !== "px" || e.w.unit !== "px") {
+                reportFatal(errorHandler, "Extent on TT must be in px or absent");
             }
 
             this.pxLength = {
-                'h': new ComputedLength(0, 1 / e.h.value),
-                'w': new ComputedLength(1 / e.w.value, 0),
+                "h": new ComputedLength(0, 1 / e.h.value),
+                "w": new ComputedLength(1 / e.w.value, 0),
             };
         }
 
@@ -881,8 +881,8 @@ class TT {
         **/
 
         this.dimensions = {
-            'h': new ComputedLength(0, 1),
-            'w': new ComputedLength(1, 0),
+            "h": new ComputedLength(0, 1),
+            "w": new ComputedLength(1, 0),
 
         };
 
@@ -1003,7 +1003,7 @@ class Initial {
                 node.attributes[i].uri === ns_ebutts ||
                 node.attributes[i].uri === ns_tts) {
 
-                const qname = node.attributes[i].uri + ' ' + node.attributes[i].local;
+                const qname = node.attributes[i].uri + " " + node.attributes[i].local;
 
                 this.styleAttrs[qname] = node.attributes[i].value;
 
@@ -1036,22 +1036,22 @@ class ContentElement {
 
 class Image extends ContentElement {
     constructor(src, type) {
-        super('image');
+        super("image");
         this.src = src;
         this.type = type;
     }
 
     initFromNode(doc, parent, node, xmllang, errorHandler) {
-        this.src = 'src' in node.attributes ? node.attributes.src.value : null;
+        this.src = "src" in node.attributes ? node.attributes.src.value : null;
 
         if (!this.src) {
-            reportError(errorHandler, 'Invalid image@src attribute');
+            reportError(errorHandler, "Invalid image@src attribute");
         }
 
-        this.type = 'type' in node.attributes ? node.attributes.type.value : null;
+        this.type = "type" in node.attributes ? node.attributes.type.value : null;
 
         if (!this.type) {
-            reportError(errorHandler, 'Invalid image@type attribute');
+            reportError(errorHandler, "Invalid image@type attribute");
         }
 
         StyledElement.prototype.initFromNode.call(this, doc, parent, node, errorHandler);
@@ -1147,7 +1147,7 @@ class TimedElement {
 
 class Body extends ContentElement {
     constructor() {
-        super('body');
+        super("body");
     }
 
     initFromNode(doc, node, xmllang, errorHandler) {
@@ -1167,7 +1167,7 @@ class Body extends ContentElement {
 
 class Div extends ContentElement {
     constructor() {
-        super('div');
+        super("div");
     }
 
     initFromNode(doc, parent, node, xmllang, errorHandler) {
@@ -1187,7 +1187,7 @@ class Div extends ContentElement {
 
 class P extends ContentElement {
     constructor() {
-        super('p');
+        super("p");
     }
 
     initFromNode(doc, parent, node, xmllang, errorHandler) {
@@ -1207,7 +1207,7 @@ class P extends ContentElement {
 
 class Span extends ContentElement {
     constructor() {
-        super('span');
+        super("span");
     }
 
     initFromNode(doc, parent, node, xmllang, xmlspace, errorHandler) {
@@ -1228,7 +1228,7 @@ class Span extends ContentElement {
 
 class AnonymousSpan extends ContentElement {
     constructor() {
-        super('span');
+        super("span");
     }
 
     initFromText(doc, parent, text, xmllang, xmlspace, errorHandler) {
@@ -1246,7 +1246,7 @@ class AnonymousSpan extends ContentElement {
 
 class Br extends ContentElement {
     constructor() {
-        super('br');
+        super("br");
     }
 
     initFromNode(doc, parent, node, xmllang, errorHandler) {
@@ -1268,7 +1268,7 @@ class Region {
     createDefaultRegion(xmllang) {
         const r = new Region();
 
-        r.id = '';
+        r.id = "";
         r.styleAttrs = {};
         r.sets = [];
         r.explicit_begin = 0;
@@ -1323,7 +1323,7 @@ class Set {
 
             if (this.qname) {
 
-                reportError(errorHandler, 'More than one style specified on set');
+                reportError(errorHandler, "More than one style specified on set");
                 break;
 
             }
@@ -1342,30 +1342,30 @@ class Set {
  */
 
 function elementGetXMLID(node) {
-    return node && 'xml:id' in node.attributes ? node.attributes['xml:id'].value || null : null;
+    return node && "xml:id" in node.attributes ? node.attributes["xml:id"].value || null : null;
 }
 
 function elementGetRegionID(node) {
-    return node && 'region' in node.attributes ? node.attributes.region.value : '';
+    return node && "region" in node.attributes ? node.attributes.region.value : "";
 }
 
 function elementGetTimeContainer(node, errorHandler) {
 
-    const tc = node && 'timeContainer' in node.attributes ? node.attributes.timeContainer.value : null;
+    const tc = node && "timeContainer" in node.attributes ? node.attributes.timeContainer.value : null;
 
-    if ((!tc) || tc === 'par') {
+    if ((!tc) || tc === "par") {
 
-        return 'par';
+        return "par";
 
-    } else if (tc === 'seq') {
+    } else if (tc === "seq") {
 
-        return 'seq';
+        return "seq";
 
     } else {
 
         reportError(errorHandler, "Illegal value of timeContainer (assuming 'par')");
 
-        return 'par';
+        return "par";
 
     }
 
@@ -1373,7 +1373,7 @@ function elementGetTimeContainer(node, errorHandler) {
 
 function elementGetStyleRefs(node) {
 
-    return node && 'style' in node.attributes ? node.attributes.style.value.split(' ') : [];
+    return node && "style" in node.attributes ? node.attributes.style.value.split(" ") : [];
 
 }
 
@@ -1385,7 +1385,7 @@ function elementGetStyles(node, errorHandler) {
 
         for (const i in node.attributes) {
 
-            const qname = node.attributes[i].uri + ' ' + node.attributes[i].local;
+            const qname = node.attributes[i].uri + " " + node.attributes[i].local;
 
             const sa = byQName[qname];
 
@@ -1400,12 +1400,12 @@ function elementGetStyles(node, errorHandler) {
                     /* TODO: consider refactoring errorHandler into parse and compute routines */
 
                     if (sa === byName.zIndex) {
-                        reportWarning(errorHandler, 'zIndex attribute present but not used by IMSC1 since regions do not overlap');
+                        reportWarning(errorHandler, "zIndex attribute present but not used by IMSC1 since regions do not overlap");
                     }
 
                 } else {
 
-                    reportError(errorHandler, 'Cannot parse styling attribute ' + qname + ' --> ' + node.attributes[i].value);
+                    reportError(errorHandler, "Cannot parse styling attribute " + qname + " --> " + node.attributes[i].value);
 
                 }
 
@@ -1433,11 +1433,11 @@ function findAttribute(node, ns, name) {
 
 function extractAspectRatio(node, errorHandler) {
 
-    let ar = findAttribute(node, ns_ittp, 'aspectRatio');
+    let ar = findAttribute(node, ns_ittp, "aspectRatio");
 
     if (ar === null) {
 
-        ar = findAttribute(node, ns_ttp, 'displayAspectRatio');
+        ar = findAttribute(node, ns_ttp, "displayAspectRatio");
 
     }
 
@@ -1461,12 +1461,12 @@ function extractAspectRatio(node, errorHandler) {
 
             } else {
 
-                reportError(errorHandler, 'Illegal aspectRatio values (ignoring)');
+                reportError(errorHandler, "Illegal aspectRatio values (ignoring)");
             }
 
         } else {
 
-            reportError(errorHandler, 'Malformed aspectRatio attribute (ignoring)');
+            reportError(errorHandler, "Malformed aspectRatio attribute (ignoring)");
         }
 
     }
@@ -1481,7 +1481,7 @@ function extractAspectRatio(node, errorHandler) {
  */
 function extractCellResolution(node, errorHandler) {
 
-    const cr = findAttribute(node, ns_ttp, 'cellResolution');
+    const cr = findAttribute(node, ns_ttp, "cellResolution");
 
     // initial value
 
@@ -1502,13 +1502,13 @@ function extractCellResolution(node, errorHandler) {
 
         } else {
 
-            reportWarning(errorHandler, 'Malformed cellResolution value (using initial value instead)');
+            reportWarning(errorHandler, "Malformed cellResolution value (using initial value instead)");
 
         }
 
     }
 
-    return { 'w': w, 'h': h };
+    return { "w": w, "h": h };
 
 }
 
@@ -1518,7 +1518,7 @@ function extractFrameAndTickRate(node, errorHandler) {
 
     // extract frame rate
 
-    const fps_attr = findAttribute(node, ns_ttp, 'frameRate');
+    const fps_attr = findAttribute(node, ns_ttp, "frameRate");
 
     // initial value
 
@@ -1540,14 +1540,14 @@ function extractFrameAndTickRate(node, errorHandler) {
 
         } else {
 
-            reportWarning(errorHandler, 'Malformed frame rate attribute (using initial value instead)');
+            reportWarning(errorHandler, "Malformed frame rate attribute (using initial value instead)");
         }
 
     }
 
     // extract frame rate multiplier
 
-    const frm_attr = findAttribute(node, ns_ttp, 'frameRateMultiplier');
+    const frm_attr = findAttribute(node, ns_ttp, "frameRateMultiplier");
 
     // initial value
 
@@ -1565,7 +1565,7 @@ function extractFrameAndTickRate(node, errorHandler) {
 
         } else {
 
-            reportWarning(errorHandler, 'Malformed frame rate multiplier attribute (using initial value instead)');
+            reportWarning(errorHandler, "Malformed frame rate multiplier attribute (using initial value instead)");
         }
 
     }
@@ -1576,7 +1576,7 @@ function extractFrameAndTickRate(node, errorHandler) {
 
     let tr = 1;
 
-    const trattr = findAttribute(node, ns_ttp, 'tickRate');
+    const trattr = findAttribute(node, ns_ttp, "tickRate");
 
     if (trattr === null) {
 
@@ -1595,7 +1595,7 @@ function extractFrameAndTickRate(node, errorHandler) {
 
         } else {
 
-            reportWarning(errorHandler, 'Malformed tick rate attribute (using initial value instead)');
+            reportWarning(errorHandler, "Malformed tick rate attribute (using initial value instead)");
         }
 
     }
@@ -1606,16 +1606,16 @@ function extractFrameAndTickRate(node, errorHandler) {
 
 function extractExtent(node, errorHandler) {
 
-    const attr = findAttribute(node, ns_tts, 'extent');
+    const attr = findAttribute(node, ns_tts, "extent");
 
     if (attr === null)
         return null;
 
-    const s = attr.split(' ');
+    const s = attr.split(" ");
 
     if (s.length !== 2) {
 
-        reportWarning(errorHandler, 'Malformed extent (ignoring)');
+        reportWarning(errorHandler, "Malformed extent (ignoring)");
 
         return null;
     }
@@ -1626,12 +1626,12 @@ function extractExtent(node, errorHandler) {
 
     if (!h || !w) {
 
-        reportWarning(errorHandler, 'Malformed extent values (ignoring)');
+        reportWarning(errorHandler, "Malformed extent values (ignoring)");
 
         return null;
     }
 
-    return { 'h': h, 'w': w };
+    return { "h": h, "w": w };
 
 }
 
@@ -1706,13 +1706,13 @@ function processTiming(doc, parent, node, errorHandler) {
 
     let explicit_begin = null;
 
-    if (node && 'begin' in node.attributes) {
+    if (node && "begin" in node.attributes) {
 
         explicit_begin = parseTimeExpression(doc.tickRate, doc.effectiveFrameRate, node.attributes.begin.value);
 
         if (explicit_begin === null) {
 
-            reportWarning(errorHandler, 'Malformed begin value ' + node.attributes.begin.value + ' (using 0)');
+            reportWarning(errorHandler, "Malformed begin value " + node.attributes.begin.value + " (using 0)");
 
         }
 
@@ -1722,13 +1722,13 @@ function processTiming(doc, parent, node, errorHandler) {
 
     let explicit_dur = null;
 
-    if (node && 'dur' in node.attributes) {
+    if (node && "dur" in node.attributes) {
 
         explicit_dur = parseTimeExpression(doc.tickRate, doc.effectiveFrameRate, node.attributes.dur.value);
 
         if (explicit_dur === null) {
 
-            reportWarning(errorHandler, 'Malformed dur value ' + node.attributes.dur.value + ' (ignoring)');
+            reportWarning(errorHandler, "Malformed dur value " + node.attributes.dur.value + " (ignoring)");
 
         }
 
@@ -1738,13 +1738,13 @@ function processTiming(doc, parent, node, errorHandler) {
 
     let explicit_end = null;
 
-    if (node && 'end' in node.attributes) {
+    if (node && "end" in node.attributes) {
 
         explicit_end = parseTimeExpression(doc.tickRate, doc.effectiveFrameRate, node.attributes.end.value);
 
         if (explicit_end === null) {
 
-            reportWarning(errorHandler, 'Malformed end value (ignoring)');
+            reportWarning(errorHandler, "Malformed end value (ignoring)");
 
         }
 
@@ -1765,7 +1765,7 @@ function mergeChainedStyles(styling, style, errorHandler) {
         const sref = style.styleRefs.pop();
 
         if (!(sref in styling.styles)) {
-            reportError(errorHandler, 'Non-existant style id referenced');
+            reportError(errorHandler, "Non-existant style id referenced");
             continue;
         }
 
@@ -1784,7 +1784,7 @@ function mergeReferencedStyles(styling, stylerefs, styleattrs, errorHandler) {
         const sref = stylerefs[i];
 
         if (!(sref in styling.styles)) {
-            reportError(errorHandler, 'Non-existant style id referenced');
+            reportError(errorHandler, "Non-existant style id referenced");
             continue;
         }
 
