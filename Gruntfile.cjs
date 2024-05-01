@@ -59,7 +59,7 @@ module.exports = function (grunt) {
             },
 
             bundle: {
-                cmd: 'rollup -c rollup.config.js',
+                cmd: 'npx rollup -c rollup.config.js',
             },
         },
     },
