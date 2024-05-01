@@ -25,7 +25,7 @@
  */
 
 import { ns_ebutts, ns_itts, ns_smpte, ns_tts } from "./names.js";
-import { ComputedLength, parseColor, parseInt, parseLength, parsePosition, parseTextShadow, toComputedLength } from "./utils.js";
+import { ComputedLength, parseColor, parseLength, parsePosition, parseTextShadow, toComputedLength } from "./utils.js";
 
 /**
  * @module imscStyles
