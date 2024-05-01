@@ -21,7 +21,7 @@ export default [
     rules: {
       'no-var': 'error',
       'prefer-const': 'error',
-      'quotes': ['error', 'single', { 'avoidEscape': true, 'allowTemplateLiterals': true }],
+      'quotes': ['error', 'double', { 'avoidEscape': true, 'allowTemplateLiterals': true }],
       'no-trailing-spaces': 'error',
       'no-multiple-empty-lines': ['error', { 'max': 1 }],
       'comma-dangle': ['error', 'always-multiline'],
