@@ -1,5 +1,5 @@
 import fs from "node:fs/promises";
-import { fromXML } from "../../src/main/js/doc.js";
+import { fromXML } from "../../../main/js/doc.js";
 
 const errorHandler = {
   info: function (msg) {

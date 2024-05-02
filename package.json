@@ -34,7 +34,7 @@
         "lint": "eslint .",
         "fix": "eslint --fix src",
         "build": "grunt build",
-        "test": "node --test ./test/*.test.js"
+        "test": "node --test ./src/test/js/*Test.js"
     },
     "dependencies": {
         "sax": "1.2.1"

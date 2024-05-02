@@ -1,6 +1,6 @@
 import { deepEqual } from "node:assert";
 import { test } from "node:test";
-import { parseTextShadow } from "../src/main/js/utils.js";
+import { parseTextShadow } from "../../main/js/utils.js";
 
 test("ParseTextShadow", () => {
 

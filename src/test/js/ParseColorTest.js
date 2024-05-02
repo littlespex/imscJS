@@ -1,6 +1,6 @@
 import { deepEqual } from "node:assert";
 import { test } from "node:test";
-import { parseColor } from "../src/main/js/utils.js";
+import { parseColor } from "../../main/js/utils.js";
 
 test("ParseColor", () => {
     const tests = [

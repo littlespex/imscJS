@@ -1,6 +1,6 @@
 import { deepEqual } from "node:assert";
 import { test } from "node:test";
-import { parsePosition } from "../src/main/js/utils.js";
+import { parsePosition } from "../../main/js/utils.js";
 
 test("ParsePosition", () => {
 
