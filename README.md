@@ -50,7 +50,7 @@ DEVELOPMENT DEPENDENCIES
 QUICK START
 ===========
 
-* run the `build` target defined in [Gruntfile.js](Gruntfile.js) using [grunt](http://gruntjs.com/).
+* run the `build` target defined in [Gruntfile.cjs](./Gruntfile.cjs) using [grunt](http://gruntjs.com/).
 
 * the resulting `imsc.js` and `sax.js` files at `build/public_html/libs` are, respectively, the imscJS library and its sax-js dependency. For example, both libraries can be included in a web page as follows:
 
@@ -150,7 +150,7 @@ NOTABLE DIRECTORIES AND FILES
 
 * [package.json](package.json): NPM package definition
 
-* [Gruntfile.js](Gruntfile.js): Grunt build script
+* [Gruntfile.cjs](Gruntfile.cjs): Grunt build script
 
 * [properties.json](properties.json): General project properties
 
