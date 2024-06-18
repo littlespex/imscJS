@@ -1516,7 +1516,6 @@ export class Set {
  */
 
 /**
- *
  * @param {Node} node
  * @returns {string | null}
  */

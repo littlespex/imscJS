@@ -423,7 +423,6 @@ export function toComputedLength(lengthVal, lengthUnit, emLength, percentLength,
 }
 
 /**
- *
  * @param {Object} obj
  * @param {string} prop
  * @returns {boolean}
