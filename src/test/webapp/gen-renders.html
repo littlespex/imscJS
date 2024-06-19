@@ -20,10 +20,14 @@
     <div id="main">
 
         <section id="start">
-            <button id="start-rendering" onclick="generateRenders('imsc-tests/imsc1')">Generate IMSC 1 reference
-                renders</button>
-            <button id="start-rendering" onclick="generateRenders('imsc-tests/imsc1_1')">Generate IMSC 1.1 reference
-                renders</button>
+            <button onclick="generateRenders('imsc-tests/imsc1', true)">Generate IMSC 1 reference
+                renders - SAX</button>
+            <button onclick="generateRenders('imsc-tests/imsc1_1', true)">Generate IMSC 1.1 reference
+                renders - SAX</button>
+            <button onclick="generateRenders('imsc-tests/imsc1', false)">Generate IMSC 1 reference
+                renders - DOM</button>
+            <button onclick="generateRenders('imsc-tests/imsc1_1', false)">Generate IMSC 1.1 reference
+                renders- DOM</button>
         </section>
 
         <section id="visual">

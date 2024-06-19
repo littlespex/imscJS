@@ -28,6 +28,20 @@
     "main": "dist/main/js/main.js",
     "types": "dist/main/js/main.d.ts",
     "unpkg": "dist/imsc.min.js",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        },
+        "./*.js": {
+            "types": "./dist/*.d.ts",
+            "import": "./dist/*.js"
+        },
+        "./*": {
+            "types": "./dist/*.d.ts",
+            "import": "./dist/*.js"
+        }
+    },
     "scripts": {
         "prepublishOnly": "grunt build:release",
         "dev": "npx http-server build/public_html",
@@ -37,7 +51,7 @@
         "test": "node --test ./src/test/js/*Test.js"
     },
     "dependencies": {
-        "sax": "1.2.1"
+        "sax": "^1.4.1"
     },
     "devDependencies": {
         "@eslint/js": "^9.1.1",
