@@ -24,9 +24,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import sax from "sax";
 import { reportError, reportFatal, reportWarning } from "./error.js";
 import { ns_ebutts, ns_ittp, ns_itts, ns_tt, ns_ttp, ns_tts } from "./names.js";
+import { createDOMParser } from "./parser.js";
 import { byName, byQName } from "./styles.js";
 import { ComputedLength, hasOwnProperty, parseLength } from "./utils.js";
 
@@ -36,10 +36,8 @@ import { ComputedLength, hasOwnProperty, parseLength } from "./utils.js";
 
 /**
  * @typedef {import("./error").ErrorHandler} ErrorHandler
- */
-
-/**
- * @typedef {sax.Tag | sax.QualifiedTag} Node
+ * @typedef {import("./parser").Node} Node
+ * @typedef {import("./parser").Parser} Parser
  */
 
 /**
@@ -80,18 +78,18 @@ import { ComputedLength, hasOwnProperty, parseLength } from "./utils.js";
  * @param {string} xmlstring XML document
  * @param {ErrorHandler} errorHandler Error callback
  * @param {?MetadataHandler} metadataHandler Callback for <Metadata> elements
+ * @param {?Parser} parser XML parser
  * @returns {?TT} Opaque in-memory representation of an IMSC1 document
  */
 
-export function fromXML(xmlstring, errorHandler, metadataHandler) {
-    const p = sax.parser(true, { xmlns: true });
+export function fromXML(xmlstring, errorHandler, metadataHandler, parser = createDOMParser()) {
     const estack = [];
     const xmllangstack = [];
     const xmlspacestack = [];
     let metadata_depth = 0;
     let doc = null;
 
-    p.onclosetag = function () {
+    parser.onclosetag = function () {
 
         if (estack[0] instanceof Region) {
 
@@ -191,7 +189,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
         estack.shift();
     };
 
-    p.ontext = function (str) {
+    parser.ontext = function (str) {
 
         if (estack[0] === undefined) {
 
@@ -234,7 +232,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
     };
 
-    p.onopentag = function (node) {
+    parser.onopentag = function (node) {
 
         // maintain the xml:space stack
 
@@ -604,7 +602,7 @@ export function fromXML(xmlstring, errorHandler, metadataHandler) {
 
     // parse the document
 
-    p.write(xmlstring).close();
+    parser.write(xmlstring).close();
 
     // all referential styling has been flatten, so delete styles
 

@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import { fromXML } from "../../../main/js/doc.js";
+import { createSAXParser } from "../../../main/js/parser.js";
 
 const errorHandler = {
   info: function (msg) {
@@ -18,5 +19,5 @@ const errorHandler = {
 
 export async function getIMSC1Document(url, metadataHandler) {
   const contents = await fs.readFile(url, "utf8");
-  return fromXML(contents, errorHandler, metadataHandler);
+  return fromXML(contents, errorHandler, metadataHandler, createSAXParser());
 }

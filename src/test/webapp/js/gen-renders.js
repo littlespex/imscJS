@@ -46,7 +46,7 @@ var errorHandler = {
 
 /* */
 
-function generateRenders(reffiles_root) {
+function generateRenders(reffiles_root, use_sax) {
 
     var zip = new JSZip();
     
@@ -61,7 +61,7 @@ function generateRenders(reffiles_root) {
 
             for (var i in finfos) {
 
-                p.push(asyncProcessRefFile(reffiles_root, renders_dir, pngs_dir, finfos[i]));
+                p.push(asyncProcessRefFile(reffiles_root, renders_dir, pngs_dir, finfos[i], use_sax));
 
             }
 
@@ -85,7 +85,7 @@ function generateRenders(reffiles_root) {
 
 }
 
-function asyncProcessRefFile(reffiles_root, renders_dir, pngs_dir, finfo) {
+function asyncProcessRefFile(reffiles_root, renders_dir, pngs_dir, finfo, use_sax) {
 
     var test_name = finfo.name || getTestName(finfo.path, finfo.params || {});
 
@@ -94,7 +94,8 @@ function asyncProcessRefFile(reffiles_root, renders_dir, pngs_dir, finfo) {
 
     return asyncLoadFile(getReferenceFilePath(reffiles_root, finfo.path))
         .then(function (contents) {
-            var doc = imsc.fromXML(contents.replace(/\r\n/g, '\n'), errorHandler);
+            var parser = use_sax ? imsc.createSAXParser() : imsc.createDOMParser();
+            var doc = imsc.fromXML(contents.replace(/\r\n/g, '\n'), errorHandler, parser);
 
             test_renders_dir.file("doc.json",
                 JSON.stringify(
